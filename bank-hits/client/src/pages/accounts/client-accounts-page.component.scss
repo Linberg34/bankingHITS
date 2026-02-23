@@ -1,0 +1,70 @@
+.accounts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__dialog-body {
+    padding: 8px 0;
+
+    &--wide {
+      max-width: 36rem;
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__cell-incoming {
+    color: #16a34a;
+  }
+
+  &__cell-outgoing {
+    color: #dc2626;
+  }
+}
+
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.accounts-list-item {
+  &__content {
+    padding-top: 24px;
+  }
+
+  &__main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  &__number {
+    font-weight: 500;
+    font-size: 1.125rem;
+    margin: 0 0 4px;
+  }
+
+  &__balance-muted {
+    font-size: 0.875rem;
+    color: var(--color-muted, #8b86a6);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}
