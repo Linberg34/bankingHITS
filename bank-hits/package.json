@@ -2,7 +2,12 @@
   "name": "@bank-hits/source",
   "version": "0.0.0",
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "build:client": "nx run client:build",
+    "serve:client": "nx run client:serve",
+    "build:employee": "nx run employee:build",
+    "serve:employee": "nx run employee:serve"
+  },
   "private": true,
   "dependencies": {
     "@angular/common": "~21.1.0",
