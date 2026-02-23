@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcome } from './nx-welcome';
+import { HeaderComponent } from '../../../shared/ui/header';
 
 @Component({
-  imports: [NxWelcome, RouterModule],
+  imports: [HeaderComponent, RouterModule],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'client';
+  protected title = 'Панель клиента';
 }
