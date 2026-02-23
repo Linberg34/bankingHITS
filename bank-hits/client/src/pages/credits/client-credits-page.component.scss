@@ -1,0 +1,106 @@
+.credits-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__dialog-body {
+    padding: 8px 0;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  &__hint {
+    font-size: 0.875rem;
+    color: var(--color-muted, #8b86a6);
+    margin: 6px 0 0;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--color-muted, #8b86a6);
+  }
+}
+
+.credits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.credits-list-item {
+  &__content {
+    padding-top: 24px;
+  }
+
+  &__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  &__info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  &__icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(217, 70, 239, 0.15));
+    color: var(--color-primary-start, #a56bff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__title {
+    font-weight: 500;
+    margin: 0 0 4px;
+  }
+
+  &__muted {
+    font-size: 0.875rem;
+    color: var(--color-muted, #8b86a6);
+    margin: 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    color: var(--color-muted, #8b86a6);
+    margin: 0 0 4px;
+  }
+
+  &__value {
+    font-weight: 500;
+    margin: 0;
+  }
+
+  &__pay {
+    width: 100%;
+  }
+}

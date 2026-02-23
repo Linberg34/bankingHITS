@@ -1,0 +1,151 @@
+<div class="credits-page">
+  <div class="credits-page__actions">
+    <shared-button (click)="openNewCreditDialog()">Взять кредит</shared-button>
+  </div>
+
+  <shared-dialog
+    [open]="openNewCredit()"
+    (openChange)="openNewCredit.set($event)"
+  >
+    <shared-dialog-header>
+      <shared-dialog-title>Оформление кредита</shared-dialog-title>
+      <shared-dialog-description>
+        Выберите тариф и сумму кредита
+      </shared-dialog-description>
+    </shared-dialog-header>
+    <div class="credits-page__dialog-body">
+      <div class="credits-page__field">
+        <shared-label>Тариф</shared-label>
+        <shared-select
+          [options]="tariffOptions()"
+          placeholder="Выберите тариф"
+          [value]="selectedTariff()"
+          (valueChange)="selectedTariff.set($event)"
+        />
+      </div>
+      <div class="credits-page__field">
+        <shared-label>Счет для зачисления</shared-label>
+        <shared-select
+          [options]="accountOptions()"
+          placeholder="Выберите счет"
+          [value]="selectedAccount()"
+          (valueChange)="selectedAccount.set($event)"
+        />
+      </div>
+      <div class="credits-page__field">
+        <shared-label>Сумма кредита (₽)</shared-label>
+        <shared-input
+          type="number"
+          placeholder="0"
+          [value]="creditAmount()"
+          (valueChange)="creditAmount.set($event)"
+        />
+      </div>
+    </div>
+    <shared-dialog-footer>
+      <shared-button variant="outline" (click)="closeNewCredit()">Отмена</shared-button>
+      <shared-button (click)="handleTakeCredit()" [disabled]="!canSubmitCredit()">
+        Оформить кредит
+      </shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+
+  <shared-card>
+    <shared-card-header>
+      <shared-card-title>Активные кредиты</shared-card-title>
+      <shared-card-description>Информация о ваших кредитах</shared-card-description>
+    </shared-card-header>
+    <shared-card-content>
+      @if (clientCredits.length === 0) {
+        <div class="credits-page__empty">У вас пока нет активных кредитов</div>
+      } @else {
+        <div class="credits-list">
+          @for (credit of clientCredits; track credit.id) {
+            <shared-card class="credits-list-item">
+              <shared-card-content class="credits-list-item__content">
+                <div class="credits-list-item__head">
+                  <div class="credits-list-item__info">
+                    <div class="credits-list-item__icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+                    </div>
+                    <div>
+                      <p class="credits-list-item__title">Кредит #{{ credit.id }}</p>
+                      <p class="credits-list-item__muted">
+                        Счет: {{ getAccountNumber(credit.accountId) }}
+                      </p>
+                    </div>
+                  </div>
+                  <shared-badge [variant]="getStatusVariant(credit.status)">
+                    {{ getStatusLabel(credit.status) }}
+                  </shared-badge>
+                </div>
+                <div class="credits-list-item__grid">
+                  <div>
+                    <p class="credits-list-item__label">Сумма кредита</p>
+                    <p class="credits-list-item__value">{{ formatMoney(credit.amount) }}</p>
+                  </div>
+                  <div>
+                    <p class="credits-list-item__label">Осталось погасить</p>
+                    <p class="credits-list-item__value">{{ formatMoney(credit.remainingAmount) }}</p>
+                  </div>
+                  <div>
+                    <p class="credits-list-item__label">Процентная ставка</p>
+                    <p class="credits-list-item__value">{{ credit.interestRate }}%</p>
+                  </div>
+                  <div>
+                    <p class="credits-list-item__label">Тариф</p>
+                    <p class="credits-list-item__value">{{ getTariffName(credit.tariffId) }}</p>
+                  </div>
+                  <div>
+                    <p class="credits-list-item__label">Дата выдачи</p>
+                    <p class="credits-list-item__value">{{ formatDate(credit.issueDate) }}</p>
+                  </div>
+                  <div>
+                    <p class="credits-list-item__label">Следующий платеж</p>
+                    <p class="credits-list-item__value">{{ formatDate(credit.nextPaymentDate) }}</p>
+                  </div>
+                </div>
+                @if (credit.status === 'active') {
+                  <shared-button class="credits-list-item__pay" (click)="openPayCreditDialog(credit)">
+                    Погасить кредит
+                  </shared-button>
+                }
+              </shared-card-content>
+            </shared-card>
+          }
+        </div>
+      }
+    </shared-card-content>
+  </shared-card>
+
+  <shared-dialog [open]="openPayCredit()" (openChange)="openPayCredit.set($event)">
+    <shared-dialog-header>
+      <shared-dialog-title>Погашение кредита</shared-dialog-title>
+      <shared-dialog-description>
+        Введите сумму для погашения кредита
+      </shared-dialog-description>
+    </shared-dialog-header>
+    <div class="credits-page__dialog-body">
+      <div class="credits-page__field">
+        <shared-label>Сумма платежа (₽)</shared-label>
+        <shared-input
+          type="number"
+          placeholder="0"
+          [value]="paymentAmount()"
+          (valueChange)="paymentAmount.set($event)"
+        />
+        @if (selectedCreditForPayment(); as credit) {
+          <p class="credits-page__hint">
+            Минимальный платеж: {{ formatMoney(credit.dailyPayment) }}
+          </p>
+        }
+      </div>
+    </div>
+    <shared-dialog-footer>
+      <shared-button variant="outline" (click)="closePayCredit()">Отмена</shared-button>
+      <shared-button (click)="handlePayCredit()" [disabled]="!paymentAmount()">
+        Оплатить
+      </shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+</div>
