@@ -1,0 +1,14 @@
+<section class="panel-page">
+  <shared-header [title]="'Интернет-Банк - Панель сотрудника'"></shared-header>
+
+  <nav class="tabs">
+    <a routerLink="/panel/accounts" routerLinkActive="is-active" class="tab-link">Счета</a>
+    <a routerLink="/panel/users" routerLinkActive="is-active" class="tab-link">Пользователи</a>
+    <a routerLink="/panel/credits" routerLinkActive="is-active" class="tab-link">Кредиты</a>
+    <a routerLink="/panel/tariffs" routerLinkActive="is-active" class="tab-link">Тарифы</a>
+  </nav>
+
+  <main class="panel-content">
+    <router-outlet></router-outlet>
+  </main>
+</section>

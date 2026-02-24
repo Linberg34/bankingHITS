@@ -1,0 +1,40 @@
+.modal-backdrop {
+  align-items: center;
+  background: rgba(27, 16, 46, 0.35);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  position: fixed;
+  z-index: 40;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(44, 24, 83, 0.24);
+  max-width: 360px;
+  padding: 18px;
+  width: calc(100% - 24px);
+}
+
+h3 {
+  color: #2d2840;
+  font-size: 22px;
+  margin: 0 0 8px;
+}
+
+p {
+  color: #5f5973;
+  margin: 0 0 14px;
+}
+
+button {
+  background: linear-gradient(135deg, #6b16e3, #c61fe2);
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 34px;
+  padding: 0 14px;
+}
