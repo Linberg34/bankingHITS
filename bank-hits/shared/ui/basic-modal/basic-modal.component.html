@@ -1,0 +1,9 @@
+@if (open) {
+  <div class="modal-backdrop" (click)="closed.emit()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <h3>{{ title }}</h3>
+      <p>{{ text }}</p>
+      <button type="button" (click)="closed.emit()">Закрыть</button>
+    </div>
+  </div>
+}

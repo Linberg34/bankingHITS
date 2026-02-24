@@ -9,5 +9,5 @@ import { HeaderComponent } from '../../../shared/ui/header';
   styleUrl: './app.scss',
 })
 export class App {
-  protected title = 'Панель клиента';
+  protected title = 'Client Panel';
 }
