@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
+import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import { ClientDataService } from '../../app/core/services/client-data.service';
 import {
   CardComponent,
@@ -25,6 +26,7 @@ import type { Credit } from '../../app/core/models/client.types';
   selector: 'app-client-credits-page',
   standalone: true,
   imports: [
+    ClientShellComponent,
     CardComponent,
     CardHeaderComponent,
     CardTitleComponent,

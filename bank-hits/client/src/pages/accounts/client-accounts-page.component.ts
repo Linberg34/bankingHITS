@@ -1,4 +1,5 @@
 import { Component, inject, signal, computed } from '@angular/core';
+import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import { ClientDataService } from '../../app/core/services/client-data.service';
 import {
   CardComponent,
@@ -39,6 +40,7 @@ const TRANSACTION_LABELS: Record<string, string> = {
   selector: 'app-client-accounts-page',
   standalone: true,
   imports: [
+    ClientShellComponent,
     CardComponent,
     CardHeaderComponent,
     CardTitleComponent,

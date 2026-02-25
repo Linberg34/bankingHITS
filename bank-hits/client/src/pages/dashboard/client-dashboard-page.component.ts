@@ -1,5 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ClientDataService } from '../../app/core/services/client-data.service';
+import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import {
   CardComponent,
   CardHeaderComponent,
@@ -12,6 +13,7 @@ import {
   selector: 'app-client-dashboard-page',
   standalone: true,
   imports: [
+    ClientShellComponent,
     CardComponent,
     CardHeaderComponent,
     CardTitleComponent,

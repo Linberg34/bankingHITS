@@ -1,6 +1,6 @@
 import { Route } from '@angular/router';
-import { EmployeePanelPageComponent } from '../pages/employee-panel/employee-panel-page.component';
 import { LoginPageComponent } from '../pages/login/login-page.component';
+import { EmployeePanelPageComponent } from '../pages/employee-panel/employee-panel-page.component';
 
 export const appRoutes: Route[] = [
   {

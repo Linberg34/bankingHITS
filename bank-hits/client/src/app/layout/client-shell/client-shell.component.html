@@ -1,0 +1,23 @@
+<shared-header [title]="headerTitle" (logout)="onLogout()"></shared-header>
+<div class="client-shell">
+  <div class="client-shell__container">
+    <aside class="client-shell__sidebar">
+      <nav class="client-shell__nav">
+        @for (item of navItems; track item.path) {
+          <a
+            class="client-shell__nav-link"
+            [routerLink]="['/', item.path]"
+            routerLinkActive="client-shell__nav-link--active"
+            [routerLinkActiveOptions]="{ exact: item.path === 'dashboard' }"
+          >
+            {{ item.label }}
+          </a>
+        }
+      </nav>
+    </aside>
+    <main class="client-shell__main">
+      <h2 class="client-shell__title">{{ pageTitle }}</h2>
+      <ng-content />
+    </main>
+  </div>
+</div>

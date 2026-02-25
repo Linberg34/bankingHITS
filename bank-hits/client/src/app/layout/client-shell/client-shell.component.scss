@@ -1,4 +1,4 @@
-.client-layout {
+.client-shell {
   min-height: 100vh;
   background: linear-gradient(
     135deg,
@@ -8,7 +8,7 @@
   );
 }
 
-.client-layout__container {
+.client-shell__container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 24px;
@@ -16,12 +16,12 @@
   gap: 24px;
 }
 
-.client-layout__sidebar {
+.client-shell__sidebar {
   flex-shrink: 0;
   width: 240px;
 }
 
-.client-layout__nav {
+.client-shell__nav {
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -31,7 +31,7 @@
   padding: 8px;
 }
 
-.client-layout__nav-link {
+.client-shell__nav-link {
   padding: 10px 14px;
   border-radius: var(--radius-md, 10px);
   color: var(--color-text, #3d355c);
@@ -44,7 +44,7 @@
     color: #6b21a8;
   }
 
-  &.client-layout__nav-link--active {
+  &.client-shell__nav-link--active {
     background: linear-gradient(
       90deg,
       var(--color-primary-start, #a56bff),
@@ -54,12 +54,12 @@
   }
 }
 
-.client-layout__main {
+.client-shell__main {
   flex: 1;
   min-width: 0;
 }
 
-.client-layout__title {
+.client-shell__title {
   margin: 0 0 24px;
   font-size: 1.5rem;
   font-weight: 600;

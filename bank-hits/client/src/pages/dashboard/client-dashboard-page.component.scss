@@ -130,16 +130,19 @@
   &__number {
     font-weight: 500;
     margin: 0 0 4px;
+    padding: 6px 0;
   }
 
   &__right {
     text-align: right;
+    padding: 6px 0 6px 12px;
   }
 
   &__balance {
     font-size: 1.25rem;
     font-weight: 700;
     margin: 0 0 4px;
+    padding: 4px 0;
   }
 
   &__change {

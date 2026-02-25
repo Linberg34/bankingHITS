@@ -4,13 +4,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   selector: 'shared-table-cell',
   standalone: true,
   template: '<td [class.text-right]="align() === \'right\'"><ng-content /></td>',
-  styles: [
-    `
-      .text-right {
-        text-align: right;
-      }
-    `,
-  ],
+  styleUrl: './table-cell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TableCellComponent {

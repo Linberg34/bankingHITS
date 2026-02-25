@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, input, inject } from '@angular/core';
-import { TabsComponent } from './tabs.component';
+import { TabsComponent } from '../tabs/tabs.component';
 
 @Component({
   selector: 'shared-tabs-trigger',
