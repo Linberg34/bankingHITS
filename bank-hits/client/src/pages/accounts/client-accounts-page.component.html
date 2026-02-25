@@ -1,0 +1,151 @@
+<app-client-shell>
+<div class="accounts-page">
+  <div class="accounts-page__actions">
+    <shared-button (click)="openNewAccountDialog()">Открыть новый счет</shared-button>
+  </div>
+
+  <shared-dialog
+    [open]="openNewAccount()"
+    (openChange)="openNewAccount.set($event)"
+  >
+    <shared-dialog-header>
+      <shared-dialog-title>Открыть новый счет</shared-dialog-title>
+      <shared-dialog-description>
+        Новый счет будет открыт в рублях (RUB)
+      </shared-dialog-description>
+    </shared-dialog-header>
+    <div class="accounts-page__dialog-body">
+      <div class="accounts-page__field">
+        <shared-label>Валюта</shared-label>
+        <shared-select
+          [options]="currencyOptions"
+          [value]="'RUB'"
+        />
+      </div>
+    </div>
+    <shared-dialog-footer>
+      <shared-button variant="outline" (click)="closeNewAccount()">Отмена</shared-button>
+      <shared-button (click)="handleOpenAccount()">Открыть счет</shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+
+  <shared-card>
+    <shared-card-header>
+      <shared-card-title>Активные счета</shared-card-title>
+      <shared-card-description>Управление вашими банковскими счетами</shared-card-description>
+    </shared-card-header>
+    <shared-card-content>
+      <div class="accounts-list">
+        @for (account of activeAccounts; track account.id) {
+          <shared-card class="accounts-list-item">
+            <shared-card-content class="accounts-list-item__content">
+              <div class="accounts-list-item__main">
+                <div>
+                  <p class="accounts-list-item__number">{{ account.accountNumber }}</p>
+                  <p class="accounts-list-item__balance-muted">
+                    Баланс: {{ formatMoney(account.balance) }}
+                  </p>
+                </div>
+                <div class="accounts-list-item__actions">
+                  <shared-button variant="outline" size="sm" (click)="openDepositDialog(account)">
+                    Пополнить
+                  </shared-button>
+                  <shared-button variant="outline" size="sm" (click)="openWithdrawDialog(account)">
+                    Снять
+                  </shared-button>
+                  <shared-button variant="outline" size="sm" (click)="openHistoryDialog(account)">
+                    История
+                  </shared-button>
+                  <shared-button variant="outline" size="sm" (click)="handleCloseAccount(account.accountNumber)">
+                    Закрыть счет
+                  </shared-button>
+                </div>
+              </div>
+            </shared-card-content>
+          </shared-card>
+        }
+      </div>
+    </shared-card-content>
+  </shared-card>
+
+  <shared-dialog [open]="openDeposit()" (openChange)="openDeposit.set($event)">
+    <shared-dialog-header>
+      <shared-dialog-title>Пополнение счета</shared-dialog-title>
+      <shared-dialog-description>Введите сумму для пополнения</shared-dialog-description>
+    </shared-dialog-header>
+    <div class="accounts-page__dialog-body">
+      <div class="accounts-page__field">
+        <shared-label>Сумма (₽)</shared-label>
+        <shared-input
+          type="number"
+          placeholder="0"
+          [value]="amount()"
+          (valueChange)="amount.set($event)"
+        />
+      </div>
+    </div>
+    <shared-dialog-footer>
+      <shared-button variant="outline" (click)="closeDeposit()">Отмена</shared-button>
+      <shared-button (click)="handleDeposit()" [disabled]="!amount()">Пополнить</shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+
+  <shared-dialog [open]="openWithdraw()" (openChange)="openWithdraw.set($event)">
+    <shared-dialog-header>
+      <shared-dialog-title>Снятие средств</shared-dialog-title>
+      <shared-dialog-description>Введите сумму для снятия</shared-dialog-description>
+    </shared-dialog-header>
+    <div class="accounts-page__dialog-body">
+      <div class="accounts-page__field">
+        <shared-label>Сумма (₽)</shared-label>
+        <shared-input
+          type="number"
+          placeholder="0"
+          [value]="amount()"
+          (valueChange)="amount.set($event)"
+        />
+      </div>
+    </div>
+    <shared-dialog-footer>
+      <shared-button variant="outline" (click)="closeWithdraw()">Отмена</shared-button>
+      <shared-button (click)="handleWithdraw()" [disabled]="!amount()">Снять</shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+
+  <shared-dialog [open]="openHistory()" (openChange)="openHistory.set($event)">
+    <shared-dialog-header>
+      <shared-dialog-title>История операций</shared-dialog-title>
+      <shared-dialog-description>
+        Счет: {{ selectedAccountForHistory()?.accountNumber ?? '' }}
+      </shared-dialog-description>
+    </shared-dialog-header>
+    <div class="accounts-page__dialog-body accounts-page__dialog-body--wide">
+      <shared-table>
+        <shared-table-header>
+          <shared-table-row>
+            <shared-table-head>Дата</shared-table-head>
+            <shared-table-head>Тип</shared-table-head>
+            <shared-table-head>Описание</shared-table-head>
+            <shared-table-head [align]="'right'">Сумма</shared-table-head>
+          </shared-table-row>
+        </shared-table-header>
+        <shared-table-body>
+          @for (tx of accountTransactions(); track tx.id) {
+            <shared-table-row>
+              <shared-table-cell>{{ formatDate(tx.createdAt) }}</shared-table-cell>
+              <shared-table-cell>{{ getTransactionLabel(tx.type) }}</shared-table-cell>
+              <shared-table-cell>{{ tx.description }}</shared-table-cell>
+              <shared-table-cell [align]="'right'" [class.accounts-page__cell-incoming]="isIncoming(tx.type)" [class.accounts-page__cell-outgoing]="!isIncoming(tx.type)">
+                {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount) }}
+              </shared-table-cell>
+            </shared-table-row>
+          }
+        </shared-table-body>
+      </shared-table>
+    </div>
+    <shared-dialog-footer>
+      <shared-button (click)="closeHistory()">Закрыть</shared-button>
+    </shared-dialog-footer>
+  </shared-dialog>
+</div>
+</app-client-shell>

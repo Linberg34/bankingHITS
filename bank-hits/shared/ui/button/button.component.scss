@@ -1,0 +1,70 @@
+:host.shared-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: var(--radius-md, 10px);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, opacity 0.15s;
+  border: 1px solid transparent;
+
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+}
+
+:host.shared-button--default {
+  min-height: 36px;
+  padding: 8px 16px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-start, #a56bff),
+    var(--color-primary-end, #f46bff)
+  );
+  color: #fff;
+  border: none;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    filter: brightness(1.05);
+  }
+}
+
+:host.shared-button--outline {
+  min-height: 36px;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--color-text, #3d355c);
+  border-color: var(--color-border, #e9e7f5);
+
+  &:hover:not(:disabled) {
+    background: var(--color-input, #f4f3f8);
+  }
+}
+
+:host.shared-button--ghost {
+  min-height: 36px;
+  padding: 8px 16px;
+  background: transparent;
+  color: var(--color-text, #3d355c);
+
+  &:hover:not(:disabled) {
+    background: rgba(165, 107, 255, 0.1);
+    color: #6b21a8;
+  }
+}
+
+:host.shared-button--sm {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 0.8125rem;
+}
+
+:host.shared-button--lg {
+  min-height: 40px;
+  padding: 10px 24px;
+}

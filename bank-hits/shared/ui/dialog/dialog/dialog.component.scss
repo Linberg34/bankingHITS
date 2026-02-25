@@ -1,0 +1,45 @@
+.shared-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.shared-dialog-content {
+  position: relative;
+  background: var(--color-surface, #fff);
+  border-radius: var(--radius-lg, 14px);
+  border: 1px solid var(--color-border, #e9e7f5);
+  box-shadow: var(--shadow-card, 0 18px 60px rgba(24, 9, 50, 0.28));
+  max-width: min(calc(100% - 2rem), 32rem);
+  width: 100%;
+  max-height: calc(100vh - 2rem);
+  overflow: auto;
+  padding: 24px;
+}
+
+.shared-dialog-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--color-muted, #8b86a6);
+  cursor: pointer;
+  border-radius: var(--radius-md, 10px);
+  transition: color 0.15s, background 0.15s;
+
+  &:hover {
+    color: var(--color-text, #3d355c);
+    background: var(--color-input, #f4f3f8);
+  }
+}
