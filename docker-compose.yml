@@ -1,0 +1,75 @@
+services:
+  db_user:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: user_db
+      POSTGRES_USER: user_user
+      POSTGRES_PASSWORD: user_pass
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  service_user:
+    build:
+      context: ./bank-hits-user
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db_user:5432/user_db
+      SPRING_DATASOURCE_USERNAME: user_user
+      SPRING_DATASOURCE_PASSWORD: user_pass
+      CLIENTS_SERVICE_B_URL: http://service-b:8080
+      CLIENTS_SERVICE_C_URL: http://service-c:8080
+    depends_on:
+      db_user:
+        condition: service_healthy
+#      service-b:
+#        condition: service_started
+#      service-c:
+#        condition: service_started
+    networks: [appnet]
+    ports:
+      - "8081:8080"   # только если нужен доступ с хоста
+
+#  db_b:
+#    image: postgres:16
+#    environment:
+#      POSTGRES_DB: b_db
+#      POSTGRES_USER: b_user
+#      POSTGRES_PASSWORD: b_pass
+#    networks: [appnet]
+#
+#  service-b:
+#    build: ./module-b
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db_b:5432/b_db
+#      SPRING_DATASOURCE_USERNAME: b_user
+#      SPRING_DATASOURCE_PASSWORD: b_pass
+#    depends_on: [db_b]
+#    networks: [appnet]
+#    ports:
+#      - "8082:8080"
+#
+#  db_c:
+#    image: postgres:16
+#    environment:
+#      POSTGRES_DB: c_db
+#      POSTGRES_USER: c_user
+#      POSTGRES_PASSWORD: c_pass
+#    networks: [appnet]
+#
+#  service-c:
+#    build: ./module-c
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db_c:5432/c_db
+#      SPRING_DATASOURCE_USERNAME: c_user
+#      SPRING_DATASOURCE_PASSWORD: c_pass
+#    depends_on: [db_c]
+#    networks: [appnet]
+#    ports:
+#      - "8083:8080"
+#
+networks:
+  appnet:
