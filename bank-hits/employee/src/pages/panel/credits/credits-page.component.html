@@ -15,7 +15,71 @@
           }
         </tr>
       </thead>
+      <tbody>
+        @for (credit of credits; track credit.id) {
+          <tr class="credit-row" (click)="openDetails(credit)">
+            <td>{{ credit.clientName }}</td>
+            <td>{{ credit.account }}</td>
+            <td>{{ credit.tariff }}</td>
+            <td>{{ credit.amount }}</td>
+            <td>{{ credit.remaining }}</td>
+            <td>{{ credit.rate }}</td>
+            <td><span class="status">{{ credit.status }}</span></td>
+            <td>{{ credit.issuedAt }}</td>
+          </tr>
+        }
+      </tbody>
     </table>
-    <p class="empty">Кредиты не найдены</p>
   </article>
+
+  <shared-basic-modal [open]="detailsModalOpen" [title]="'Детали кредита'" (closed)="closeDetails()">
+    @if (selectedCredit) {
+      <section class="credit-details">
+        <div class="details-top">
+          <h3>{{ selectedCredit.clientName }}</h3>
+          <span class="credit-id">{{ selectedCredit.id }}</span>
+        </div>
+
+        <div class="details-grid">
+          <article>
+            <small>Счет</small>
+            <strong>{{ selectedCredit.account }}</strong>
+          </article>
+          <article>
+            <small>Тариф</small>
+            <strong>{{ selectedCredit.tariff }}</strong>
+          </article>
+          <article>
+            <small>Сумма кредита</small>
+            <strong>{{ selectedCredit.amount }}</strong>
+          </article>
+          <article>
+            <small>Остаток</small>
+            <strong>{{ selectedCredit.remaining }}</strong>
+          </article>
+          <article>
+            <small>Срок</small>
+            <strong>{{ selectedCredit.termMonths }} мес.</strong>
+          </article>
+          <article>
+            <small>Оплачено</small>
+            <strong>{{ selectedCredit.paidMonths }} мес.</strong>
+          </article>
+          <article>
+            <small>Следующий платеж</small>
+            <strong>{{ selectedCredit.nextPaymentAmount }}</strong>
+          </article>
+          <article>
+            <small>Дата платежа</small>
+            <strong>{{ selectedCredit.nextPaymentDate }}</strong>
+          </article>
+        </div>
+
+        <div class="purpose-box">
+          <small>Цель кредита</small>
+          <p>{{ selectedCredit.purpose }}</p>
+        </div>
+      </section>
+    }
+  </shared-basic-modal>
 </section>

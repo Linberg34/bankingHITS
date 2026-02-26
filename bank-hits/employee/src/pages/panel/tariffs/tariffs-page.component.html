@@ -5,7 +5,7 @@
   </header>
 
   <section class="cards-grid">
-    @for (tariff of tariffs; track tariff.name) {
+    @for (tariff of tariffs; track tariff.name + tariff.createdAt) {
       <article class="tariff-card">
         <div class="card-top">
           <h2>{{ tariff.name }}</h2>
@@ -20,10 +20,19 @@
     }
   </section>
 
-  <shared-basic-modal
-    [open]="addTariffModalOpen"
-    [title]="'Добавить тариф'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="addTariffModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="addTariffModalOpen" [title]="'Добавить кредитный тариф'" (closed)="addTariffModalOpen = false">
+    <form class="modal-form" (ngSubmit)="addTariff()">
+      <label>
+        Название тарифа
+        <input [(ngModel)]="newTariff.name" name="tariffName" type="text" required />
+      </label>
+
+      <label>
+        Ставка, %
+        <input [(ngModel)]="newTariff.rate" name="tariffRate" type="number" min="0.1" step="0.1" required />
+      </label>
+
+      <button type="submit" class="submit-btn">Сохранить тариф</button>
+    </form>
+  </shared-basic-modal>
 </section>
