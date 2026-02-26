@@ -56,17 +56,34 @@
     </table>
   </article>
 
-  <shared-basic-modal
-    [open]="addModalOpen"
-    [title]="'Добавить пользователя'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="addModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="addModalOpen" [title]="'Добавить пользователя'" (closed)="addModalOpen = false">
+    <form class="modal-form" (ngSubmit)="addUser()">
+      <label>
+        Имя
+        <input [(ngModel)]="newUser.name" name="name" type="text" required />
+      </label>
+
+      <label>
+        Email
+        <input [(ngModel)]="newUser.email" name="email" type="email" required />
+      </label>
+
+      <label>
+        Роль
+        <select [(ngModel)]="newUser.role" name="role">
+          <option value="Клиент">Клиент</option>
+          <option value="Сотрудник">Сотрудник</option>
+        </select>
+      </label>
+
+      <button type="submit" class="submit-btn">Сохранить</button>
+    </form>
+  </shared-basic-modal>
 
   <shared-basic-modal
     [open]="blockModalOpen"
     [title]="'Блокировка пользователя'"
-    [text]="'Пока только пустая модалка без UI.'"
+    [text]="'Здесь будет подтверждение действия и выбор причины блокировки.'"
     (closed)="blockModalOpen = false"
   ></shared-basic-modal>
 </section>

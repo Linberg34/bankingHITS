@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 export class BasicModalComponent {
   @Input() open = false;
-  @Input() title = 'Модалка';
+  @Input() title = 'Modal';
   @Input() text = '';
 
   @Output() closed = new EventEmitter<void>();

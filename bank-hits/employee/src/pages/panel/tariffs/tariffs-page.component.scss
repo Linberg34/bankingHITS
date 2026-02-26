@@ -79,6 +79,38 @@ strong {
   font-size: 44px;
 }
 
+.modal-form {
+  display: grid;
+  gap: 12px;
+}
+
+.modal-form label {
+  color: #312b44;
+  display: grid;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.modal-form input {
+  border: 1px solid #d9d2eb;
+  border-radius: 8px;
+  font-size: 15px;
+  min-height: 38px;
+  padding: 0 10px;
+}
+
+.submit-btn {
+  background: linear-gradient(135deg, #6b16e3, #3c4ef2);
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 38px;
+  padding: 0 14px;
+}
+
 @media (max-width: 900px) {
   h1 {
     font-size: 32px;
