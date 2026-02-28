@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { AuthRoleService } from '../../../../shared/auth';
 import { HeaderComponent } from '../../../../shared/ui/header';
 
 @Component({
@@ -9,4 +10,14 @@ import { HeaderComponent } from '../../../../shared/ui/header';
   templateUrl: './employee-panel-page.component.html',
   styleUrl: './employee-panel-page.component.scss',
 })
-export class EmployeePanelPageComponent {}
+export class EmployeePanelPageComponent {
+  constructor(
+    private readonly router: Router,
+    private readonly authRoleService: AuthRoleService
+  ) {}
+
+  logout(): void {
+    this.authRoleService.clearRole();
+    void this.router.navigateByUrl('/registration');
+  }
+}

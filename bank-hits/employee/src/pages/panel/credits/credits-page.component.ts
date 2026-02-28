@@ -45,4 +45,19 @@ export class CreditsPageComponent {
     this.detailsModalOpen = false;
     this.selectedCredit = null;
   }
+
+  isActiveStatus(status: string): boolean {
+    const normalized = status.toLowerCase();
+    return normalized.includes('актив') || normalized === 'active';
+  }
+
+  isPaidStatus(status: string): boolean {
+    const normalized = status.toLowerCase();
+    return normalized.includes('погаш') || normalized === 'paid';
+  }
+
+  isOverdueStatus(status: string): boolean {
+    const normalized = status.toLowerCase();
+    return normalized.includes('проср') || normalized === 'overdue';
+  }
 }

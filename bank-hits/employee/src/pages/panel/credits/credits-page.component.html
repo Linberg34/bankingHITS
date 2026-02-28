@@ -42,7 +42,16 @@
             <td>{{ credit.amount }}</td>
             <td>{{ credit.remaining }}</td>
             <td>{{ credit.rate }}</td>
-            <td><span class="status">{{ credit.status }}</span></td>
+            <td>
+              <span
+                class="status"
+                [class.status-active]="isActiveStatus(credit.status)"
+                [class.status-paid]="isPaidStatus(credit.status)"
+                [class.status-overdue]="isOverdueStatus(credit.status)"
+              >
+                {{ credit.status }}
+              </span>
+            </td>
             <td>{{ credit.issuedAt }}</td>
           </tr>
         }

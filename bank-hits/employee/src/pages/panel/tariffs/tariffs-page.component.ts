@@ -78,7 +78,7 @@ export class TariffsPageComponent {
   }
 
   private validateName(): void {
-    const name = this.newTariff.name.trim();
+    const name = String(this.newTariff.name ?? '').trim();
     if (!name) {
       this.nameError = 'Введите название тарифа.';
       return;
@@ -100,7 +100,7 @@ export class TariffsPageComponent {
   }
 
   private validateRate(): void {
-    const rawRate = this.newTariff.rate.trim();
+    const rawRate = String(this.newTariff.rate ?? '').trim();
     if (!rawRate) {
       this.rateError = 'Укажите процентную ставку.';
       return;
