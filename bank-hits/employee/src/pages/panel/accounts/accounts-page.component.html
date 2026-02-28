@@ -1,0 +1,35 @@
+<section class="domain-page">
+  <h1>Все счета клиентов</h1>
+
+  <article class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Клиент</th>
+          <th>Номер счета</th>
+          <th>Баланс</th>
+          <th>Статус</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of accountRecords; track record.accountNumber) {
+          <tr>
+            <td>{{ record.client }}</td>
+            <td>{{ record.accountNumber }}</td>
+            <td class="amount">{{ record.balance }}</td>
+            <td><span class="badge">{{ record.status }}</span></td>
+            <td><button type="button" (click)="historyModalOpen = true">История</button></td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </article>
+
+  <shared-basic-modal
+    [open]="historyModalOpen"
+    [title]="'История счета'"
+    [text]="'Пока только пустая модалка без UI.'"
+    (closed)="historyModalOpen = false"
+  ></shared-basic-modal>
+</section>

@@ -1,0 +1,21 @@
+<section class="domain-page">
+  <header class="page-header">
+    <h1>Все кредиты</h1>
+    <select>
+      <option>Все клиенты</option>
+    </select>
+  </header>
+
+  <article class="table-card">
+    <table>
+      <thead>
+        <tr>
+          @for (column of columns; track column) {
+            <th>{{ column }}</th>
+          }
+        </tr>
+      </thead>
+    </table>
+    <p class="empty">Кредиты не найдены</p>
+  </article>
+</section>
