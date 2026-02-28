@@ -19,9 +19,6 @@ public class CoreServiceClient {
         this.coreUrl = coreUrl;
     }
 
-    /**
-     * Зачислить деньги на счёт (при выдаче кредита)
-     */
     public void deposit(Long accountId, BigDecimal amount) {
         String url = coreUrl + "/api/accounts/{accountId}/deposit";
         Map<String, Object> body = Map.of("amount", amount);
@@ -33,10 +30,6 @@ public class CoreServiceClient {
         );
     }
 
-    /**
-     * Списать деньги со счёта (периодический платёж по кредиту)
-     * Возвращает true если списание прошло успешно
-     */
     public boolean withdraw(Long accountId, BigDecimal amount) {
         try {
             String url = coreUrl + "/api/accounts/{accountId}/withdraw";
@@ -49,7 +42,6 @@ public class CoreServiceClient {
             );
             return response.getStatusCode().is2xxSuccessful();
         } catch (Exception e) {
-            // Ядро вернуло ошибку (например, недостаточно средств)
             return false;
         }
     }

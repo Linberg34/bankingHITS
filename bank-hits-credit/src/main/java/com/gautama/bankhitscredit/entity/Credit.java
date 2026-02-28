@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Table(name = "credits")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Credit {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

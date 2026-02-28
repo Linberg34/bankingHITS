@@ -10,7 +10,7 @@ public class TakeCreditRequest {
     private Long clientId;
 
     @NotNull
-    private Long accountId;   // счёт в Ядре для зачисления и списания
+    private Long accountId;
 
     @NotNull
     private Long tariffId;

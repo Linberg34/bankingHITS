@@ -26,8 +26,6 @@ public class CreditService {
     private final CreditTariffRepository tariffRepository;
     private final CoreServiceClient coreClient;
 
-    // ─── Тарифы ──────────────────────────────────────────────
-
     @Transactional
     public TariffResponse createTariff(CreateTariffRequest req) {
         if (tariffRepository.existsByName(req.getName())) {
@@ -45,8 +43,6 @@ public class CreditService {
                 .map(TariffResponse::from)
                 .toList();
     }
-
-    // ─── Кредиты ─────────────────────────────────────────────
 
     @Transactional
     public CreditResponse takeCredit(TakeCreditRequest req) {
@@ -81,9 +77,6 @@ public class CreditService {
                 .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
     }
 
-    /**
-     * Ручное досрочное погашение — списываем всю сумму remainingDebt
-     */
     @Transactional
     public CreditResponse repayCredit(Long creditId) {
         Credit credit = creditRepository.findById(creditId)
@@ -103,5 +96,11 @@ public class CreditService {
         credit.setClosedAt(LocalDateTime.now());
 
         return CreditResponse.from(creditRepository.save(credit));
+    }
+
+    public List<CreditResponse> getAllCredits() {
+        return creditRepository.findAll().stream()
+                .map(CreditResponse::from)
+                .toList();
     }
 }

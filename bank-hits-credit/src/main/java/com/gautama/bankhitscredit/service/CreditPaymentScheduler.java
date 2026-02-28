@@ -22,7 +22,6 @@ public class CreditPaymentScheduler {
     private final CreditRepository creditRepository;
     private final CoreServiceClient coreClient;
 
-    // Cron из application.yml — по умолчанию раз в минуту
     @Scheduled(cron = "${credit.payment.cron}")
     @Transactional
     public void processPayments() {

@@ -1,4 +1,23 @@
 services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+    networks: [ appnet ]
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on: [ zookeeper ]
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks: [ appnet ]
 
   # ─── USER SERVICE ─────────────────────────────────────────
   db_user:
@@ -7,9 +26,9 @@ services:
       POSTGRES_DB: user_db
       POSTGRES_USER: user_user
       POSTGRES_PASSWORD: user_pass
-    networks: [appnet]
+    networks: [ appnet ]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
+      test: [ "CMD-SHELL", "pg_isready -U user_user -d user_db" ]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -25,7 +44,7 @@ services:
     depends_on:
       db_user:
         condition: service_healthy
-    networks: [appnet]
+    networks: [ appnet ]
     ports:
       - "8081:8080"
 
@@ -36,9 +55,9 @@ services:
       POSTGRES_DB: core_db
       POSTGRES_USER: core_user
       POSTGRES_PASSWORD: core_pass
-    networks: [appnet]
+    networks: [ appnet ]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U core_user -d core_db"]
+      test: [ "CMD-SHELL", "pg_isready -U core_user -d core_db" ]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -57,7 +76,7 @@ services:
         condition: service_healthy
       service_user:
         condition: service_started
-    networks: [appnet]
+    networks: [ appnet ]
     ports:
       - "8082:8080"
 
@@ -68,9 +87,9 @@ services:
       POSTGRES_DB: credit_db
       POSTGRES_USER: credit_user
       POSTGRES_PASSWORD: credit_pass
-    networks: [appnet]
+    networks: [ appnet ]
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U credit_user -d credit_db"]
+      test: [ "CMD-SHELL", "pg_isready -U credit_user -d credit_db" ]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -94,7 +113,7 @@ services:
         condition: service_started
       service_user:
         condition: service_started
-    networks: [appnet]
+    networks: [ appnet ]
     ports:
       - "8083:8080"
 
