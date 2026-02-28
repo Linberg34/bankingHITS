@@ -1,9 +1,27 @@
-<section class="domain-page">
+﻿<section class="domain-page">
   <header class="page-header">
     <h1>Все кредиты</h1>
-    <select>
-      <option>Все клиенты</option>
-    </select>
+    <div class="filters">
+      <label class="filter-item">
+        <span>Клиент</span>
+        <select [(ngModel)]="selectedClient" (ngModelChange)="applyFilters()">
+          <option value="all">Все клиенты</option>
+          @for (client of clientOptions; track client) {
+            @if (client !== 'all') {
+              <option [value]="client">{{ client }}</option>
+            }
+          }
+        </select>
+      </label>
+
+      <label class="filter-item">
+        <span>Сортировка</span>
+        <select [(ngModel)]="sortDirection" (ngModelChange)="applyFilters()">
+          <option value="asc">Клиент (А-Я)</option>
+          <option value="desc">Клиент (Я-А)</option>
+        </select>
+      </label>
+    </div>
   </header>
 
   <article class="table-card">

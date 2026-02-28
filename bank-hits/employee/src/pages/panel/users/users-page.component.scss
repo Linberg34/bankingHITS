@@ -1,4 +1,4 @@
-.domain-page h1 {
+﻿.domain-page h1 {
   font-size: 44px;
   margin: 0;
 }
@@ -72,6 +72,11 @@ td button {
   font-size: 17px;
 }
 
+td button[disabled] {
+  color: #8f8a9c;
+  cursor: default;
+}
+
 tbody tr:last-child td {
   border-bottom: 0;
 }
@@ -107,6 +112,33 @@ tbody tr:last-child td {
   font-weight: 600;
   min-height: 38px;
   padding: 0 14px;
+}
+
+.cancel-btn {
+  background: #f1edf9;
+  border: 0;
+  border-radius: 8px;
+  color: #433b59;
+  cursor: pointer;
+  font-weight: 600;
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.block-modal-content {
+  display: grid;
+  gap: 12px;
+}
+
+.block-modal-content p {
+  color: #312b44;
+  margin: 0;
+}
+
+.block-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
 }
 
 @media (max-width: 900px) {

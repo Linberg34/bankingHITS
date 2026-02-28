@@ -1,8 +1,24 @@
-.page-header {
-  align-items: center;
+﻿.page-header {
+  align-items: end;
   display: flex;
   justify-content: space-between;
   margin-bottom: 14px;
+}
+
+.filters {
+  display: flex;
+  gap: 10px;
+}
+
+.filter-item {
+  display: grid;
+  gap: 4px;
+}
+
+.filter-item span {
+  color: #6f6783;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 h1 {
@@ -142,6 +158,16 @@ td {
 }
 
 @media (max-width: 900px) {
+  .page-header {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
   h1 {
     font-size: 32px;
   }
