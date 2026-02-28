@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
+﻿import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { CLIENT_USERS, EMPLOYEE_USERS, type UserRecord } from '../../../data-domain/users/model/users.model';
+import {
+  CLIENT_USERS,
+  EMPLOYEE_USERS,
+  type UserRecord,
+} from '../../../data-domain/users/model/users.model';
 
 type UserRole = 'Клиент' | 'Сотрудник';
+
+interface BlockTarget {
+  email: string;
+  name: string;
+  role: UserRole;
+}
 
 @Component({
   selector: 'employee-users-page',
@@ -17,6 +27,7 @@ export class UsersPageComponent {
   blockModalOpen = false;
   clientUsers = [...CLIENT_USERS];
   employeeUsers = [...EMPLOYEE_USERS];
+  blockTarget: BlockTarget | null = null;
 
   newUser = {
     name: '',
@@ -47,6 +58,49 @@ export class UsersPageComponent {
 
     this.resetAddUserForm();
     this.addModalOpen = false;
+  }
+
+  openBlockUser(user: UserRecord, role: UserRole): void {
+    if (this.isBlocked(user)) {
+      return;
+    }
+
+    this.blockTarget = {
+      email: user.email,
+      name: user.name,
+      role,
+    };
+    this.blockModalOpen = true;
+  }
+
+  confirmBlockUser(): void {
+    if (!this.blockTarget) {
+      return;
+    }
+
+    const nextStatus = 'Заблокирован';
+
+    if (this.blockTarget.role === 'Сотрудник') {
+      this.employeeUsers = this.employeeUsers.map((user) =>
+        user.email === this.blockTarget?.email ? { ...user, status: nextStatus } : user
+      );
+    } else {
+      this.clientUsers = this.clientUsers.map((user) =>
+        user.email === this.blockTarget?.email ? { ...user, status: nextStatus } : user
+      );
+    }
+
+    this.closeBlockModal();
+  }
+
+  closeBlockModal(): void {
+    this.blockModalOpen = false;
+    this.blockTarget = null;
+  }
+
+  isBlocked(user: UserRecord): boolean {
+    const normalizedStatus = user.status.toLowerCase();
+    return normalizedStatus.includes('блок') || normalizedStatus.includes('block');
   }
 
   private resetAddUserForm(): void {

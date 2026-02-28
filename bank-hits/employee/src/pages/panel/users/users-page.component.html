@@ -1,4 +1,4 @@
-<section class="domain-page">
+﻿<section class="domain-page">
   <header class="page-header">
     <h1>Управление пользователями</h1>
     <button type="button" class="action" (click)="addModalOpen = true">Добавить пользователя</button>
@@ -23,7 +23,11 @@
             <td>{{ user.email }}</td>
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
-            <td><button type="button" (click)="blockModalOpen = true">Заблокировать</button></td>
+            <td>
+              <button type="button" (click)="openBlockUser(user, 'Клиент')" [disabled]="isBlocked(user)">
+                {{ isBlocked(user) ? 'Заблокирован' : 'Заблокировать' }}
+              </button>
+            </td>
           </tr>
         }
       </tbody>
@@ -49,7 +53,11 @@
             <td>{{ user.email }}</td>
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
-            <td><button type="button" (click)="blockModalOpen = true">Заблокировать</button></td>
+            <td>
+              <button type="button" (click)="openBlockUser(user, 'Сотрудник')" [disabled]="isBlocked(user)">
+                {{ isBlocked(user) ? 'Заблокирован' : 'Заблокировать' }}
+              </button>
+            </td>
           </tr>
         }
       </tbody>
@@ -80,10 +88,18 @@
     </form>
   </shared-basic-modal>
 
-  <shared-basic-modal
-    [open]="blockModalOpen"
-    [title]="'Блокировка пользователя'"
-    [text]="'Здесь будет подтверждение действия и выбор причины блокировки.'"
-    (closed)="blockModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="blockModalOpen" [title]="'Блокировка пользователя'" (closed)="closeBlockModal()">
+    @if (blockTarget) {
+      <div class="block-modal-content">
+        <p>
+          Заблокировать {{ blockTarget.role.toLowerCase() }}а
+          <strong>{{ blockTarget.name }}</strong> ({{ blockTarget.email }})?
+        </p>
+        <div class="block-modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeBlockModal()">Отмена</button>
+          <button type="button" class="submit-btn" (click)="confirmBlockUser()">Подтвердить</button>
+        </div>
+      </div>
+    }
+  </shared-basic-modal>
 </section>
