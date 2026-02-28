@@ -19,20 +19,9 @@ public class CoreServiceClient {
         this.coreUrl = coreUrl;
     }
 
-    public void deposit(Long accountId, BigDecimal amount) {
-        String url = coreUrl + "/api/accounts/{accountId}/deposit";
-        Map<String, Object> body = Map.of("amount", amount);
-        restTemplate.postForEntity(
-                url,
-                new HttpEntity<>(body, jsonHeaders()),
-                Void.class,
-                accountId
-        );
-    }
-
     public boolean withdraw(Long accountId, BigDecimal amount) {
         try {
-            String url = coreUrl + "/api/accounts/{accountId}/withdraw";
+            String url = coreUrl + "account/{accountid}/debit";
             Map<String, Object> body = Map.of("amount", amount);
             ResponseEntity<Void> response = restTemplate.postForEntity(
                     url,

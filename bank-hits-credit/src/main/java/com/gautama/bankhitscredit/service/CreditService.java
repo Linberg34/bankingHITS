@@ -2,10 +2,7 @@ package com.gautama.bankhitscredit.service;
 
 
 import com.gautama.bankhitscredit.config.CoreServiceClient;
-import com.gautama.bankhitscredit.dto.CreateTariffRequest;
-import com.gautama.bankhitscredit.dto.CreditResponse;
-import com.gautama.bankhitscredit.dto.TakeCreditRequest;
-import com.gautama.bankhitscredit.dto.TariffResponse;
+import com.gautama.bankhitscredit.dto.*;
 import com.gautama.bankhitscredit.entity.Credit;
 import com.gautama.bankhitscredit.entity.CreditTariff;
 import com.gautama.bankhitscredit.repository.CreditRepository;
@@ -49,9 +46,6 @@ public class CreditService {
         CreditTariff tariff = tariffRepository.findById(req.getTariffId())
                 .orElseThrow(() -> new IllegalArgumentException("Тариф не найден"));
 
-        // Зачислить деньги клиенту на счёт через Ядро
-        coreClient.deposit(req.getAccountId(), req.getAmount());
-
         Credit credit = Credit.builder()
                 .clientId(req.getClientId())
                 .accountId(req.getAccountId())
@@ -94,6 +88,36 @@ public class CreditService {
         credit.setRemainingDebt(BigDecimal.ZERO);
         credit.setStatus(Credit.CreditStatus.CLOSED);
         credit.setClosedAt(LocalDateTime.now());
+
+        return CreditResponse.from(creditRepository.save(credit));
+    }
+
+    @Transactional
+    public CreditResponse repayPartial(Long creditId, PartialRepayRequest req) {
+        Credit credit = creditRepository.findById(creditId)
+                .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
+
+        if (credit.getStatus() != Credit.CreditStatus.ACTIVE) {
+            throw new IllegalStateException("Кредит уже закрыт или просрочен");
+        }
+
+        if (req.getAmount().compareTo(credit.getRemainingDebt()) > 0) {
+            throw new IllegalArgumentException(
+                    "Сумма " + req.getAmount() + " превышает остаток долга " + credit.getRemainingDebt()
+            );
+        }
+
+        boolean success = coreClient.withdraw(credit.getAccountId(), req.getAmount());
+        if (!success) {
+            throw new IllegalStateException("Недостаточно средств на счёте");
+        }
+
+        credit.setRemainingDebt(credit.getRemainingDebt().subtract(req.getAmount()));
+
+        if (credit.getRemainingDebt().compareTo(BigDecimal.ZERO) == 0) {
+            credit.setStatus(Credit.CreditStatus.CLOSED);
+            credit.setClosedAt(LocalDateTime.now());
+        }
 
         return CreditResponse.from(creditRepository.save(credit));
     }
