@@ -1,5 +1,5 @@
 <section class="panel-page">
-  <shared-header [title]="'Интернет-Банк - Панель сотрудника'"></shared-header>
+  <shared-header [title]="'Интернет-Банк - Панель сотрудника'" (logout)="logout()"></shared-header>
 
   <nav class="tabs">
     <a routerLink="/panel/accounts" routerLinkActive="is-active" class="tab-link">Счета</a>

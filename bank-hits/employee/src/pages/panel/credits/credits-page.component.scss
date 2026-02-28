@@ -79,12 +79,27 @@ td {
 }
 
 .status {
-  background: #e9f8ef;
+  background: #eef1f8;
   border-radius: 999px;
-  color: #2f8551;
+  color: #4b556e;
   display: inline-block;
   font-size: 13px;
   padding: 3px 10px;
+}
+
+.status-active {
+  background: #e9f8ef;
+  color: #2f8551;
+}
+
+.status-paid {
+  background: #e8f0ff;
+  color: #2f5ea8;
+}
+
+.status-overdue {
+  background: #fdecef;
+  color: #b33a53;
 }
 
 .credit-details {
