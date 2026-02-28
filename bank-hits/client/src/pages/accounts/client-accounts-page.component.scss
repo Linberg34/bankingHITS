@@ -38,6 +38,8 @@
 }
 
 .accounts-list-item {
+  --card-shadow: 0 4px 12px rgba(24, 9, 50, 0.04);
+
   &__content {
     padding-top: 24px;
   }
