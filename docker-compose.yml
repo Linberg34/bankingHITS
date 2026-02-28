@@ -6,6 +6,8 @@ services:
       POSTGRES_USER: user_user
       POSTGRES_PASSWORD: user_pass
     networks: [appnet]
+    volumes:
+      - .:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
       interval: 5s
@@ -32,22 +34,22 @@ services:
     networks: [appnet]
     ports:
       - "8081:8080"   # только если нужен доступ с хоста
-
-#  db_b:
+#
+#  db_account:
 #    image: postgres:16
 #    environment:
-#      POSTGRES_DB: b_db
-#      POSTGRES_USER: b_user
-#      POSTGRES_PASSWORD: b_pass
+#      POSTGRES_DB: account_db
+#      POSTGRES_USER: account_user
+#      POSTGRES_PASSWORD: account_pass
 #    networks: [appnet]
-#
-#  service-b:
-#    build: ./module-b
+
+#  service_account:
+#    build: ./bank-hits-back
 #    environment:
-#      SPRING_DATASOURCE_URL: jdbc:postgresql://db_b:5432/b_db
-#      SPRING_DATASOURCE_USERNAME: b_user
-#      SPRING_DATASOURCE_PASSWORD: b_pass
-#    depends_on: [db_b]
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://db_account:5432/account_db
+#      SPRING_DATASOURCE_USERNAME: account_user
+#      SPRING_DATASOURCE_PASSWORD: account_pass
+#    depends_on: [db_account]
 #    networks: [appnet]
 #    ports:
 #      - "8082:8080"
