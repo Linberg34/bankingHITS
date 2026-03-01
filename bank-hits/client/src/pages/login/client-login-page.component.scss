@@ -67,6 +67,16 @@ p {
   font-size: 13px;
 }
 
+.login-error {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #dc2626;
+}
+
+.login-form {
+  margin: 0;
+}
+
 .login-field {
   display: flex;
   align-items: center;

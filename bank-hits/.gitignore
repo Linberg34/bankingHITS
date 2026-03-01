@@ -34,7 +34,6 @@ yarn-error.log
 testem.log
 /typings
 
-# System Files
 .DS_Store
 Thumbs.db
 
@@ -43,6 +42,7 @@ Thumbs.db
 
 .angular
 
-# Editor / tooling
-.cursor
 error.log
+
+#secrets
+shared/api/secret.ts
