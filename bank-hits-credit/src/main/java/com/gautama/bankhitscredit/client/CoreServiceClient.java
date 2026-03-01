@@ -10,13 +10,13 @@ import java.math.BigDecimal;
 
 @FeignClient(name = "core-service", url = "${core-service.url}")
 public interface CoreServiceClient {
-    @PostMapping("/withdraw")
+    @PostMapping("/operations/withdraw")
     void withdraw(@RequestBody CreateOperationRequest request);
 
-    default boolean tryWithdraw(Long accountId, BigDecimal amount) {
+    default boolean tryWithdraw(String accountNumber, BigDecimal amount) {
         try {
             withdraw(CreateOperationRequest.builder()
-                    .accountNumber(accountId.toString())
+                    .accountNumber(accountNumber)
                     .operationType("WITHDRAWAL")
                     .amount(amount)
                     .description("Списание по кредиту")

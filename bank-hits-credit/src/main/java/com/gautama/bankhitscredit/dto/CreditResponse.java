@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class CreditResponse {
     private Long id;
     private Long clientId;
-    private Long accountId;
+    private String accountNumber;
     private String tariffName;
     private BigDecimal annualRate;
     private BigDecimal principalAmount;
@@ -22,7 +22,7 @@ public class CreditResponse {
         CreditResponse r = new CreditResponse();
         r.setId(c.getId());
         r.setClientId(c.getClientId());
-        r.setAccountId(c.getAccountId());
+        r.setAccountNumber(c.getAccountNumber());
         r.setTariffName(c.getTariff().getName());
         r.setAnnualRate(c.getTariff().getAnnualRate());
         r.setPrincipalAmount(c.getPrincipalAmount());

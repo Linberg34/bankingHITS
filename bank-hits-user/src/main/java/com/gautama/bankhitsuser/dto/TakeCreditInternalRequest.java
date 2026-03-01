@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TakeCreditInternalRequest {
     private Long clientId;
-    private Long accountId;
+    private String accountNumber;
     private Long tariffId;
     private BigDecimal amount;
 }

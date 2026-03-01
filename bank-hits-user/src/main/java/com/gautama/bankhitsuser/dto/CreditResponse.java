@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class CreditResponse {
     private Long id;
     private Long clientId;
-    private Long accountId;
+    private String accountNumber;
     private String tariffName;
     private BigDecimal annualRate;
     private BigDecimal principalAmount;

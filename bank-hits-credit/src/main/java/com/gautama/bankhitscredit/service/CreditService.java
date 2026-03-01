@@ -48,7 +48,7 @@ public class CreditService {
 
         Credit credit = Credit.builder()
                 .clientId(req.getClientId())
-                .accountId(req.getAccountId())
+                .accountNumber(req.getAccountNumber())
                 .tariff(tariff)
                 .principalAmount(req.getAmount())
                 .remainingDebt(req.getAmount())
@@ -80,7 +80,7 @@ public class CreditService {
             throw new IllegalStateException("Кредит уже закрыт или просрочен");
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountId(), credit.getRemainingDebt());
+        boolean success = coreClient.tryWithdraw(credit.getAccountNumber(), credit.getRemainingDebt());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств для погашения кредита");
         }
@@ -107,7 +107,7 @@ public class CreditService {
             );
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountId(), req.getAmount());
+        boolean success = coreClient.tryWithdraw(credit.getAccountNumber(), req.getAmount());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств на счёте");
         }

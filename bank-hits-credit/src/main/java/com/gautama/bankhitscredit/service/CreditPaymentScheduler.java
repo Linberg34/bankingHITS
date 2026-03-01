@@ -34,9 +34,6 @@ public class CreditPaymentScheduler {
     }
 
     private void processPayment(Credit credit) {
-        // Считаем платёж за период:
-        // Если тестируем раз в минуту — считаем "минутную" ставку из годовой
-        // annualRate / 100 / 525600 минут в году
         BigDecimal periodRate = credit.getTariff().getAnnualRate()
                 .divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP)
                 .divide(BigDecimal.valueOf(525_600), 10, RoundingMode.HALF_UP);
@@ -45,17 +42,20 @@ public class CreditPaymentScheduler {
                 .multiply(periodRate)
                 .setScale(2, RoundingMode.HALF_UP);
 
-        // Минимальный платёж — 1 копейка, чтобы долг всегда уменьшался
         if (payment.compareTo(BigDecimal.valueOf(0.01)) < 0) {
             payment = BigDecimal.valueOf(0.01);
         }
 
-        // Не списываем больше чем остаток долга
         if (payment.compareTo(credit.getRemainingDebt()) > 0) {
             payment = credit.getRemainingDebt();
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountId(), payment);
+        log.info("Попытка списания: кредит={}, счёт={}, сумма={}, остаток долга={}",
+                credit.getId(), credit.getAccountNumber(), payment, credit.getRemainingDebt());
+
+        boolean success = coreClient.tryWithdraw(credit.getAccountNumber(), payment);
+
+        log.info("Результат списания: кредит={}, success={}", credit.getId(), success);
 
         if (success) {
             credit.setRemainingDebt(credit.getRemainingDebt().subtract(payment));
@@ -65,7 +65,6 @@ public class CreditPaymentScheduler {
                 log.info("Кредит {} полностью погашен", credit.getId());
             }
         } else {
-            // Не удалось списать — помечаем как просроченный
             credit.setStatus(Credit.CreditStatus.OVERDUE);
             log.warn("Кредит {} переведён в статус OVERDUE (недостаточно средств)", credit.getId());
         }

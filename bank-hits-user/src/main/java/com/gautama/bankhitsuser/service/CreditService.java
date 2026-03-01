@@ -1,5 +1,6 @@
 package com.gautama.bankhitsuser.service;
 
+import com.gautama.bankhitsuser.client.AccountServiceClient;
 import com.gautama.bankhitsuser.client.CreditServiceClient;
 import com.gautama.bankhitsuser.dto.*;
 import com.gautama.bankhitsuser.enums.Role;
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException;
 public class CreditService {
     private final CreditServiceClient creditServiceClient;
     private final UserRepository userRepository;
+    private final AccountServiceClient coreClient;
 
     public TariffResponse createTariff(Long userId, CreateTariffRequest req) {
         User user = getUserOrThrow(userId);
@@ -40,12 +42,22 @@ public class CreditService {
         User user = getUserOrThrow(userId);
         requireRole(user, Role.CLIENT);
 
-        return creditServiceClient.takeCredit(new TakeCreditInternalRequest(
+        CreditResponse credit = creditServiceClient.takeCredit(new TakeCreditInternalRequest(
                 user.getId(),
-                req.getAccountId(),
+                req.getAccountNumber(),
                 req.getTariffId(),
                 req.getAmount()
         ));
+
+        // После успешного взятия кредита зачисляем деньги на счёт
+        coreClient.deposit(CreateOperationRequest.builder()
+                .accountNumber(req.getAccountNumber())
+                .operationType("DEPOSIT")
+                .amount(credit.getPrincipalAmount())
+                .description("Зачисление кредитных средств по кредиту #" + credit.getId())
+                .build());
+
+        return credit;
     }
 
     public List<CreditResponse> getClientCredits(Long userId, Long clientId) {

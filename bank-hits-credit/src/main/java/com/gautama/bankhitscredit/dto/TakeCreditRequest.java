@@ -10,7 +10,7 @@ public class TakeCreditRequest {
     private Long clientId;
 
     @NotNull
-    private Long accountId;
+    private String accountNumber;
 
     @NotNull
     private Long tariffId;

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 public class TakeCreditRequest {
     @NotNull
-    private Long accountId;
+    private String accountNumber;
 
     @NotNull
     private Long tariffId;

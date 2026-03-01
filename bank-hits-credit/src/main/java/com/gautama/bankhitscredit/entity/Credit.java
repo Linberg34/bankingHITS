@@ -18,9 +18,8 @@ public class Credit {
     @Column(nullable = false)
     private Long clientId;
 
-    // ID счёта в Ядре, с которого будет списываться
     @Column(nullable = false)
-    private Long accountId;
+    private String accountNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tariff_id", nullable = false)
