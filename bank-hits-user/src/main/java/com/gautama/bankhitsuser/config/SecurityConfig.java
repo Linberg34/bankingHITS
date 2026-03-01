@@ -72,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8081",
-                "http://185.76.242.253:8081"));
+                "http://185.76.242.253:8081",
+                "*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
