@@ -1,0 +1,113 @@
+﻿<section class="domain-page">
+  <h1>Все счета клиентов</h1>
+
+  <div class="filters">
+    <label>
+      Клиент
+      <select [ngModel]="selectedClient()" (ngModelChange)="selectedClient.set($event)">
+        <option value="all">Все</option>
+        @for (client of clientOptions(); track client) {
+          @if (client !== 'all') {
+            <option [value]="client">{{ client }}</option>
+          }
+        }
+      </select>
+    </label>
+
+    <label>
+      Статус
+      <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
+        <option value="all">Все</option>
+        @for (status of statusOptions(); track status) {
+          @if (status !== 'all') {
+            <option [value]="status">{{ status }}</option>
+          }
+        }
+      </select>
+    </label>
+
+    <label>
+      Баланс
+      <select [ngModel]="balanceSort()" (ngModelChange)="balanceSort.set($event)">
+        <option value="none">Без сортировки</option>
+        <option value="asc">По возрастанию</option>
+        <option value="desc">По убыванию</option>
+      </select>
+    </label>
+  </div>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
+
+  <article class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th>Клиент</th>
+          <th>Номер счета</th>
+          <th>Баланс</th>
+          <th>Статус</th>
+          <th>Действия</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (record of filteredAccountRecords(); track record.accountNumber) {
+          <tr>
+            <td>{{ record.client }}</td>
+            <td>{{ record.accountNumber }}</td>
+            <td class="amount">{{ record.balance }}</td>
+            <td><span class="badge">{{ record.status }}</span></td>
+            <td><button type="button" (click)="openHistory(record)">История</button></td>
+          </tr>
+        }
+
+        @if (!filteredAccountRecords().length) {
+          <tr>
+            <td colspan="5">Счета не найдены</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </article>
+
+  <shared-basic-modal [open]="historyModalOpen()" [title]="'История счета'" (closed)="closeHistory()">
+    @if (selectedAccount(); as account) {
+      <div class="history-modal">
+        <p class="history-account">Счет: {{ account.accountNumber }}</p>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Тип</th>
+              <th>Описание</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isHistoryLoading()) {
+              <tr>
+                <td colspan="4">Загрузка истории...</td>
+              </tr>
+            }
+
+            @for (operation of selectedAccountOperations(); track operation.id) {
+              <tr>
+                <td>{{ operation.date }}</td>
+                <td>{{ operation.type }}</td>
+                <td>{{ operation.description }}</td>
+                <td>{{ operation.amount }}</td>
+              </tr>
+            }
+
+            @if (!selectedAccountOperations().length && !isHistoryLoading()) {
+              <tr>
+                <td colspan="4">Операции отсутствуют</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </shared-basic-modal>
+</section>

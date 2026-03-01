@@ -1,0 +1,27 @@
+:host.shared-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 9999px;
+}
+
+:host.shared-badge--default {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary-start, #a56bff),
+    var(--color-primary-end, #f46bff)
+  );
+  color: #fff;
+}
+
+:host.shared-badge--secondary {
+  background: var(--color-input, #f4f3f8);
+  color: var(--color-muted, #8b86a6);
+}
+
+:host.shared-badge--destructive {
+  background: #fef2f2;
+  color: #b91c1c;
+}

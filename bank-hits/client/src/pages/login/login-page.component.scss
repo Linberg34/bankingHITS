@@ -1,0 +1,33 @@
+.login-screen {
+  min-height: calc(100vh - 84px);
+  padding: 24px;
+  background: #f5f1ff;
+}
+
+.login-card {
+  max-width: 420px;
+  margin: 20px auto;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(86, 62, 140, 0.12);
+  padding: 24px;
+}
+
+h1 {
+  margin: 0 0 8px;
+}
+
+p {
+  margin: 0 0 16px;
+  color: #666;
+}
+
+.submit {
+  border: 0;
+  border-radius: 10px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: 600;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #7a20f1, #d129ff);
+}

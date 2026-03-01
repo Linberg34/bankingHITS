@@ -1,0 +1,14 @@
+@if (open) {
+  <div class="modal-backdrop" (click)="closed.emit()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+      <button type="button" class="icon-close" aria-label="Закрыть" (click)="closed.emit()">×</button>
+      <h3>{{ title }}</h3>
+      @if (text) {
+        <p>{{ text }}</p>
+      }
+      <div class="modal-content">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  </div>
+}

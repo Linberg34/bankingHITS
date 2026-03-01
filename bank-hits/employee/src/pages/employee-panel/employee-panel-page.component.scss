@@ -1,0 +1,48 @@
+.panel-page {
+  min-height: 100vh;
+  background: #efecf8;
+}
+
+.tabs {
+  align-items: center;
+  background: #f8f6fd;
+  border-bottom: 1px solid #ddd8eb;
+  display: flex;
+  gap: 8px;
+  min-height: 52px;
+  padding: 0 18px;
+}
+
+.tab-link {
+  border-bottom: 2px solid transparent;
+  color: #5f5973;
+  font-size: 17px;
+  font-weight: 500;
+  padding: 14px 18px 12px;
+  text-decoration: none;
+}
+
+.tab-link.is-active {
+  border-bottom-color: #5f3df4;
+  color: #5f3df4;
+}
+
+.panel-content {
+  padding: 18px 22px 24px;
+}
+
+@media (max-width: 768px) {
+  .tabs {
+    overflow-x: auto;
+    padding: 0 8px;
+  }
+
+  .tab-link {
+    font-size: 15px;
+    white-space: nowrap;
+  }
+
+  .panel-content {
+    padding: 14px 10px 18px;
+  }
+}

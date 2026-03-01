@@ -1,0 +1,104 @@
+.accounts-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__dialog-body {
+    padding: 8px 0;
+
+    &--wide {
+      max-width: 36rem;
+
+      ::ng-deep .shared-table__inner {
+        table-layout: fixed;
+        width: 100%;
+
+        th:first-child,
+        td:first-child {
+          width: 7rem;
+          white-space: nowrap;
+        }
+        th:nth-child(2),
+        td:nth-child(2) {
+          width: 9rem;
+        }
+        th:last-child,
+        td:last-child {
+          width: 8rem;
+          text-align: right;
+        }
+      }
+    }
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__error {
+    color: var(--color-destructive, #c00);
+    font-size: 0.875rem;
+    margin: 0 0 12px;
+    padding: 8px 12px;
+    background: rgba(204, 0, 0, 0.08);
+    border-radius: 6px;
+  }
+
+  &__cell-incoming {
+    color: #16a34a;
+  }
+
+  &__cell-outgoing {
+    color: #dc2626;
+  }
+}
+
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.accounts-list-item {
+  --card-shadow: 0 4px 12px rgba(24, 9, 50, 0.04);
+
+  &__content {
+    padding-top: 24px;
+  }
+
+  &__main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 4px 0;
+  }
+
+  &__number {
+    font-weight: 500;
+    font-size: 1.125rem;
+    margin: 0 0 4px;
+    padding: 6px 0;
+  }
+
+  &__balance-muted {
+    font-size: 0.875rem;
+    color: var(--color-muted, #8b86a6);
+    margin: 0;
+    padding: 4px 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+}

@@ -34,7 +34,6 @@ yarn-error.log
 testem.log
 /typings
 
-# System Files
 .DS_Store
 Thumbs.db
 
@@ -42,4 +41,11 @@ Thumbs.db
 .nx/workspace-data
 
 .angular
+
+# Editor / tooling
+error.log
+
+# secrets
+shared/api/secrets.ts
+shared/api/api-base-url.secret.ts
 /bank-hits.iml
