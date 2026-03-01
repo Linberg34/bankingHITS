@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { AuthRoleService } from '../../../../shared/auth';
 import { HeaderComponent } from '../../../../shared/ui/header';
+import { EmployeePanelPageService } from './model';
 
 @Component({
   selector: 'employee-panel-page',
@@ -13,11 +13,13 @@ import { HeaderComponent } from '../../../../shared/ui/header';
 export class EmployeePanelPageComponent {
   constructor(
     private readonly router: Router,
-    private readonly authRoleService: AuthRoleService
+    private readonly employeePanelPageService: EmployeePanelPageService
   ) {}
 
   logout(): void {
-    this.authRoleService.clearRole();
-    void this.router.navigateByUrl('/registration');
+    this.employeePanelPageService.logout().subscribe({
+      next: () => void this.router.navigateByUrl('/registration'),
+      error: () => void this.router.navigateByUrl('/registration'),
+    });
   }
 }

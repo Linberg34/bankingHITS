@@ -1,11 +1,7 @@
 ﻿import { Component } from '@angular/core';
+import { finalize } from 'rxjs';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import {
-  ACCOUNT_OPERATIONS_BY_NUMBER,
-  ACCOUNT_RECORDS,
-  type AccountOperation,
-  type AccountRecord,
-} from '../../../data-domain/accounts/model/accounts.model';
+import { AccountOperationRecord, AccountPageRecord, AccountsPageService } from './model';
 
 @Component({
   selector: 'employee-accounts-page',
@@ -16,23 +12,56 @@ import {
 })
 export class AccountsPageComponent {
   historyModalOpen = false;
-  accountRecords = ACCOUNT_RECORDS;
-  selectedAccount: AccountRecord | null = null;
+  isLoading = false;
+  isHistoryLoading = false;
+  errorText = '';
+  accountRecords: AccountPageRecord[] = [];
+  selectedAccount: AccountPageRecord | null = null;
+  selectedAccountOperations: AccountOperationRecord[] = [];
 
-  get selectedAccountOperations(): AccountOperation[] {
-    if (!this.selectedAccount) {
-      return [];
-    }
-    return ACCOUNT_OPERATIONS_BY_NUMBER[this.selectedAccount.accountNumber] ?? [];
+  constructor(private readonly accountsPageService: AccountsPageService) {
+    this.loadAccounts();
   }
 
-  openHistory(record: AccountRecord): void {
+  openHistory(record: AccountPageRecord): void {
     this.selectedAccount = record;
+    this.selectedAccountOperations = [];
     this.historyModalOpen = true;
+    this.isHistoryLoading = true;
+
+    this.accountsPageService
+      .loadOperations(record.accountNumber)
+      .pipe(finalize(() => (this.isHistoryLoading = false)))
+      .subscribe({
+        next: (operations) => {
+          this.selectedAccountOperations = operations;
+        },
+        error: () => {
+          this.errorText = 'Не удалось загрузить историю операций.';
+        },
+      });
   }
 
   closeHistory(): void {
     this.historyModalOpen = false;
     this.selectedAccount = null;
+    this.selectedAccountOperations = [];
+  }
+
+  private loadAccounts(): void {
+    this.isLoading = true;
+    this.errorText = '';
+
+    this.accountsPageService
+      .loadAccounts()
+      .pipe(finalize(() => (this.isLoading = false)))
+      .subscribe({
+        next: (records) => {
+          this.accountRecords = records;
+        },
+        error: () => {
+          this.errorText = 'Не удалось загрузить список счетов.';
+        },
+      });
   }
 }

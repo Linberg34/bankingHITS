@@ -1,4 +1,13 @@
-﻿.domain-page h1 {
+﻿.state-text {
+  color: #4f4668;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.state-text--error {
+  color: #c22424;
+}
+.domain-page h1 {
   color: #241f35;
   font-size: 46px;
   margin: 0 0 18px;
@@ -84,3 +93,4 @@ tbody tr:last-child td {
     padding: 12px 10px;
   }
 }
+
