@@ -47,7 +47,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                                 "/swagger-resources/**",
                                 "/webjars/**"
                         ).permitAll()
-                        .requestMatchers("/api/auth/register", "/api/auth/login", "/error").permitAll()
+                        .requestMatchers("/api/auth/register/**", "/api/auth/login", "/error").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/{userId}/ban").hasAuthority(Role.EMPLOYEE.toString())
                         .requestMatchers(HttpMethod.GET, "/api/{userId}/unban").hasAuthority(Role.EMPLOYEE.toString())
                         .requestMatchers(HttpMethod.GET, "/api/banned").hasAuthority(Role.EMPLOYEE.toString())
