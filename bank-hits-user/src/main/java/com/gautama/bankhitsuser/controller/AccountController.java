@@ -1,19 +1,14 @@
 package com.gautama.bankhitsuser.controller;
 
-import com.gautama.bankhitsuser.client.CoreClient;
+import com.gautama.bankhitsuser.client.AccountServiceClient;
 import com.gautama.bankhitsuser.config.JwtUtil;
 import com.gautama.bankhitsuser.dto.*;
-import com.gautama.bankhitsuser.enums.UserQueryType;
-import com.gautama.bankhitsuser.mapper.UserMapper;
 import com.gautama.bankhitsuser.model.User;
 import com.gautama.bankhitsuser.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
@@ -23,7 +18,7 @@ import java.util.List;
 @RequestMapping("/api/account")
 @RequiredArgsConstructor
 public class AccountController {
-    private final CoreClient coreClient;
+    private final AccountServiceClient accountServiceClient;
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
@@ -37,7 +32,7 @@ public class AccountController {
         String token = authHeader.substring(7);
         User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
 
-        List<AccountDTO> accounts = coreClient.getAccountsByUser(user.getId());
+        List<AccountDTO> accounts = accountServiceClient.getAccountsByUser(user.getId());
         return ResponseEntity.ok(accounts);
     }
 
@@ -48,7 +43,7 @@ public class AccountController {
     public ResponseEntity<AccountDTO> getAccountById(
             @PathVariable String accountNumber) {
 
-        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+        AccountDTO account = accountServiceClient.getAccountByNumber(accountNumber);
 
         return ResponseEntity.ok(account);
     }
@@ -60,7 +55,7 @@ public class AccountController {
     public ResponseEntity<List<AccountDTO>> getAccountsByUser(
             @PathVariable Long userId) {
 
-        List<AccountDTO> accounts = coreClient.getAccountsByUser(userId);
+        List<AccountDTO> accounts = accountServiceClient.getAccountsByUser(userId);
 
 
         return ResponseEntity.ok(accounts);
@@ -80,7 +75,7 @@ public class AccountController {
                 .status("ACTIVE")
                 .build();
 
-        AccountDTO createdAccount = coreClient.createAccount(accountDTO);
+        AccountDTO createdAccount = accountServiceClient.createAccount(accountDTO);
         return ResponseEntity.ok(createdAccount);
     }
 
@@ -97,8 +92,25 @@ public class AccountController {
         String token = authHeader.substring(7);
         User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
 
-        AccountDTO createdAccount = coreClient.createAccountCurrent(user.getId());
+        AccountDTO createdAccount = accountServiceClient.createAccountCurrent(user.getId());
         return ResponseEntity.ok(createdAccount);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<PageDTO<AccountDTO>> getAllAccounts(
+            @RequestParam(required = false) Long filterUserId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) BigDecimal minBalance,
+            @RequestParam(required = false) BigDecimal maxBalance,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "id,desc") String[] sort) {
+
+        PageDTO<AccountDTO> accounts = accountServiceClient.getAllAccounts(
+                filterUserId, status,
+                minBalance, maxBalance, page, size, sort);
+
+        return ResponseEntity.ok(accounts);
     }
 //
 //    /**
@@ -165,11 +177,11 @@ public class AccountController {
     /**
      * Закрыть счет (мягкое удаление)
      */
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{accountNumber}")
     public ResponseEntity<Void> closeAccount(
-            @PathVariable Long id) {
+            @PathVariable String accountNumber) {
 
-        coreClient.deleteAccount(id);
+        accountServiceClient.deleteAccount(accountNumber);
         return ResponseEntity.noContent().build();
     }
 //
@@ -200,7 +212,7 @@ public class AccountController {
     /**
      * Внести деньги на счет
      */
-    @PostMapping("/{accountId}/deposit")
+    @PostMapping("/{accountNumber}/deposit")
     public ResponseEntity<OperationResponse> deposit(
             @PathVariable String accountNumber,
             @RequestParam BigDecimal amount,
@@ -213,21 +225,21 @@ public class AccountController {
                 .operationType("DEPOSIT")
                 .build();
 
-        OperationResponse response = coreClient.deposit(request);
+        OperationResponse response = accountServiceClient.deposit(request);
         return ResponseEntity.ok(response);
     }
 
     /**
      * Снять деньги со счета
      */
-    @PostMapping("/{accountId}/withdraw")
+    @PostMapping("/{accountNumber}/withdraw")
     public ResponseEntity<OperationResponse> withdraw(
             @PathVariable String accountNumber,
             @RequestParam BigDecimal amount,
             @RequestParam(required = false) String description) {
 
         // Проверяем принадлежность счета
-        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+        AccountDTO account = accountServiceClient.getAccountByNumber(accountNumber);
 
         // Проверяем достаточно ли средств
         if (account.getBalance().compareTo(amount) < 0) {
@@ -245,7 +257,7 @@ public class AccountController {
                 .operationType("WITHDRAWAL")
                 .build();
 
-        OperationResponse response = coreClient.withdraw(request);
+        OperationResponse response = accountServiceClient.withdraw(request);
         return ResponseEntity.ok(response);
     }
 //
@@ -301,9 +313,9 @@ public class AccountController {
             @RequestParam(defaultValue = "20") int size) {
 
         // Проверяем принадлежность счета
-        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+        AccountDTO account = accountServiceClient.getAccountByNumber(accountNumber);
 
-        List<OperationDTO> operations = coreClient.getAccountOperationsPage(accountNumber, page, size);
+        List<OperationDTO> operations = accountServiceClient.getAccountOperationsPage(accountNumber, page, size);
         return ResponseEntity.ok(operations);
     }
 
@@ -314,7 +326,7 @@ public class AccountController {
     public ResponseEntity<List<OperationDTO>> getAccountOperations(
             @PathVariable String accountNumber) {
 
-        List<OperationDTO> operations = coreClient.getAccountOperations(accountNumber);
+        List<OperationDTO> operations = accountServiceClient.getAccountOperations(accountNumber);
         return ResponseEntity.ok(operations);
     }
 

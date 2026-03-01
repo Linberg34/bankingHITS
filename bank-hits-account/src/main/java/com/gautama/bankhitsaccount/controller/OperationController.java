@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/operations")
+@RequestMapping("/internal/operations")
 @RequiredArgsConstructor
 @Slf4j
 public class OperationController {
@@ -39,29 +39,29 @@ public class OperationController {
 //        return ResponseEntity.ok(operationService.transfer(request));
 //    }
 
-    @GetMapping("/account/{accountId}/page")
+    @GetMapping("/account/{accountNumber}/page")
     public ResponseEntity<List<OperationDTO>> getAccountOperationsPage(
-            @PathVariable Long accountId,
+            @PathVariable String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        log.info("REST request to get operations for account: {}", accountId);
-        return ResponseEntity.ok(operationService.getAccountOperations(accountId, page, size));
+        log.info("REST request to get operations for account: {}", accountNumber);
+        return ResponseEntity.ok(operationService.getAccountOperations(accountNumber, page, size));
     }
 
-    @GetMapping("/account/{accountId}")
+    @GetMapping("/account/{accountNumber}")
     public ResponseEntity<List<OperationDTO>> getAccountOperations(
-            @PathVariable Long accountId) {
-        log.info("REST request to get operations for account: {}", accountId);
-        return ResponseEntity.ok(operationService.getAccountOperations(accountId));
+            @PathVariable String accountNumber) {
+        log.info("REST request to get operations for account: {}", accountNumber);
+        return ResponseEntity.ok(operationService.getAccountOperations(accountNumber));
     }
 
-    @GetMapping("/account/{accountId}/range")
+    @GetMapping("/account/{accountNumber}/range")
     public ResponseEntity<List<OperationDTO>> getAccountOperationsByDateRange(
-            @PathVariable Long accountId,
+            @PathVariable String accountNumber,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime start,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime end) {
-        log.info("REST request to get operations for account {} between {} and {}", accountId, start, end);
-        return ResponseEntity.ok(operationService.getAccountOperationsByDateRange(accountId, start, end));
+        log.info("REST request to get operations for account {} between {} and {}", accountNumber, start, end);
+        return ResponseEntity.ok(operationService.getAccountOperationsByDateRange(accountNumber, start, end));
     }
 
     @GetMapping("/{id}")

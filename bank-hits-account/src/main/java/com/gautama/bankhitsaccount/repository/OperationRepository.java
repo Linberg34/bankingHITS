@@ -15,10 +15,10 @@ import java.util.List;
 @Repository
 public interface OperationRepository extends JpaRepository<Operation, Long> {
 
-    List<Operation> findByAccountId(Long accountId);
+    List<Operation> findByAccountNumber(String accountNumber);
 
-    Page<Operation> findByAccountIdOrderByCreatedAtDesc(Long accountId, Pageable pageable);
+    Page<Operation> findByAccountNumberOrderByCreatedAtDesc(String accountNumber, Pageable pageable);
 
-    List<Operation> findByAccountIdAndCreatedAtBetween(Long accountId, LocalDateTime start, LocalDateTime end);
+    List<Operation> findByAccountNumberAndCreatedAtBetween(String accountNumber, LocalDateTime start, LocalDateTime end);
 
 }

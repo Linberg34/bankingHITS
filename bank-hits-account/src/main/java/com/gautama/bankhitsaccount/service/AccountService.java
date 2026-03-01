@@ -1,11 +1,13 @@
 package com.gautama.bankhitsaccount.service;
 
 import com.gautama.bankhitsaccount.dto.AccountDTO;
+import com.gautama.bankhitsaccount.dto.AccountListRequest;
 import com.gautama.bankhitsaccount.mapper.AccountMapper;
 import com.gautama.bankhitsaccount.model.Account;
 import com.gautama.bankhitsaccount.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -128,11 +130,11 @@ public class AccountService {
     }
 
     @Transactional
-    public void deleteAccount(Long id) {
-        log.info("Deleting account with id: {}", id);
+    public void deleteAccount(String accountNumber) {
+        log.info("Deleting account with accountNumber: {}", accountNumber);
 
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
+        Account account = accountRepository.findByAccountNumber(accountNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with accountNumber: " + accountNumber));
 
         // Мягкое удаление - меняем статус
         account.setStatus("CLOSED");
@@ -153,4 +155,19 @@ public class AccountService {
 
         return sb.toString();
     }
+
+    public Page<AccountDTO> getAllAccounts(AccountListRequest request) {
+        log.info("Fetching all accounts with filters: {}", request);
+
+        Page<Account> accounts = accountRepository.findWithFilters(
+                request.getUserId(),
+                request.getStatus(),
+                request.getMinBalance(),
+                request.getMaxBalance(),
+                request.getPageable()
+        );
+
+        return accounts.map(accountMapper::toDTO);
+    }
+
 }

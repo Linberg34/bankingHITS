@@ -49,7 +49,7 @@ public class OperationService {
         }
 
         // Создаем операцию
-        Operation operation = operationMapper.toEntity(request, account);
+        Operation operation = operationMapper.toEntity(request, account.getAccountNumber());
         operation.setOperationType("DEPOSIT");
         operation.setBalanceBefore(account.getBalance());
         operation.setBalanceAfter(account.getBalance().add(request.getAmount()));
@@ -95,7 +95,7 @@ public class OperationService {
         }
 
         // Создаем операцию
-        Operation operation = operationMapper.toEntity(request, account);
+        Operation operation = operationMapper.toEntity(request, account.getAccountNumber());
         operation.setOperationType("WITHDRAWAL");
         operation.setBalanceBefore(account.getBalance());
         operation.setBalanceAfter(account.getBalance().subtract(request.getAmount()));
@@ -200,22 +200,22 @@ public class OperationService {
 //                .build();
 //    }
 
-    public List<OperationDTO> getAccountOperations(Long accountId, int page, int size) {
-        log.info("Fetching operations for account: {}", accountId);
+    public List<OperationDTO> getAccountOperations(String accountNumber, int page, int size) {
+        log.info("Fetching operations for account: {}", accountNumber);
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        Page<Operation> operations = operationRepository.findByAccountIdOrderByCreatedAtDesc(accountId, pageable);
+        Page<Operation> operations = operationRepository.findByAccountNumberOrderByCreatedAtDesc(accountNumber, pageable);
         return operationMapper.toDTOList(operations.getContent());
     }
-    public List<OperationDTO> getAccountOperations(Long accountId) {
-        log.info("Fetching operations for account: {}", accountId);
-        List<Operation> operations = operationRepository.findByAccountId(accountId);
+    public List<OperationDTO> getAccountOperations(String accountNumber) {
+        log.info("Fetching operations for account: {}", accountNumber);
+        List<Operation> operations = operationRepository.findByAccountNumber(accountNumber);
         return operationMapper.toDTOList(operations);
     }
 
     public List<OperationDTO> getAccountOperationsByDateRange(
-            Long accountId, LocalDateTime start, LocalDateTime end) {
-        log.info("Fetching operations for account {} between {} and {}", accountId, start, end);
-        List<Operation> operations = operationRepository.findByAccountIdAndCreatedAtBetween(accountId, start, end);
+            String accountNumber, LocalDateTime start, LocalDateTime end) {
+        log.info("Fetching operations for account {} between {} and {}", accountNumber, start, end);
+        List<Operation> operations = operationRepository.findByAccountNumberAndCreatedAtBetween(accountNumber, start, end);
         return operationMapper.toDTOList(operations);
     }
 

@@ -1,13 +1,21 @@
 package com.gautama.bankhitsaccount.controller;
 
 import com.gautama.bankhitsaccount.dto.AccountDTO;
+import com.gautama.bankhitsaccount.dto.AccountListRequest;
+import com.gautama.bankhitsaccount.dto.PageDTO;
 import com.gautama.bankhitsaccount.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -57,11 +65,33 @@ public class AccountController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{accountNumber}")
     public ResponseEntity<Void> deleteAccount(
-            @PathVariable Long id) {
-        log.info("Internal API - Del account: {}, amount: {}", id);
-        accountService.deleteAccount(id);
+            @PathVariable String accountNumber) {
+        log.info("Internal API - Del account: {}, amount: {}", accountNumber);
+        accountService.deleteAccount(accountNumber);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<PageDTO<AccountDTO>> getAllAccounts(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) BigDecimal minBalance,
+            @RequestParam(required = false) BigDecimal maxBalance,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+
+        log.info("Internal API - Getting all accounts with filters");
+
+        AccountListRequest request = AccountListRequest.builder()
+                .userId(userId)
+                .status(status)
+                .minBalance(minBalance)
+                .maxBalance(maxBalance)
+                .pageable(pageable)
+                .build();
+
+        Page<AccountDTO> page = accountService.getAllAccounts(request);
+        return ResponseEntity.ok(PageDTO.fromPage(page));
     }
 }

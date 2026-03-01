@@ -1,9 +1,6 @@
 package com.gautama.bankhitsuser.client;
 
-import com.gautama.bankhitsuser.dto.AccountDTO;
-import com.gautama.bankhitsuser.dto.CreateOperationRequest;
-import com.gautama.bankhitsuser.dto.OperationDTO;
-import com.gautama.bankhitsuser.dto.OperationResponse;
+import com.gautama.bankhitsuser.dto.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -12,7 +9,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @FeignClient(name = "account", url = "${clients.account.url}")
-public interface CoreClient {
+public interface AccountServiceClient {
     @GetMapping("/internal/accounts/by-user/{userId}")
     List<AccountDTO> getAccountsByUser(@PathVariable Long userId);
 
@@ -31,8 +28,8 @@ public interface CoreClient {
     @PatchMapping("/internal/accounts/{id}/balance")
     ResponseEntity<Void> updateBalance(@PathVariable("id") Long id, @RequestParam("amount") BigDecimal amount);
 
-    @DeleteMapping("/internal/accounts/{id}")
-    ResponseEntity<Void> deleteAccount(@PathVariable("id") Long id);
+    @DeleteMapping("/internal/accounts/{accountNumber}")
+    ResponseEntity<Void> deleteAccount(@PathVariable("accountNumber") String accountNumber);
 //
 //    @PutMapping("/internal/accounts/{id}/block")
 //    AccountDTO blockAccount(@PathVariable("id") Long id);
@@ -59,17 +56,17 @@ public interface CoreClient {
 
     @GetMapping("/internal/operations/account/{accountNumber}/page")
     List<OperationDTO> getAccountOperationsPage(
-            @PathVariable("accountId") String accountNumber,
+            @PathVariable("accountNumber") String accountNumber,
             @RequestParam("page") int page,
             @RequestParam("size") int size);
 
     @GetMapping("/internal/operations/account/{accountNumber}")
-    List<OperationDTO> getAccountOperations(
-            @PathVariable("accountId") String accountNumber);
+    List<OperationDTO> getAccountOperations(@PathVariable("accountNumber") String accountNumber);
+
 
     @GetMapping("/internal/internal/operations/account/{accountNumber}/range")
     List<OperationDTO> getAccountOperationsByDateRange(
-            @PathVariable("accountId") String accountNumber,
+            @PathVariable("accountNumber") String accountNumber,
             @RequestParam("start") String start,
             @RequestParam("end") String end);
 
@@ -81,4 +78,14 @@ public interface CoreClient {
             @PathVariable("userId") Long userId,
             @RequestParam("page") int page,
             @RequestParam("size") int size);
+
+    @GetMapping("/internal/accounts/list")
+    PageDTO<AccountDTO> getAllAccounts(
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) BigDecimal minBalance,
+            @RequestParam(required = false) BigDecimal maxBalance,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size,
+            @RequestParam(defaultValue = "id,desc") String[] sort);
 }

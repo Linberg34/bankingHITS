@@ -1,6 +1,6 @@
 package com.gautama.bankhitsuser;
 
-import com.gautama.bankhitsuser.client.CoreClient;
+import com.gautama.bankhitsuser.client.AccountServiceClient;
 import com.gautama.bankhitsuser.client.CreditServiceClient;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +11,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @SpringBootApplication
 @EntityScan(basePackages = "com.gautama.bankhitsuser.model")
 @EnableJpaRepositories(basePackages = "com.gautama.bankhitsuser.repository")
-@EnableFeignClients(clients = {CoreClient.class, CreditServiceClient.class})
+@EnableFeignClients(clients = {AccountServiceClient.class, CreditServiceClient.class})
 public class BankHitsUserApplication {
 
     public static void main(String[] args) {

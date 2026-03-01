@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/api/{userId}/ban").hasAuthority(Role.EMPLOYEE.toString())
                         .requestMatchers(HttpMethod.GET, "/api/{userId}/unban").hasAuthority(Role.EMPLOYEE.toString())
                         .requestMatchers(HttpMethod.GET, "/api/banned").hasAuthority(Role.EMPLOYEE.toString())
+                        .requestMatchers(HttpMethod.GET, "/api/account/list").hasAuthority(Role.EMPLOYEE.toString())
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

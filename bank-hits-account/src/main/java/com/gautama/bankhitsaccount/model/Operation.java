@@ -18,9 +18,7 @@ public class Operation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "account_id", nullable = false)
-    private Account account;
+    private String accountNumber;
 
     @Column(name = "operation_type", nullable = false, length = 20)
     private String operationType; // DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT
