@@ -87,7 +87,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-credit:5432/credit_db
       SPRING_DATASOURCE_USERNAME: credit_user
       SPRING_DATASOURCE_PASSWORD: credit_pass
-      CORE-SERVICE_URL: http://service-account:8080
+      CORE_SERVICE_URL: http://service-account:8080
+      SPRING_CLOUD_COMPATIBILITY-VERIFIER_ENABLED: "false"
     depends_on:
       db-credit:
         condition: service_healthy

@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.math.BigDecimal;
 
 
-@FeignClient(name = "core-service", url = "${core-service.url}")
+@FeignClient(name = "core-service", url = "${core.service.url}")
 public interface CoreServiceClient {
-    @PostMapping("/operations/withdraw")
+    @PostMapping("/internal/operations/withdraw")
     void withdraw(@RequestBody CreateOperationRequest request);
 
     default boolean tryWithdraw(String accountNumber, BigDecimal amount) {
