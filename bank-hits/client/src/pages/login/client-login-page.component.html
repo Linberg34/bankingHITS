@@ -14,30 +14,13 @@
     </div>
 
     <h1>Интернет-Банк</h1>
-    <p>Введите email</p>
+    <p>Введите имя пользователя</p>
 
     <div class="username-field">
-      <input
-        id="email-input"
-        class="username-input"
-        type="email"
-        placeholder="Введите email"
-        [(ngModel)]="email"
-        (keyup.enter)="register()"
-      />
-      <button
-        class="username-submit"
-        type="button"
-        aria-label="Continue"
-        (click)="register()"
-        [disabled]="isLoading"
-      >
+      <input id="username-input" class="username-input" type="text" placeholder="Введите username" />
+      <button class="username-submit" type="button" aria-label="Continue" (click)="register()">
         <span aria-hidden="true">→</span>
       </button>
     </div>
-
-    @if (errorText) {
-      <p class="login-error">{{ errorText }}</p>
-    }
   </div>
 </section>

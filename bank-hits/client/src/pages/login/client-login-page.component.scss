@@ -1,0 +1,129 @@
+.login-screen {
+  min-height: 100vh;
+  padding: 32px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--color-bg-start), var(--color-bg-end));
+}
+
+.login-screen::before {
+  content: '';
+  position: absolute;
+  inset: -30% 0 0 -10%;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.22), transparent 55%);
+  opacity: 0.7;
+}
+
+.login-screen::after {
+  content: '';
+  position: absolute;
+  inset: auto -15% -25% auto;
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.18), transparent 65%);
+  opacity: 0.6;
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 90vw);
+  background: var(--color-surface);
+  border-radius: var(--radius-xl);
+  padding: 28px 30px 30px;
+  box-shadow: var(--shadow-card);
+  text-align: center;
+}
+
+.login-icon {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #b070ff, #f06cff);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 30px rgba(150, 70, 230, 0.4);
+}
+
+.login-icon svg {
+  width: 28px;
+  height: 28px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: var(--color-text);
+  font-weight: 700;
+}
+
+p {
+  margin: 0 0 20px;
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+.username-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.username-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-input);
+  padding: 10px 12px;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
+.username-input::placeholder {
+  color: #aaa5c0;
+}
+
+.username-input:focus {
+  outline: 2px solid rgba(160, 110, 255, 0.35);
+  border-color: rgba(160, 110, 255, 0.6);
+}
+
+.username-submit {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  border: 0;
+  border-radius: 9px;
+  color: #ffffff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--color-primary-start), var(--color-primary-end));
+  box-shadow: 0 8px 18px rgba(163, 72, 255, 0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.username-submit:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 22px rgba(163, 72, 255, 0.4);
+}
+
+.username-submit:focus-visible {
+  outline: 2px solid rgba(160, 110, 255, 0.4);
+  outline-offset: 1px;
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 24px 22px 26px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+}

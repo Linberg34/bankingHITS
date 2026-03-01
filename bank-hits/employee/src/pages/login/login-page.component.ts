@@ -6,7 +6,7 @@ import { finalize } from 'rxjs';
 import { EmployeeLoginPageService } from './model';
 
 @Component({
-  selector: 'employee-login-page',
+  selector: 'app-login-page',
   standalone: true,
   imports: [FormsModule],
   templateUrl: './login-page.component.html',
@@ -21,7 +21,7 @@ export class LoginPageComponent {
     private readonly router: Router,
     private readonly employeeLoginPageService: EmployeeLoginPageService
   ) {}
-
+  
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
     if (!normalizedEmail || this.isLoading) {
