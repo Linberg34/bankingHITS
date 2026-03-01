@@ -117,8 +117,7 @@ export class ClientDataService {
   }
 
   deleteAccount(accountId: string): Observable<void> {
-    const id = accountId as unknown as number;
-    return this.accountsApi.deleteAccount(id).pipe(
+    return this.accountsApi.deleteAccount(accountId).pipe(
       switchMap(() => this.loadAccounts()),
       map(() => undefined as void)
     );

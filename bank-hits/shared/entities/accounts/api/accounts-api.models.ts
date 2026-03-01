@@ -15,6 +15,27 @@ export interface AccountDto {
   status: string;
 }
 
+export interface AccountListQuery {
+  filterUserId?: UserId;
+  status?: string;
+  minBalance?: number;
+  maxBalance?: number;
+  page?: number;
+  size?: number;
+  sort?: string[];
+}
+
+export interface AccountListResponse {
+  content: AccountDto[];
+  pageNumber: number;
+  pageSize: number;
+  totalElements: number;
+  totalPages: number;
+  last: boolean;
+  first: boolean;
+  empty: boolean;
+}
+
 export interface AccountOperationDto {
   id: AccountId;
   accountId: AccountId;

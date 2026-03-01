@@ -22,11 +22,27 @@ h1 {
   padding: 0 16px;
 }
 
+.state-text {
+  color: #4f4668;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.state-text--error {
+  color: #c22424;
+}
+
 .cards-grid {
   display: grid;
   gap: 14px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   max-width: 980px;
+}
+
+.empty-text {
+  color: #575066;
+  font-size: 16px;
+  margin: 0;
 }
 
 .tariff-card {

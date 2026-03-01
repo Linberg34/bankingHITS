@@ -14,7 +14,7 @@ import { EmployeeLoginPageService } from './model';
 })
 export class LoginPageComponent {
   email = '';
-  isLoading = false;
+  isSubmitting = false;
   errorText = '';
 
   constructor(
@@ -24,16 +24,16 @@ export class LoginPageComponent {
   
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
-    if (!normalizedEmail || this.isLoading) {
+    if (!normalizedEmail || this.isSubmitting) {
       return;
     }
 
     this.errorText = '';
-    this.isLoading = true;
+    this.isSubmitting = true;
 
     this.employeeLoginPageService
       .login(normalizedEmail)
-      .pipe(finalize(() => (this.isLoading = false)))
+      .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
         next: () => {
           void this.router.navigate(['/panel/accounts']);
