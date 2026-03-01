@@ -14,11 +14,19 @@
     </div>
 
     <h1>Интернет-Банк</h1>
-    <p>Введите имя пользователя</p>
+    <p>Введите email для входа</p>
 
-    <div class="username-field">
-      <input id="username-input" class="username-input" type="text" placeholder="Введите username" />
-      <button class="username-submit" type="button" aria-label="Continue" (click)="register()">
+    <div class="login-field">
+      <input
+        id="email-input"
+        class="login-input"
+        type="email"
+        placeholder="example@mail.ru"
+        autocomplete="email"
+        [ngModel]="email()"
+        (ngModelChange)="email.set($event)"
+      />
+      <button class="login-submit" type="button" aria-label="Войти" (click)="submit()">
         <span aria-hidden="true">→</span>
       </button>
     </div>

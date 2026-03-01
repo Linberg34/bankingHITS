@@ -6,7 +6,7 @@
         @for (item of navItems; track item.path) {
           <a
             class="client-shell__nav-link"
-            [routerLink]="['/', item.path]"
+            [routerLink]="['/panel', item.path]"
             routerLinkActive="client-shell__nav-link--active"
             [routerLinkActiveOptions]="{ exact: item.path === 'dashboard' }"
           >
