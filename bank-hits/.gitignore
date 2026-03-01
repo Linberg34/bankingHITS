@@ -44,5 +44,5 @@ Thumbs.db
 
 error.log
 
-#secrets
-shared/api/secret.ts
+# secrets
+shared/api/secrets.ts
