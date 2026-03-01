@@ -4,8 +4,12 @@
     <button type="button" class="action" (click)="openAddTariffModal()">Добавить тариф</button>
   </header>
 
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
+
   <section class="cards-grid">
-    @for (tariff of tariffs; track tariff.name + tariff.createdAt) {
+    @for (tariff of tariffs(); track tariff.id) {
       <article class="tariff-card">
         <div class="card-top">
           <h2>{{ tariff.name }}</h2>
@@ -18,9 +22,13 @@
         </div>
       </article>
     }
+
+    @if (!tariffs().length) {
+      <p class="empty-text">Тарифы пока не созданы.</p>
+    }
   </section>
 
-  <shared-basic-modal [open]="addTariffModalOpen" [title]="'Добавить кредитный тариф'" (closed)="closeAddTariffModal()">
+  <shared-basic-modal [open]="addTariffModalOpen()" [title]="'Добавить кредитный тариф'" (closed)="closeAddTariffModal()">
     <form class="modal-form" (ngSubmit)="addTariff()">
       <label>
         Название тарифа
@@ -55,7 +63,7 @@
         <p class="field-error">{{ rateError }}</p>
       }
 
-      <button type="submit" class="submit-btn">Сохранить тариф</button>
+      <button type="submit" class="submit-btn" [disabled]="actionInProgress()">Сохранить тариф</button>
     </form>
   </shared-basic-modal>
 </section>

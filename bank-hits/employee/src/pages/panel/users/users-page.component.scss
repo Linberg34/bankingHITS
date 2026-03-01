@@ -77,9 +77,16 @@ th {
 td button {
   background: none;
   border: 0;
-  color: #d63152;
   cursor: pointer;
   font-size: 17px;
+}
+
+td button.block-action {
+  color: #d63152;
+}
+
+td button.unblock-action {
+  color: #2f5cff;
 }
 
 td button[disabled] {

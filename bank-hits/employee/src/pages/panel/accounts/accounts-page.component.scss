@@ -13,6 +13,29 @@
   margin: 0 0 18px;
 }
 
+.filters {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, minmax(180px, 220px));
+  margin: 0 0 14px;
+}
+
+.filters label {
+  color: #3b3550;
+  display: grid;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 6px;
+}
+
+.filters select {
+  border: 1px solid #d9d2eb;
+  border-radius: 8px;
+  font-size: 14px;
+  min-height: 36px;
+  padding: 0 10px;
+}
+
 .table-card {
   background: #fff;
   border: 1px solid #e2ddee;
@@ -85,6 +108,10 @@ tbody tr:last-child td {
 @media (max-width: 900px) {
   .domain-page h1 {
     font-size: 34px;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
   }
 
   th,

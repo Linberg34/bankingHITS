@@ -1,6 +1,6 @@
 import { HttpInterceptorFn } from '@angular/common/http';
 
-const PROTECTED_API_PATHS = ['/api/users', '/api/account'];
+const PROTECTED_API_PATHS = ['/api/users', '/api/account', '/api/tariffs', '/api/credits'];
 const AUTH_TOKEN_STORAGE_KEY = 'auth_token';
 
 export const usersAuthTokenInterceptor: HttpInterceptorFn = (request, next) => {
