@@ -28,7 +28,13 @@
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
             <td>
-              <button type="button" (click)="openBlockUser(user, 'Клиент')" [disabled]="actionInProgress()">
+              <button
+                type="button"
+                (click)="openBlockUser(user, 'Клиент')"
+                [disabled]="actionInProgress()"
+                [class.block-action]="!isBlocked(user)"
+                [class.unblock-action]="isBlocked(user)"
+              >
                 {{ isBlocked(user) ? 'Разблокировать' : 'Заблокировать' }}
               </button>
             </td>
@@ -58,7 +64,13 @@
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
             <td>
-              <button type="button" (click)="openBlockUser(user, 'Сотрудник')" [disabled]="actionInProgress()">
+              <button
+                type="button"
+                (click)="openBlockUser(user, 'Сотрудник')"
+                [disabled]="actionInProgress()"
+                [class.block-action]="!isBlocked(user)"
+                [class.unblock-action]="isBlocked(user)"
+              >
                 {{ isBlocked(user) ? 'Разблокировать' : 'Заблокировать' }}
               </button>
             </td>

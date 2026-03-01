@@ -1,7 +1,9 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { CREDIT_RECORDS, CREDIT_TABLE_COLUMNS, type CreditRecord } from '../../../data-domain/credits/model/credits.model';
+import { CreditRecord, CreditsPageService } from './model';
+
+const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Дата выдачи'];
 
 @Component({
   selector: 'employee-credits-page',
@@ -12,28 +14,25 @@ import { CREDIT_RECORDS, CREDIT_TABLE_COLUMNS, type CreditRecord } from '../../.
 })
 export class CreditsPageComponent {
   columns = CREDIT_TABLE_COLUMNS;
-  credits = [...CREDIT_RECORDS];
-  readonly allCredits = [...CREDIT_RECORDS];
-  readonly clientOptions = ['all', ...new Set(CREDIT_RECORDS.map((credit) => credit.clientName))];
+  credits = signal<CreditRecord[]>([]);
+  readonly allCredits = signal<CreditRecord[]>([]);
+  clientOptions = signal<string[]>(['all']);
   selectedClient = 'all';
-  sortDirection: 'asc' | 'desc' = 'asc';
   detailsModalOpen = false;
   selectedCredit: CreditRecord | null = null;
+  errorText = signal('');
 
-  constructor() {
-    this.applyFilters();
+  constructor(private readonly creditsPageService: CreditsPageService) {
+    this.loadCredits();
   }
 
   applyFilters(): void {
-    let nextCredits = [...this.allCredits];
+    let nextCredits = [...this.allCredits()];
     if (this.selectedClient !== 'all') {
       nextCredits = nextCredits.filter((credit) => credit.clientName === this.selectedClient);
     }
 
-    const sortMultiplier = this.sortDirection === 'asc' ? 1 : -1;
-    nextCredits.sort((a, b) => a.clientName.localeCompare(b.clientName) * sortMultiplier);
-
-    this.credits = nextCredits;
+    this.credits.set(nextCredits);
   }
 
   openDetails(credit: CreditRecord): void {
@@ -53,11 +52,29 @@ export class CreditsPageComponent {
 
   isPaidStatus(status: string): boolean {
     const normalized = status.toLowerCase();
-    return normalized.includes('погаш') || normalized === 'paid';
+    return normalized.includes('погаш') || normalized === 'paid' || normalized === 'closed';
   }
 
   isOverdueStatus(status: string): boolean {
     const normalized = status.toLowerCase();
     return normalized.includes('проср') || normalized === 'overdue';
+  }
+
+  private loadCredits(): void {
+    this.errorText.set('');
+
+    this.creditsPageService.loadCredits().subscribe({
+      next: (records) => {
+        this.allCredits.set(records);
+        this.clientOptions.set(['all', ...new Set(records.map((credit) => credit.clientName))]);
+        if (!this.clientOptions().includes(this.selectedClient)) {
+          this.selectedClient = 'all';
+        }
+        this.applyFilters();
+      },
+      error: () => {
+        this.errorText.set('Не удалось загрузить кредиты.');
+      },
+    });
   }
 }

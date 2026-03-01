@@ -1,12 +1,43 @@
 ﻿<section class="domain-page">
   <h1>Все счета клиентов</h1>
 
-  @if (isLoading) {
-    <p class="state-text">Загрузка счетов...</p>
-  }
+  <div class="filters">
+    <label>
+      Клиент
+      <select [ngModel]="selectedClient()" (ngModelChange)="selectedClient.set($event)">
+        <option value="all">Все</option>
+        @for (client of clientOptions(); track client) {
+          @if (client !== 'all') {
+            <option [value]="client">{{ client }}</option>
+          }
+        }
+      </select>
+    </label>
 
-  @if (errorText) {
-    <p class="state-text state-text--error">{{ errorText }}</p>
+    <label>
+      Статус
+      <select [ngModel]="selectedStatus()" (ngModelChange)="selectedStatus.set($event)">
+        <option value="all">Все</option>
+        @for (status of statusOptions(); track status) {
+          @if (status !== 'all') {
+            <option [value]="status">{{ status }}</option>
+          }
+        }
+      </select>
+    </label>
+
+    <label>
+      Баланс
+      <select [ngModel]="balanceSort()" (ngModelChange)="balanceSort.set($event)">
+        <option value="none">Без сортировки</option>
+        <option value="asc">По возрастанию</option>
+        <option value="desc">По убыванию</option>
+      </select>
+    </label>
+  </div>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
   }
 
   <article class="table-card">
@@ -21,7 +52,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (record of accountRecords; track record.accountNumber) {
+        @for (record of filteredAccountRecords(); track record.accountNumber) {
           <tr>
             <td>{{ record.client }}</td>
             <td>{{ record.accountNumber }}</td>
@@ -31,7 +62,7 @@
           </tr>
         }
 
-        @if (!accountRecords.length && !isLoading) {
+        @if (!filteredAccountRecords().length) {
           <tr>
             <td colspan="5">Счета не найдены</td>
           </tr>
@@ -40,10 +71,10 @@
     </table>
   </article>
 
-  <shared-basic-modal [open]="historyModalOpen" [title]="'История счета'" (closed)="closeHistory()">
-    @if (selectedAccount) {
+  <shared-basic-modal [open]="historyModalOpen()" [title]="'История счета'" (closed)="closeHistory()">
+    @if (selectedAccount(); as account) {
       <div class="history-modal">
-        <p class="history-account">Счет: {{ selectedAccount.accountNumber }}</p>
+        <p class="history-account">Счет: {{ account.accountNumber }}</p>
         <table class="history-table">
           <thead>
             <tr>
@@ -54,13 +85,13 @@
             </tr>
           </thead>
           <tbody>
-            @if (isHistoryLoading) {
+            @if (isHistoryLoading()) {
               <tr>
                 <td colspan="4">Загрузка истории...</td>
               </tr>
             }
 
-            @for (operation of selectedAccountOperations; track operation.id) {
+            @for (operation of selectedAccountOperations(); track operation.id) {
               <tr>
                 <td>{{ operation.date }}</td>
                 <td>{{ operation.type }}</td>
@@ -69,7 +100,7 @@
               </tr>
             }
 
-            @if (!selectedAccountOperations.length && !isHistoryLoading) {
+            @if (!selectedAccountOperations().length && !isHistoryLoading()) {
               <tr>
                 <td colspan="4">Операции отсутствуют</td>
               </tr>

@@ -27,6 +27,16 @@ h1 {
   margin: 0;
 }
 
+.state-text {
+  color: #4f4668;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.state-text--error {
+  color: #c22424;
+}
+
 select {
   background: #fff;
   border: 1px solid #ddd8eb;

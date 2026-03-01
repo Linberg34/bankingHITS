@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { forkJoin, map, Observable, of, switchMap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { AccountsApiService, AccountOperationDto, type AccountDto } from 'shared/entities/accounts';
 import { UsersApiService, type UserDto } from 'shared/entities/users';
 
@@ -7,6 +7,7 @@ export interface AccountPageRecord {
   client: string;
   accountNumber: string;
   balance: string;
+  balanceValue: number;
   status: string;
 }
 
@@ -28,19 +29,17 @@ export class AccountsPageService {
   ) {}
 
   loadAccounts(): Observable<AccountPageRecord[]> {
-    return this.usersApiService.getUsers('CLIENTS').pipe(
-      switchMap((clients) => {
-        if (!clients.length) {
-          return of([] as AccountPageRecord[]);
+    return forkJoin({
+      list: this.accountsApiService.getAccountsList({ page: 0, size: 200, sort: ['id', 'desc'] }),
+      users: this.usersApiService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
+    }).pipe(
+      map(({ list, users }) => {
+        const usersById = new Map<string, UserDto>();
+        for (const user of users) {
+          usersById.set(String(user.id), user);
         }
 
-        return forkJoin(
-          clients.map((client) =>
-            this.accountsApiService
-              .getAccountsByUserId(client.id)
-              .pipe(map((accounts) => this.mapAccounts(client, accounts)))
-          )
-        ).pipe(map((groups) => groups.flat()));
+        return list.content.map((account) => this.mapAccount(account, usersById.get(String(account.clientId))));
       })
     );
   }
@@ -51,13 +50,14 @@ export class AccountsPageService {
       .pipe(map((operations) => operations.map((operation) => this.mapOperation(operation))));
   }
 
-  private mapAccounts(client: UserDto, accounts: AccountDto[]): AccountPageRecord[] {
-    return accounts.map((account) => ({
-      client: client.name,
+  private mapAccount(account: AccountDto, client?: UserDto): AccountPageRecord {
+    return {
+      client: client?.name ?? `ID ${account.clientId}`,
       accountNumber: account.accountNumber,
       balance: this.formatAmount(account.balance),
+      balanceValue: account.balance,
       status: this.mapStatus(account.status),
-    }));
+    };
   }
 
   private mapOperation(operation: AccountOperationDto): AccountOperationRecord {

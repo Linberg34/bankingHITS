@@ -6,23 +6,19 @@
         <span>Клиент</span>
         <select [(ngModel)]="selectedClient" (ngModelChange)="applyFilters()">
           <option value="all">Все клиенты</option>
-          @for (client of clientOptions; track client) {
+          @for (client of clientOptions(); track client) {
             @if (client !== 'all') {
               <option [value]="client">{{ client }}</option>
             }
           }
         </select>
       </label>
-
-      <label class="filter-item">
-        <span>Сортировка</span>
-        <select [(ngModel)]="sortDirection" (ngModelChange)="applyFilters()">
-          <option value="asc">Клиент (А-Я)</option>
-          <option value="desc">Клиент (Я-А)</option>
-        </select>
-      </label>
     </div>
   </header>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
 
   <article class="table-card">
     <table>
@@ -34,7 +30,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (credit of credits; track credit.id) {
+        @for (credit of credits(); track credit.id) {
           <tr class="credit-row" (click)="openDetails(credit)">
             <td>{{ credit.clientName }}</td>
             <td>{{ credit.account }}</td>
@@ -53,6 +49,11 @@
               </span>
             </td>
             <td>{{ credit.issuedAt }}</td>
+          </tr>
+        }
+        @if (!credits().length) {
+          <tr>
+            <td colspan="8">Кредиты не найдены</td>
           </tr>
         }
       </tbody>
@@ -93,18 +94,9 @@
             <strong>{{ selectedCredit.paidMonths }} мес.</strong>
           </article>
           <article>
-            <small>Следующий платеж</small>
-            <strong>{{ selectedCredit.nextPaymentAmount }}</strong>
+            <small>Дата закрытия</small>
+            <strong>{{ selectedCredit.closedAt }}</strong>
           </article>
-          <article>
-            <small>Дата платежа</small>
-            <strong>{{ selectedCredit.nextPaymentDate }}</strong>
-          </article>
-        </div>
-
-        <div class="purpose-box">
-          <small>Цель кредита</small>
-          <p>{{ selectedCredit.purpose }}</p>
         </div>
       </section>
     }

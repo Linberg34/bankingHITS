@@ -1,7 +1,9 @@
-﻿import { Component } from '@angular/core';
+﻿import { HttpErrorResponse } from '@angular/common/http';
+import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { finalize } from 'rxjs';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { TARIFF_RECORDS, type TariffRecord } from '../../../data-domain/tariffs/model/tariffs.model';
+import { TariffRecord, TariffsPageService } from './model';
 
 @Component({
   selector: 'employee-tariffs-page',
@@ -11,8 +13,10 @@ import { TARIFF_RECORDS, type TariffRecord } from '../../../data-domain/tariffs/
   styleUrl: './tariffs-page.component.scss',
 })
 export class TariffsPageComponent {
-  addTariffModalOpen = false;
-  tariffs = [...TARIFF_RECORDS];
+  addTariffModalOpen = signal(false);
+  actionInProgress = signal(false);
+  errorText = signal('');
+  tariffs = signal<TariffRecord[]>([]);
   isSubmitted = false;
   nameError = '';
   rateError = '';
@@ -22,13 +26,17 @@ export class TariffsPageComponent {
     rate: '',
   };
 
+  constructor(private readonly tariffsPageService: TariffsPageService) {
+    this.loadTariffs();
+  }
+
   openAddTariffModal(): void {
     this.resetValidation();
-    this.addTariffModalOpen = true;
+    this.addTariffModalOpen.set(true);
   }
 
   closeAddTariffModal(): void {
-    this.addTariffModalOpen = false;
+    this.addTariffModalOpen.set(false);
     this.resetForm();
     this.resetValidation();
   }
@@ -55,20 +63,42 @@ export class TariffsPageComponent {
 
   addTariff(): void {
     this.isSubmitted = true;
-    if (!this.validateForm()) {
+    if (!this.validateForm() || this.actionInProgress()) {
       return;
     }
 
     const trimmedName = this.newTariff.name.trim();
     const parsedRate = Number(this.newTariff.rate);
-    const tariff: TariffRecord = {
-      name: trimmedName,
-      rate: `${parsedRate}%`,
-      createdAt: this.formatDate(new Date()),
-    };
+    this.actionInProgress.set(true);
+    this.errorText.set('');
 
-    this.tariffs = [tariff, ...this.tariffs];
-    this.closeAddTariffModal();
+    this.tariffsPageService
+      .createTariff(trimmedName, parsedRate)
+      .pipe(finalize(() => this.actionInProgress.set(false)))
+      .subscribe({
+        next: (tariff) => {
+          this.tariffs.update((records) => [tariff, ...records]);
+          this.closeAddTariffModal();
+        },
+        error: (error: unknown) => {
+          this.errorText.set(this.resolveErrorText(error));
+        },
+      });
+  }
+
+  private loadTariffs(): void {
+    this.errorText.set('');
+
+    this.tariffsPageService
+      .loadTariffs()
+      .subscribe({
+        next: (tariffs) => {
+          this.tariffs.set(tariffs);
+        },
+        error: () => {
+          this.errorText.set('Не удалось загрузить тарифы.');
+        },
+      });
   }
 
   private validateForm(): boolean {
@@ -88,7 +118,7 @@ export class TariffsPageComponent {
       return;
     }
 
-    const isDuplicate = this.tariffs.some(
+    const isDuplicate = this.tariffs().some(
       (tariff) => tariff.name.toLowerCase() === name.toLowerCase()
     );
     if (isDuplicate) {
@@ -135,10 +165,16 @@ export class TariffsPageComponent {
     this.rateError = '';
   }
 
-  private formatDate(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
+  private resolveErrorText(error: unknown): string {
+    if (!(error instanceof HttpErrorResponse)) {
+      return 'Не удалось сохранить тариф. Попробуйте позже.';
+    }
+
+    const backendMessage =
+      typeof error.error === 'object' && error.error && 'message' in error.error
+        ? String(error.error.message)
+        : '';
+
+    return backendMessage || 'Не удалось сохранить тариф.';
   }
 }

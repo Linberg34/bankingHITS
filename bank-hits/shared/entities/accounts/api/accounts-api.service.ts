@@ -5,6 +5,8 @@ import { API_BASE_URL } from '../../../api';
 import {
   AccountDto,
   AccountId,
+  AccountListQuery,
+  AccountListResponse,
   AccountOperationDto,
   AccountOperationResultDto,
   CreateAccountRequest,
@@ -69,8 +71,32 @@ export class AccountsApiService {
     return this.httpClient.get<AccountDto[]>(`${this.normalizedBaseUrl}/api/account/my`);
   }
 
-  deleteAccount(id: AccountId): Observable<void> {
-    return this.httpClient.delete<void>(`${this.normalizedBaseUrl}/api/account/${id}`);
+  getAccountsList(query: AccountListQuery = {}): Observable<AccountListResponse> {
+    const {
+      filterUserId,
+      status,
+      minBalance,
+      maxBalance,
+      page = 0,
+      size = 20,
+      sort = ['id', 'desc'],
+    } = query;
+
+    return this.httpClient.get<AccountListResponse>(`${this.normalizedBaseUrl}/api/account/list`, {
+      params: {
+        ...(filterUserId !== undefined ? { filterUserId } : {}),
+        ...(status ? { status } : {}),
+        ...(minBalance !== undefined ? { minBalance } : {}),
+        ...(maxBalance !== undefined ? { maxBalance } : {}),
+        page,
+        size,
+        sort,
+      },
+    });
+  }
+
+  deleteAccount(accountNumber: string): Observable<void> {
+    return this.httpClient.delete<void>(`${this.normalizedBaseUrl}/api/account/${accountNumber}`);
   }
 
   private get normalizedBaseUrl(): string {
