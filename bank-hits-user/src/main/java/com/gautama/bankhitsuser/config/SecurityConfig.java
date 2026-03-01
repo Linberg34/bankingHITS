@@ -73,7 +73,10 @@ public class SecurityConfig extends WebSecurityConfiguration {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:8081",
                 "http://185.76.242.253:8081",
-                "*"));
+                "http://localhost:4201",
+                "http://localhost:4200",
+                "http://localhost:8080"
+        ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
