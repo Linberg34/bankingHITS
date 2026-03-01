@@ -67,13 +67,23 @@ p {
   font-size: 13px;
 }
 
-.username-field {
+.login-error {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: #dc2626;
+}
+
+.login-form {
+  margin: 0;
+}
+
+.login-field {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.username-input {
+.login-input {
   flex: 1;
   min-width: 0;
   border: 1px solid var(--color-border);
@@ -84,16 +94,16 @@ p {
   color: var(--color-text);
 }
 
-.username-input::placeholder {
+.login-input::placeholder {
   color: #aaa5c0;
 }
 
-.username-input:focus {
+.login-input:focus {
   outline: 2px solid rgba(160, 110, 255, 0.35);
   border-color: rgba(160, 110, 255, 0.6);
 }
 
-.username-submit {
+.login-submit {
   width: 40px;
   height: 40px;
   flex: 0 0 40px;
@@ -108,12 +118,12 @@ p {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.username-submit:hover {
+.login-submit:hover {
   transform: scale(1.02);
   box-shadow: 0 10px 22px rgba(163, 72, 255, 0.4);
 }
 
-.username-submit:focus-visible {
+.login-submit:focus-visible {
   outline: 2px solid rgba(160, 110, 255, 0.4);
   outline-offset: 1px;
 }

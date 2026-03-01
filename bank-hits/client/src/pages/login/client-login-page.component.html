@@ -14,13 +14,35 @@
     </div>
 
     <h1>Интернет-Банк</h1>
-    <p>Введите имя пользователя</p>
+    <p>Введите email для входа</p>
 
-    <div class="username-field">
-      <input id="username-input" class="username-input" type="text" placeholder="Введите username" />
-      <button class="username-submit" type="button" aria-label="Continue" (click)="register()">
-        <span aria-hidden="true">→</span>
-      </button>
-    </div>
+    @if (error()) {
+      <p class="login-error" role="alert">{{ error() }}</p>
+    }
+    <form #loginForm="ngForm" class="login-form" (ngSubmit)="submit(loginForm)">
+      <div class="login-field">
+        <input
+          id="email-input"
+          class="login-input"
+          type="email"
+          placeholder="example@mail.ru"
+          autocomplete="email"
+          required
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event); error.set('')"
+          [disabled]="loading()"
+          name="email"
+        />
+        <button
+          class="login-submit"
+          type="submit"
+          aria-label="Войти"
+          [disabled]="loading()"
+        >
+          <span aria-hidden="true">{{ loading() ? '…' : '→' }}</span>
+        </button>
+      </div>
+    </form>
   </div>
 </section>

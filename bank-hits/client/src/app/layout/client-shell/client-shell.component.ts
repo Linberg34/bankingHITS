@@ -1,6 +1,8 @@
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { HeaderComponent } from '../../../../../shared/ui/header';
+import { AuthApiService } from '../../core/services/auth-api.service';
+import { AuthRoleService } from '../../../../../shared/auth';
 
 @Component({
   selector: 'app-client-shell',
@@ -12,6 +14,8 @@ import { HeaderComponent } from '../../../../../shared/ui/header';
 export class ClientShellComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
+  private readonly authApi = inject(AuthApiService);
+  private readonly authRole = inject(AuthRoleService);
 
   protected pageTitle = (this.route.snapshot.data['title'] as string) ?? 'Клиент';
   protected headerTitle = 'Интернет-Банк - ' + this.pageTitle;
@@ -23,6 +27,15 @@ export class ClientShellComponent {
   ];
 
   protected onLogout(): void {
-    void this.router.navigate(['/login']);
+    this.authApi.logout().subscribe({
+      next: () => {
+        this.authRole.clearRole();
+        void this.router.navigate(['/registration']);
+      },
+      error: () => {
+        this.authRole.clearRole();
+        void this.router.navigate(['/registration']);
+      },
+    });
   }
 }
