@@ -24,7 +24,7 @@ services:
       SPRING_DATASOURCE_USERNAME: user_user
       SPRING_DATASOURCE_PASSWORD: user_pass
       CREDIT_SERVICE_URL: http://service-credit:8080
-      CLIENTS_CORE_URL: http://service-account:8080
+      CLIENTS_ACCOUNT_URL: http://service-account:8080
     depends_on:
       db-user:
         condition: service_healthy
@@ -58,7 +58,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-account:5432/account_db
       SPRING_DATASOURCE_USERNAME: account_user
       SPRING_DATASOURCE_PASSWORD: account_pass
-      CORE_SERVICE_URL: http://service-user:8080
     depends_on:
       db-account:
         condition: service_healthy
