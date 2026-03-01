@@ -11,13 +11,10 @@ import org.springframework.cloud.openfeign.FeignClient;
 import java.math.BigDecimal;
 import java.util.List;
 
-@FeignClient(name = "core", url = "${clients.core.url}")
+@FeignClient(name = "account", url = "${clients.account.url}")
 public interface CoreClient {
-    @GetMapping("/internal/accounts/my")
-    List<AccountDTO> myAccounts();
-
     @GetMapping("/internal/accounts/by-user/{userId}")
-    List<AccountDTO> accountsByUser(@PathVariable Long userId);
+    List<AccountDTO> getAccountsByUser(@PathVariable Long userId);
 
     @GetMapping("/internal/accounts/number/{accountNumber}")
     AccountDTO getAccountByNumber(@PathVariable("accountNumber") String accountNumber);
@@ -25,7 +22,10 @@ public interface CoreClient {
     @PostMapping("/internal/accounts")
     AccountDTO createAccount(@RequestBody AccountDTO accountDTO);
 
-    @PutMapping("/internal/accounts/{id}")
+    @PostMapping("/internal/accounts/current")
+    AccountDTO createAccountCurrent(@RequestBody Long userId);
+
+    @PutMapping("/internal/internal/accounts/{id}")
     AccountDTO updateAccount(@PathVariable("id") Long id, @RequestBody AccountDTO accountDTO);
 
     @PatchMapping("/internal/accounts/{id}/balance")
@@ -33,18 +33,18 @@ public interface CoreClient {
 
     @DeleteMapping("/internal/accounts/{id}")
     ResponseEntity<Void> deleteAccount(@PathVariable("id") Long id);
-
-    @PutMapping("/internal/accounts/{id}/block")
-    AccountDTO blockAccount(@PathVariable("id") Long id);
-
-    @PutMapping("/internal/accounts/{id}/activate")
-    AccountDTO activateAccount(@PathVariable("id") Long id);
-
-    @GetMapping("/internal/accounts/{id}/balance")
-    BigDecimal getAccountBalance(@PathVariable("id") Long id);
-
-    @GetMapping("/internal/accounts/user/{userId}/active")
-    List<AccountDTO> getActiveAccountsByUser(@PathVariable("userId") Long userId);
+//
+//    @PutMapping("/internal/accounts/{id}/block")
+//    AccountDTO blockAccount(@PathVariable("id") Long id);
+//
+//    @PutMapping("/internal/accounts/{id}/activate")
+//    AccountDTO activateAccount(@PathVariable("id") Long id);
+//
+//    @GetMapping("/internal/accounts/{id}/balance")
+//    BigDecimal getAccountBalance(@PathVariable("id") Long id);
+//
+//    @GetMapping("/internal/accounts/user/{userId}/active")
+//    List<AccountDTO> getActiveAccountsByUser(@PathVariable("userId") Long userId);
 
     // ============= Operation endpoints =============
 
@@ -57,22 +57,26 @@ public interface CoreClient {
 //    @PostMapping("/internal/operations/transfer")
 //    OperationResponse transfer(@RequestBody TransferRequest request);
 
-    @GetMapping("/internal/operations/account/{accountId}")
-    List<OperationDTO> getAccountOperations(
-            @PathVariable("accountId") Long accountId,
+    @GetMapping("/internal/operations/account/{accountNumber}/page")
+    List<OperationDTO> getAccountOperationsPage(
+            @PathVariable("accountId") String accountNumber,
             @RequestParam("page") int page,
             @RequestParam("size") int size);
 
-    @GetMapping("/internal/operations/account/{accountId}/range")
+    @GetMapping("/internal/operations/account/{accountNumber}")
+    List<OperationDTO> getAccountOperations(
+            @PathVariable("accountId") String accountNumber);
+
+    @GetMapping("/internal/internal/operations/account/{accountNumber}/range")
     List<OperationDTO> getAccountOperationsByDateRange(
-            @PathVariable("accountId") Long accountId,
+            @PathVariable("accountId") String accountNumber,
             @RequestParam("start") String start,
             @RequestParam("end") String end);
 
-    @GetMapping("/internal/operations/{id}")
+    @GetMapping("/internal/internal/operations/{id}")
     OperationDTO getOperationById(@PathVariable("id") Long id);
 
-    @GetMapping("/internal/operations/user/{userId}")
+    @GetMapping("/internal/internal/operations/user/{userId}")
     List<OperationDTO> getUserOperations(
             @PathVariable("userId") Long userId,
             @RequestParam("page") int page,

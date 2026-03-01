@@ -11,16 +11,9 @@ import java.util.Optional;
 @Repository
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
-    List<Account> findByUserId(Long userId);
+    List<Account> findByClientId(Long clientId);
 
     Optional<Account> findByAccountNumber(String accountNumber);
-
-    List<Account> findByUserIdAndStatus(Long userId, String status);
-
-    List<Account> findByStatus(String status);
-
-    @Query("SELECT a FROM Account a WHERE a.userId = :userId AND a.status = 'ACTIVE'")
-    List<Account> findActiveAccountsByUserId(@Param("userId") Long userId);
 
     boolean existsByAccountNumber(String accountNumber);
 }

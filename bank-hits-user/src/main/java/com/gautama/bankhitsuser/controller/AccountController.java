@@ -2,10 +2,7 @@ package com.gautama.bankhitsuser.controller;
 
 import com.gautama.bankhitsuser.client.CoreClient;
 import com.gautama.bankhitsuser.config.JwtUtil;
-import com.gautama.bankhitsuser.dto.AccountDTO;
-import com.gautama.bankhitsuser.dto.OperationDTO;
-import com.gautama.bankhitsuser.dto.UserDTO;
-import com.gautama.bankhitsuser.dto.UserFullDTO;
+import com.gautama.bankhitsuser.dto.*;
 import com.gautama.bankhitsuser.enums.UserQueryType;
 import com.gautama.bankhitsuser.mapper.UserMapper;
 import com.gautama.bankhitsuser.model.User;
@@ -30,11 +27,6 @@ public class AccountController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    @GetMapping("/api/accounts")
-    public List<AccountDTO> myAccounts() {
-        return coreClient.myAccounts();
-    }
-
     @GetMapping("/my")
     public ResponseEntity<List<AccountDTO>> getMyAccounts(HttpServletRequest request) {
 
@@ -45,70 +37,69 @@ public class AccountController {
         String token = authHeader.substring(7);
         User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
 
-        List<AccountDTO> accounts = coreClient.getActiveAccountsByUser(user.getId());
+        List<AccountDTO> accounts = coreClient.getAccountsByUser(user.getId());
         return ResponseEntity.ok(accounts);
     }
 
-//    /**
-//     * Получить счет по ID с проверкой принадлежности пользователю
-//     */
-//    @GetMapping("/{accountId}")
-//    public ResponseEntity<AccountDTO> getAccountById(
-//            @PathVariable Long accountId,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to get account {} for user {}", accountId, userId);
-//
-//        AccountDTO account = coreClient.getAccountById(accountId);
-//
-//        // Проверяем, что счет принадлежит пользователю
-//        if (!account.getUserId().equals(userId)) {
-//            log.warn("User {} attempted to access account {} belonging to user {}",
-//                    userId, accountId, account.getUserId());
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        return ResponseEntity.ok(account);
-//    }
-//
-//    /**
-//     * Получить счет по номеру
-//     */
-//    @GetMapping("/number/{accountNumber}")
-//    public ResponseEntity<AccountDTO> getAccountByNumber(
-//            @PathVariable String accountNumber,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to get account by number: {}", accountNumber);
-//
-//        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
-//
-//        // Проверяем, что счет принадлежит пользователю
-//        if (!account.getUserId().equals(userId)) {
-//            log.warn("User {} attempted to access account {} belonging to user {}",
-//                    userId, accountNumber, account.getUserId());
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        return ResponseEntity.ok(account);
-//    }
-//
-//    /**
-//     * Создать новый счет для текущего пользователя
-//     */
-//    @PostMapping
-//    public ResponseEntity<AccountDTO> createAccount(
-//            @RequestBody AccountDTO request) {
-//        log.info("REST request to create account for user: {}", request.getClientId());
-//
-//        AccountDTO accountDTO = AccountDTO.builder()
-//                .clientId(request.getClientId())
-//                .accountId(request.getAccountId())
-//                .balance(request.getBalance() != null ? request.getBalance() : BigDecimal.ZERO)
-//                .status("ACTIVE")
-//                .build();
-//
-//        AccountDTO createdAccount = coreClient.createAccount(accountDTO);
-//        return ResponseEntity.ok(createdAccount);
-//    }
+    /**
+     * Получить счет по ID с проверкой принадлежности пользователю
+     */
+    @GetMapping("/number/{accountNumber}")
+    public ResponseEntity<AccountDTO> getAccountById(
+            @PathVariable String accountNumber) {
+
+        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+
+        return ResponseEntity.ok(account);
+    }
+
+    /**
+     * Получить счет по юзеру
+     */
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<AccountDTO>> getAccountsByUser(
+            @PathVariable Long userId) {
+
+        List<AccountDTO> accounts = coreClient.getAccountsByUser(userId);
+
+
+        return ResponseEntity.ok(accounts);
+    }
+
+    /**
+     * Создать новый счет для текущего пользователя
+     */
+    @PostMapping
+    public ResponseEntity<AccountDTO> createAccount(
+            @RequestBody AccountDTO request) {
+
+        AccountDTO accountDTO = AccountDTO.builder()
+                .clientId(request.getClientId())
+                .accountNumber(request.getAccountNumber())
+                .balance(request.getBalance() != null ? request.getBalance() : BigDecimal.ZERO)
+                .status("ACTIVE")
+                .build();
+
+        AccountDTO createdAccount = coreClient.createAccount(accountDTO);
+        return ResponseEntity.ok(createdAccount);
+    }
+
+    /**
+     * Создать новый счет для текущего пользователя
+     */
+    @PostMapping("/current")
+    public ResponseEntity<AccountDTO> createAccountCurrent(HttpServletRequest request) {
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new BadCredentialsException("Неверный токен.");
+        }
+        String token = authHeader.substring(7);
+        User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
+
+        AccountDTO createdAccount = coreClient.createAccountCurrent(user.getId());
+        return ResponseEntity.ok(createdAccount);
+    }
 //
 //    /**
 //     * Обновить счет
@@ -171,29 +162,16 @@ public class AccountController {
 //        return ResponseEntity.ok(activatedAccount);
 //    }
 //
-//    /**
-//     * Закрыть счет (мягкое удаление)
-//     */
-//    @DeleteMapping("/{accountId}")
-//    public ResponseEntity<Void> closeAccount(
-//            @PathVariable Long accountId,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to close account: {}", accountId);
-//
-//        // Проверяем принадлежность счета
-//        AccountDTO existingAccount = coreClient.getAccountById(accountId);
-//        if (!existingAccount.getUserId().equals(userId)) {
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        // Проверяем нулевой баланс перед закрытием
-//        if (existingAccount.getBalance().compareTo(BigDecimal.ZERO) != 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        coreClient.deleteAccount(accountId);
-//        return ResponseEntity.noContent().build();
-//    }
+    /**
+     * Закрыть счет (мягкое удаление)
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> closeAccount(
+            @PathVariable Long id) {
+
+        coreClient.deleteAccount(id);
+        return ResponseEntity.noContent().build();
+    }
 //
 //    /**
 //     * Получить баланс счета
@@ -217,72 +195,59 @@ public class AccountController {
 //        return ResponseEntity.ok(accounts);
 //    }
 //
-//    // ============= Операции со счетами =============
-//
-//    /**
-//     * Внести деньги на счет
-//     */
-//    @PostMapping("/{accountId}/deposit")
-//    public ResponseEntity<OperationResponse> deposit(
-//            @PathVariable Long accountId,
-//            @RequestParam BigDecimal amount,
-//            @RequestParam(required = false) String description,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to deposit {} to account {} for user {}", amount, accountId, userId);
-//
-//        // Проверяем принадлежность счета
-//        AccountDTO account = coreClient.getAccountById(accountId);
-//        if (!account.getUserId().equals(userId)) {
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        CreateOperationRequest request = CreateOperationRequest.builder()
-//                .accountId(accountId)
-//                .amount(amount)
-//                .description(description != null ? description : "Deposit via user-service")
-//                .operationType("DEPOSIT")
-//                .build();
-//
-//        OperationResponse response = coreClient.deposit(request);
-//        return ResponseEntity.ok(response);
-//    }
-//
-//    /**
-//     * Снять деньги со счета
-//     */
-//    @PostMapping("/{accountId}/withdraw")
-//    public ResponseEntity<OperationResponse> withdraw(
-//            @PathVariable Long accountId,
-//            @RequestParam BigDecimal amount,
-//            @RequestParam(required = false) String description,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to withdraw {} from account {} for user {}", amount, accountId, userId);
-//
-//        // Проверяем принадлежность счета
-//        AccountDTO account = coreClient.getAccountById(accountId);
-//        if (!account.getUserId().equals(userId)) {
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        // Проверяем достаточно ли средств
-//        if (account.getBalance().compareTo(amount) < 0) {
-//            return ResponseEntity.badRequest().body(
-//                    OperationResponse.builder()
-//                            .message("Insufficient funds")
-//                            .build()
-//            );
-//        }
-//
-//        CreateOperationRequest request = CreateOperationRequest.builder()
-//                .accountId(accountId)
-//                .amount(amount)
-//                .description(description != null ? description : "Withdrawal via user-service")
-//                .operationType("WITHDRAWAL")
-//                .build();
-//
-//        OperationResponse response = coreClient.withdraw(request);
-//        return ResponseEntity.ok(response);
-//    }
+    // ============= Операции со счетами =============
+
+    /**
+     * Внести деньги на счет
+     */
+    @PostMapping("/{accountId}/deposit")
+    public ResponseEntity<OperationResponse> deposit(
+            @PathVariable String accountNumber,
+            @RequestParam BigDecimal amount,
+            @RequestParam(required = false) String description) {
+
+        CreateOperationRequest request = CreateOperationRequest.builder()
+                .accountNumber(accountNumber)
+                .amount(amount)
+                .description(description != null ? description : "Deposit via user-service")
+                .operationType("DEPOSIT")
+                .build();
+
+        OperationResponse response = coreClient.deposit(request);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Снять деньги со счета
+     */
+    @PostMapping("/{accountId}/withdraw")
+    public ResponseEntity<OperationResponse> withdraw(
+            @PathVariable String accountNumber,
+            @RequestParam BigDecimal amount,
+            @RequestParam(required = false) String description) {
+
+        // Проверяем принадлежность счета
+        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+
+        // Проверяем достаточно ли средств
+        if (account.getBalance().compareTo(amount) < 0) {
+            return ResponseEntity.badRequest().body(
+                    OperationResponse.builder()
+                            .message("Insufficient funds")
+                            .build()
+            );
+        }
+
+        CreateOperationRequest request = CreateOperationRequest.builder()
+                .accountNumber(accountNumber)
+                .amount(amount)
+                .description(description != null ? description : "Withdrawal via user-service")
+                .operationType("WITHDRAWAL")
+                .build();
+
+        OperationResponse response = coreClient.withdraw(request);
+        return ResponseEntity.ok(response);
+    }
 //
 //    /**
 //     * Перевести деньги между счетами
@@ -326,27 +291,33 @@ public class AccountController {
 //
 //    // ============= Операции (история) =============
 //
-//    /**
-//     * Получить операции по счету
-//     */
-//    @GetMapping("/{accountId}/operations")
-//    public ResponseEntity<List<OperationDTO>> getAccountOperations(
-//            @PathVariable Long accountId,
-//            @RequestParam(defaultValue = "0") int page,
-//            @RequestParam(defaultValue = "20") int size,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to get operations for account: {}", accountId);
-//
-//        // Проверяем принадлежность счета
-//        AccountDTO account = coreClient.getAccountById(accountId);
-//        if (!account.getUserId().equals(userId)) {
-//            return ResponseEntity.status(403).build();
-//        }
-//
-//        List<OperationDTO> operations = coreClient.getAccountOperations(accountId, page, size);
-//        return ResponseEntity.ok(operations);
-//    }
-//
+    /**
+     * Получить операции по счету
+     */
+    @GetMapping("/{accountNumber}/operations/page")
+    public ResponseEntity<List<OperationDTO>> getAccountOperationsPage(
+            @PathVariable String accountNumber,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+
+        // Проверяем принадлежность счета
+        AccountDTO account = coreClient.getAccountByNumber(accountNumber);
+
+        List<OperationDTO> operations = coreClient.getAccountOperationsPage(accountNumber, page, size);
+        return ResponseEntity.ok(operations);
+    }
+
+    /**
+     * Получить операции по счету
+     */
+    @GetMapping("/{accountNumber}/operations")
+    public ResponseEntity<List<OperationDTO>> getAccountOperations(
+            @PathVariable String accountNumber) {
+
+        List<OperationDTO> operations = coreClient.getAccountOperations(accountNumber);
+        return ResponseEntity.ok(operations);
+    }
+
 //    /**
 //     * Получить операции по счету за период
 //     */

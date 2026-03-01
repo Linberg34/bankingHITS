@@ -25,15 +25,7 @@ public class AccountService {
 
     public List<AccountDTO> getAccountsByUserId(Long userId) {
         log.info("Fetching accounts for user: {}", userId);
-        return accountRepository.findByUserId(userId)
-                .stream()
-                .map(accountMapper::toDTO)
-                .collect(Collectors.toList());
-    }
-
-    public List<AccountDTO> getMyAccounts(Long userId) {
-        log.info("Fetching my accounts for user: {}", userId);
-        return accountRepository.findActiveAccountsByUserId(userId)
+        return accountRepository.findByClientId(userId)
                 .stream()
                 .map(accountMapper::toDTO)
                 .collect(Collectors.toList());
@@ -58,6 +50,29 @@ public class AccountService {
         log.info("Creating new account for user: {}", accountDTO.getClientId());
 
         // Проверка на уникальность номера счета
+        if (accountRepository.existsByAccountNumber(accountDTO.getAccountNumber())) {
+            throw new RuntimeException("Account number already exists: " + accountDTO.getAccountNumber());
+        }
+
+        Account account = accountMapper.toEntity(accountDTO);
+
+        // Установка значений по умолчанию
+        if (account.getBalance() == null) {
+            account.setBalance(BigDecimal.ZERO);
+        }
+        if (account.getStatus() == null) {
+            account.setStatus("ACTIVE");
+        }
+
+        Account savedAccount = accountRepository.save(account);
+        log.info("Account created successfully with id: {}", savedAccount.getId());
+
+        return accountMapper.toDTO(savedAccount);
+    }
+
+    @Transactional
+    public AccountDTO createAccountCurrent(Long userId) {
+        AccountDTO accountDTO = new AccountDTO(userId, generateAccountNumber(), BigDecimal.ZERO, "ACTIVE");
         if (accountRepository.existsByAccountNumber(accountDTO.getAccountNumber())) {
             throw new RuntimeException("Account number already exists: " + accountDTO.getAccountNumber());
         }

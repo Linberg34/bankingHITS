@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/internal/accounts")
 @RequiredArgsConstructor
 @Slf4j
 public class AccountController {
@@ -24,11 +24,11 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAccountsByUserId(userId));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
-        log.info("Internal API - Getting account by id: {}", id);
-        return ResponseEntity.ok(accountService.getAccountById(id));
-    }
+//    @GetMapping("/{id}")
+//    public ResponseEntity<AccountDTO> getAccountById(@PathVariable Long id) {
+//        log.info("Internal API - Getting account by id: {}", id);
+//        return ResponseEntity.ok(accountService.getAccountById(id));
+//    }
 
     @GetMapping("/number/{accountNumber}")
     public ResponseEntity<AccountDTO> getAccountByNumber(@PathVariable String accountNumber) {
@@ -36,18 +36,32 @@ public class AccountController {
         return ResponseEntity.ok(accountService.getAccountByNumber(accountNumber));
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<AccountDTO> createAccount(@RequestBody AccountDTO accountDTO) {
         log.info("Internal API - Creating account");
         return ResponseEntity.ok(accountService.createAccount(accountDTO));
     }
 
-    @PutMapping("/{id}/balance")
-    public ResponseEntity<Void> updateBalance(
-            @PathVariable Long id,
-            @RequestParam BigDecimal amount) {
-        log.info("Internal API - Updating balance for account: {}, amount: {}", id, amount);
-        accountService.updateBalance(id, amount);
+    @PostMapping("/current")
+    public ResponseEntity<AccountDTO> createAccountCurrent(@RequestBody Long userId) {
+        log.info("Internal API - Creating account");
+        return ResponseEntity.ok(accountService.createAccountCurrent(userId));
+    }
+
+//    @PutMapping("/{id}/balance")
+//    public ResponseEntity<Void> updateBalance(
+//            @PathVariable Long id,
+//            @RequestParam BigDecimal amount) {
+//        log.info("Internal API - Updating balance for account: {}, amount: {}", id, amount);
+//        accountService.updateBalance(id, amount);
+//        return ResponseEntity.ok().build();
+//    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAccount(
+            @PathVariable Long id) {
+        log.info("Internal API - Del account: {}, amount: {}", id);
+        accountService.deleteAccount(id);
         return ResponseEntity.ok().build();
     }
 }

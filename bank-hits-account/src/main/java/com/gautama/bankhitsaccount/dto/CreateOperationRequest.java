@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateOperationRequest {
-    private Long accountId;
+    private String accountNumber;
     private String operationType;
     private BigDecimal amount;
     private String description;

@@ -22,8 +22,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db_user:5432/user_db
       SPRING_DATASOURCE_USERNAME: user_user
       SPRING_DATASOURCE_PASSWORD: user_pass
-      CLIENTS_SERVICE_B_URL: http://service-b:8080
-      CLIENTS_SERVICE_C_URL: http://service-c:8080
+      CLIENTS_ACCOUNT_URL: http://service_account:8080  # связь для Feign
     depends_on:
       db_user:
         condition: service_healthy

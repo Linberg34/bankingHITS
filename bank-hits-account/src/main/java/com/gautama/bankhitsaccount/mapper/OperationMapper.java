@@ -5,6 +5,8 @@ import com.gautama.bankhitsaccount.dto.OperationDTO;
 import com.gautama.bankhitsaccount.model.Account;
 import com.gautama.bankhitsaccount.model.Operation;
 import org.mapstruct.*;
+
+import java.math.BigDecimal;
 import java.util.List;
 
 @Mapper(componentModel = "spring",
@@ -12,8 +14,8 @@ import java.util.List;
         uses = {AccountMapper.class})
 public interface OperationMapper {
 
-    // Базовое маппинг Operation -> OperationDTO
-    @Mapping(target = "accountId", source = "account.id")
+    // Маппинг Operation -> OperationDTO
+    @Mapping(target = "accountNumber", source = "account.accountNumber")
     @Mapping(target = "balanceBefore", source = "balanceBefore")
     @Mapping(target = "balanceAfter", source = "balanceAfter")
     @Mapping(target = "createdAt", source = "createdAt")
@@ -31,34 +33,46 @@ public interface OperationMapper {
     @Mapping(target = "balanceBefore", ignore = true)
     @Mapping(target = "balanceAfter", ignore = true)
     @Mapping(target = "status", constant = "PENDING")
-    @Mapping(target = "createdAt", ignore = true)
-    Operation toEntity(CreateOperationRequest request, @Context Account account);
+    Operation toEntity(CreateOperationRequest request, Account account);
 
-    // Маппинг для обновления существующей операции
+    // Метод для создания успешной операции с балансами
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "account", source = "account")
+    @Mapping(target = "operationType", source = "request.operationType")
+    @Mapping(target = "amount", source = "request.amount")
+    @Mapping(target = "description", source = "request.description")
+    @Mapping(target = "balanceBefore", source = "balanceBefore")
+    @Mapping(target = "balanceAfter", source = "balanceAfter")
+    @Mapping(target = "status", constant = "SUCCESS")
+    Operation createSuccessfulOperation(CreateOperationRequest request,
+                                        Account account,
+                                        BigDecimal balanceBefore,
+                                        BigDecimal balanceAfter);
+
+    // Метод для создания неуспешной операции
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "account", source = "account")
+    @Mapping(target = "operationType", source = "request.operationType")
+    @Mapping(target = "amount", source = "request.amount")
+    @Mapping(target = "description", source = "request.description")
+    @Mapping(target = "balanceBefore", source = "balanceBefore")
+    @Mapping(target = "balanceAfter", source = "balanceBefore") // Баланс не меняется
+    @Mapping(target = "status", constant = "FAILED")
+    Operation createFailedOperation(CreateOperationRequest request,
+                                    Account account,
+                                    BigDecimal balanceBefore,
+                                    String errorMessage);
+
+    // Обновление статуса операции
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "account", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    void updateOperation(@MappingTarget Operation operation, OperationDTO operationDTO);
+    void updateStatus(@MappingTarget Operation operation, String status);
 
-    // Кастомный метод для установки балансов после завершения операции
-//    @AfterMapping
-//    default void setBalances(@MappingTarget Operation operation) {
-//        if (operation.getAccount() != null) {
-//            operation.setCurrency(operation.getAccount().getCurrency());
-//        }
-//    }
-
-    // Кастомный метод для создания операции с балансами
-    default Operation createOperationWithBalances(CreateOperationRequest request,
-                                                  Account account,
-                                                  java.math.BigDecimal balanceBefore,
-                                                  java.math.BigDecimal balanceAfter,
-                                                  String status) {
-        Operation operation = toEntity(request, account);
-        operation.setBalanceBefore(balanceBefore);
-        operation.setBalanceAfter(balanceAfter);
-        operation.setStatus(status);
-        return operation;
+    // Кастомный метод после маппинга
+    @AfterMapping
+    default void setAdditionalFields(@MappingTarget Operation operation) {
+        // Можно добавить дополнительную логику если нужно
     }
 }

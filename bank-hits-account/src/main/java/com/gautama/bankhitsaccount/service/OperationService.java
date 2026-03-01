@@ -35,9 +35,9 @@ public class OperationService {
 
     @Transactional
     public OperationResponse deposit(CreateOperationRequest request) {
-        log.info("Processing deposit: accountId={}, amount={}", request.getAccountId(), request.getAmount());
+        log.info("Processing deposit: accountId={}, amount={}", request.getAccountNumber(), request.getAmount());
 
-        Account account = accountRepository.findById(request.getAccountId())
+        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         if (!"ACTIVE".equals(account.getStatus())) {
@@ -77,9 +77,9 @@ public class OperationService {
 
     @Transactional
     public OperationResponse withdraw(CreateOperationRequest request) {
-        log.info("Processing withdrawal: accountId={}, amount={}", request.getAccountId(), request.getAmount());
+        log.info("Processing withdrawal: accountId={}, amount={}", request.getAccountNumber(), request.getAmount());
 
-        Account account = accountRepository.findById(request.getAccountId())
+        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
         if (!"ACTIVE".equals(account.getStatus())) {
