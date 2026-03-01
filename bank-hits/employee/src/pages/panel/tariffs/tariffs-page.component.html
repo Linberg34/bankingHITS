@@ -1,11 +1,11 @@
-<section class="domain-page">
+﻿<section class="domain-page">
   <header class="page-header">
     <h1>Кредитные тарифы</h1>
-    <button type="button" class="action" (click)="addTariffModalOpen = true">Добавить тариф</button>
+    <button type="button" class="action" (click)="openAddTariffModal()">Добавить тариф</button>
   </header>
 
   <section class="cards-grid">
-    @for (tariff of tariffs; track tariff.name) {
+    @for (tariff of tariffs; track tariff.name + tariff.createdAt) {
       <article class="tariff-card">
         <div class="card-top">
           <h2>{{ tariff.name }}</h2>
@@ -20,10 +20,42 @@
     }
   </section>
 
-  <shared-basic-modal
-    [open]="addTariffModalOpen"
-    [title]="'Добавить тариф'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="addTariffModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="addTariffModalOpen" [title]="'Добавить кредитный тариф'" (closed)="closeAddTariffModal()">
+    <form class="modal-form" (ngSubmit)="addTariff()">
+      <label>
+        Название тарифа
+        <input
+          [(ngModel)]="newTariff.name"
+          (ngModelChange)="onNameChange()"
+          name="tariffName"
+          type="text"
+          [class.input-error]="hasNameError"
+          required
+        />
+      </label>
+      @if (hasNameError) {
+        <p class="field-error">{{ nameError }}</p>
+      }
+
+      <label>
+        Ставка, %
+        <input
+          [(ngModel)]="newTariff.rate"
+          (ngModelChange)="onRateChange()"
+          name="tariffRate"
+          type="number"
+          min="0.1"
+          max="100"
+          step="0.1"
+          [class.input-error]="hasRateError"
+          required
+        />
+      </label>
+      @if (hasRateError) {
+        <p class="field-error">{{ rateError }}</p>
+      }
+
+      <button type="submit" class="submit-btn">Сохранить тариф</button>
+    </form>
+  </shared-basic-modal>
 </section>

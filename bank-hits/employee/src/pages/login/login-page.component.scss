@@ -118,6 +118,13 @@ p {
   outline-offset: 1px;
 }
 
+.login-error {
+  margin: 12px 0 0;
+  color: #c22424;
+  font-size: 12px;
+  text-align: left;
+}
+
 @media (max-width: 480px) {
   .login-card {
     padding: 24px 22px 26px;

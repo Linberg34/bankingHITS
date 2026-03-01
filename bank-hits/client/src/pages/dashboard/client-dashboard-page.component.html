@@ -8,8 +8,8 @@
       </div>
     </shared-card-header>
     <shared-card-content>
-      <div class="dashboard-card__value dashboard-card__value--purple">{{ formatMoney(totalBalance) }}</div>
-      <p class="dashboard-card__muted">На {{ clientAccounts.length }} счетах</p>
+      <div class="dashboard-card__value dashboard-card__value--purple">{{ formatMoney((totalBalance$ | async) ?? 0) }}</div>
+      <p class="dashboard-card__muted">На {{ (clientAccounts$ | async)?.length ?? 0 }} счетах</p>
     </shared-card-content>
   </shared-card>
 
@@ -21,21 +21,8 @@
       </div>
     </shared-card-header>
     <shared-card-content>
-      <div class="dashboard-card__value dashboard-card__value--violet">{{ clientCredits.length }}</div>
-      <p class="dashboard-card__muted">Задолженность: {{ formatMoney(totalCreditDebt) }}</p>
-    </shared-card-content>
-  </shared-card>
-
-  <shared-card class="dashboard-card dashboard-card--yield">
-    <shared-card-header class="dashboard-card__header-row">
-      <shared-card-title class="dashboard-card__title-sm">Доходность</shared-card-title>
-      <div class="dashboard-card__icon dashboard-card__icon--fuchsia" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="20" height="20"><path fill="currentColor" d="m16 6 2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6h-6z"/></svg>
-      </div>
-    </shared-card-header>
-    <shared-card-content>
-      <div class="dashboard-card__value dashboard-card__value--fuchsia">+12.5%</div>
-      <p class="dashboard-card__muted">За последний месяц</p>
+      <div class="dashboard-card__value dashboard-card__value--violet">{{ (clientCredits$ | async)?.length ?? 0 }}</div>
+      <p class="dashboard-card__muted">Задолженность: {{ formatMoney((totalCreditDebt$ | async) ?? 0) }}</p>
     </shared-card-content>
   </shared-card>
 </div>
@@ -52,7 +39,7 @@
   </shared-card-header>
   <shared-card-content>
     <div class="dashboard-accounts-list">
-      @for (account of clientAccounts; track account.id) {
+      @for (account of (clientAccounts$ | async) ?? []; track account.id) {
         <div class="dashboard-accounts-item">
           <div class="dashboard-accounts-item__left">
             <div class="dashboard-accounts-item__icon" aria-hidden="true">

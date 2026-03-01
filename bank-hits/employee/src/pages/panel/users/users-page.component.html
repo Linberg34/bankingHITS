@@ -1,8 +1,12 @@
-<section class="domain-page">
+﻿<section class="domain-page">
   <header class="page-header">
     <h1>Управление пользователями</h1>
-    <button type="button" class="action" (click)="addModalOpen = true">Добавить пользователя</button>
+    <button type="button" class="action" (click)="addModalOpen.set(true)">Добавить пользователя</button>
   </header>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
 
   <h2>Клиенты</h2>
   <article class="table-card">
@@ -17,13 +21,17 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of clientUsers; track user.email) {
+        @for (user of clientUsers(); track user.id) {
           <tr>
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
-            <td><button type="button" (click)="blockModalOpen = true">Заблокировать</button></td>
+            <td>
+              <button type="button" (click)="openBlockUser(user, 'Клиент')" [disabled]="actionInProgress()">
+                {{ isBlocked(user) ? 'Разблокировать' : 'Заблокировать' }}
+              </button>
+            </td>
           </tr>
         }
       </tbody>
@@ -43,30 +51,61 @@
         </tr>
       </thead>
       <tbody>
-        @for (user of employeeUsers; track user.email) {
+        @for (user of employeeUsers(); track user.id) {
           <tr>
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
             <td><span class="badge">{{ user.status }}</span></td>
             <td>{{ user.registeredAt }}</td>
-            <td><button type="button" (click)="blockModalOpen = true">Заблокировать</button></td>
+            <td>
+              <button type="button" (click)="openBlockUser(user, 'Сотрудник')" [disabled]="actionInProgress()">
+                {{ isBlocked(user) ? 'Разблокировать' : 'Заблокировать' }}
+              </button>
+            </td>
           </tr>
         }
       </tbody>
     </table>
   </article>
 
-  <shared-basic-modal
-    [open]="addModalOpen"
-    [title]="'Добавить пользователя'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="addModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="addModalOpen()" [title]="'Добавить пользователя'" (closed)="addModalOpen.set(false)">
+    <form class="modal-form" (ngSubmit)="addUser()">
+      <label>
+        Имя
+        <input [(ngModel)]="newUser.name" name="name" type="text" required />
+      </label>
 
-  <shared-basic-modal
-    [open]="blockModalOpen"
-    [title]="'Блокировка пользователя'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="blockModalOpen = false"
-  ></shared-basic-modal>
+      <label>
+        Email
+        <input [(ngModel)]="newUser.email" name="email" type="email" required />
+      </label>
+
+      <label>
+        Роль
+        <select [(ngModel)]="newUser.role" name="role">
+          <option value="Клиент">Клиент</option>
+          <option value="Сотрудник">Сотрудник</option>
+        </select>
+      </label>
+
+      <button type="submit" class="submit-btn" [disabled]="actionInProgress()">Сохранить</button>
+    </form>
+  </shared-basic-modal>
+
+  <shared-basic-modal [open]="blockModalOpen()" [title]="'Блокировка пользователя'" (closed)="closeBlockModal()">
+    @if (blockTarget(); as target) {
+      <div class="block-modal-content">
+        <p>
+          {{ target.isBlocked ? 'Разблокировать' : 'Заблокировать' }} {{ target.role.toLowerCase() }}а
+          <strong>{{ target.name }}</strong> ({{ target.email }})?
+        </p>
+        <div class="block-modal-actions">
+          <button type="button" class="cancel-btn" (click)="closeBlockModal()">Отмена</button>
+          <button type="button" class="submit-btn" (click)="confirmBlockUser()" [disabled]="actionInProgress()">
+            Подтвердить
+          </button>
+        </div>
+      </div>
+    }
+  </shared-basic-modal>
 </section>

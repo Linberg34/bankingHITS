@@ -15,10 +15,13 @@
       </shared-dialog-description>
     </shared-dialog-header>
     <div class="credits-page__dialog-body">
+      @if (actionError(); as err) {
+        <p class="credits-page__error">{{ err }}</p>
+      }
       <div class="credits-page__field">
         <shared-label>Тариф</shared-label>
         <shared-select
-          [options]="tariffOptions()"
+          [options]="(tariffOptions$ | async) ?? []"
           placeholder="Выберите тариф"
           [value]="selectedTariff()"
           (valueChange)="selectedTariff.set($event)"
@@ -27,7 +30,7 @@
       <div class="credits-page__field">
         <shared-label>Счет для зачисления</shared-label>
         <shared-select
-          [options]="accountOptions()"
+          [options]="(accountOptions$ | async) ?? []"
           placeholder="Выберите счет"
           [value]="selectedAccount()"
           (valueChange)="selectedAccount.set($event)"
@@ -45,8 +48,8 @@
     </div>
     <shared-dialog-footer>
       <shared-button variant="outline" (click)="closeNewCredit()">Отмена</shared-button>
-      <shared-button (click)="handleTakeCredit()" [disabled]="!canSubmitCredit()">
-        Оформить кредит
+      <shared-button (click)="handleTakeCredit()" [disabled]="!canSubmitCredit() || actionLoading()">
+        {{ actionLoading() ? 'Отправка...' : 'Оформить кредит' }}
       </shared-button>
     </shared-dialog-footer>
   </shared-dialog>
@@ -57,11 +60,11 @@
       <shared-card-description>Информация о ваших кредитах</shared-card-description>
     </shared-card-header>
     <shared-card-content>
-      @if (clientCredits.length === 0) {
+      @if ((clientCredits$ | async)?.length === 0) {
         <div class="credits-page__empty">У вас пока нет активных кредитов</div>
       } @else {
         <div class="credits-list">
-          @for (credit of clientCredits; track credit.id) {
+          @for (credit of (clientCredits$ | async) ?? []; track credit.id) {
             <shared-card class="credits-list-item">
               <shared-card-content class="credits-list-item__content">
                 <div class="credits-list-item__head">
@@ -101,10 +104,6 @@
                     <p class="credits-list-item__label">Дата выдачи</p>
                     <p class="credits-list-item__value">{{ formatDate(credit.issueDate) }}</p>
                   </div>
-                  <div>
-                    <p class="credits-list-item__label">Следующий платеж</p>
-                    <p class="credits-list-item__value">{{ formatDate(credit.nextPaymentDate) }}</p>
-                  </div>
                 </div>
                 @if (credit.status === 'active') {
                   <shared-button class="credits-list-item__pay" (click)="openPayCreditDialog(credit)">
@@ -127,6 +126,9 @@
       </shared-dialog-description>
     </shared-dialog-header>
     <div class="credits-page__dialog-body">
+      @if (actionError(); as err) {
+        <p class="credits-page__error">{{ err }}</p>
+      }
       <div class="credits-page__field">
         <shared-label>Сумма платежа (₽)</shared-label>
         <shared-input
@@ -135,17 +137,17 @@
           [value]="paymentAmount()"
           (valueChange)="paymentAmount.set($event)"
         />
-        @if (selectedCreditForPayment(); as credit) {
+        @if ((selectedCreditForPayment$ | async); as credit) {
           <p class="credits-page__hint">
-            Минимальный платеж: {{ formatMoney(credit.dailyPayment) }}
+            Осталось погасить: {{ formatMoney(credit.remainingAmount) }}
           </p>
         }
       </div>
     </div>
     <shared-dialog-footer>
       <shared-button variant="outline" (click)="closePayCredit()">Отмена</shared-button>
-      <shared-button (click)="handlePayCredit()" [disabled]="!paymentAmount()">
-        Оплатить
+      <shared-button (click)="handlePayCredit()" [disabled]="!paymentAmount() || actionLoading()">
+        {{ actionLoading() ? 'Отправка...' : 'Оплатить' }}
       </shared-button>
     </shared-dialog-footer>
   </shared-dialog>

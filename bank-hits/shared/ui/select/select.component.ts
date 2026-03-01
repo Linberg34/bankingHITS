@@ -1,9 +1,9 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   input,
   output,
-  model,
 } from '@angular/core';
 
 export interface SelectOption {
@@ -18,12 +18,12 @@ export interface SelectOption {
   template: `
     <select
       class="shared-select"
-      [value]="value()"
+      [value]="displayValue()"
       [disabled]="disabled()"
       (change)="onChange($event)"
     >
       @if (placeholder()) {
-        <option value="" disabled>{{ placeholder() }}</option>
+        <option value="">{{ placeholder() }}</option>
       }
       @for (opt of options(); track opt.value) {
         <option [value]="opt.value">{{ opt.label }}</option>
@@ -37,13 +37,14 @@ export class SelectComponent {
   options = input<SelectOption[]>([]);
   placeholder = input<string>('');
   disabled = input<boolean>(false);
-  value = model<string>('');
+  value = input<string>('');
 
   valueChange = output<string>();
 
+  protected displayValue = computed(() => this.value() ?? '');
+
   onChange(event: Event): void {
     const v = (event.target as HTMLSelectElement).value;
-    this.value.set(v);
     this.valueChange.emit(v);
   }
 }

@@ -1,5 +1,13 @@
-<section class="domain-page">
+﻿<section class="domain-page">
   <h1>Все счета клиентов</h1>
+
+  @if (isLoading) {
+    <p class="state-text">Загрузка счетов...</p>
+  }
+
+  @if (errorText) {
+    <p class="state-text state-text--error">{{ errorText }}</p>
+  }
 
   <article class="table-card">
     <table>
@@ -19,17 +27,56 @@
             <td>{{ record.accountNumber }}</td>
             <td class="amount">{{ record.balance }}</td>
             <td><span class="badge">{{ record.status }}</span></td>
-            <td><button type="button" (click)="historyModalOpen = true">История</button></td>
+            <td><button type="button" (click)="openHistory(record)">История</button></td>
+          </tr>
+        }
+
+        @if (!accountRecords.length && !isLoading) {
+          <tr>
+            <td colspan="5">Счета не найдены</td>
           </tr>
         }
       </tbody>
     </table>
   </article>
 
-  <shared-basic-modal
-    [open]="historyModalOpen"
-    [title]="'История счета'"
-    [text]="'Пока только пустая модалка без UI.'"
-    (closed)="historyModalOpen = false"
-  ></shared-basic-modal>
+  <shared-basic-modal [open]="historyModalOpen" [title]="'История счета'" (closed)="closeHistory()">
+    @if (selectedAccount) {
+      <div class="history-modal">
+        <p class="history-account">Счет: {{ selectedAccount.accountNumber }}</p>
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Дата</th>
+              <th>Тип</th>
+              <th>Описание</th>
+              <th>Сумма</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if (isHistoryLoading) {
+              <tr>
+                <td colspan="4">Загрузка истории...</td>
+              </tr>
+            }
+
+            @for (operation of selectedAccountOperations; track operation.id) {
+              <tr>
+                <td>{{ operation.date }}</td>
+                <td>{{ operation.type }}</td>
+                <td>{{ operation.description }}</td>
+                <td>{{ operation.amount }}</td>
+              </tr>
+            }
+
+            @if (!selectedAccountOperations.length && !isHistoryLoading) {
+              <tr>
+                <td colspan="4">Операции отсутствуют</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </shared-basic-modal>
 </section>

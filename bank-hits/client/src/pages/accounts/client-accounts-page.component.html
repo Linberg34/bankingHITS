@@ -15,6 +15,9 @@
       </shared-dialog-description>
     </shared-dialog-header>
     <div class="accounts-page__dialog-body">
+      @if (actionError(); as err) {
+        <p class="accounts-page__error">{{ err }}</p>
+      }
       <div class="accounts-page__field">
         <shared-label>Валюта</shared-label>
         <shared-select
@@ -25,7 +28,7 @@
     </div>
     <shared-dialog-footer>
       <shared-button variant="outline" (click)="closeNewAccount()">Отмена</shared-button>
-      <shared-button (click)="handleOpenAccount()">Открыть счет</shared-button>
+      <shared-button (click)="handleOpenAccount()" [disabled]="actionLoading()">Открыть счет</shared-button>
     </shared-dialog-footer>
   </shared-dialog>
 
@@ -36,7 +39,7 @@
     </shared-card-header>
     <shared-card-content>
       <div class="accounts-list">
-        @for (account of activeAccounts; track account.id) {
+        @for (account of (activeAccounts$ | async) ?? []; track account.id) {
           <shared-card class="accounts-list-item">
             <shared-card-content class="accounts-list-item__content">
               <div class="accounts-list-item__main">
@@ -56,7 +59,7 @@
                   <shared-button variant="outline" size="sm" (click)="openHistoryDialog(account)">
                     История
                   </shared-button>
-                  <shared-button variant="outline" size="sm" (click)="handleCloseAccount(account.accountNumber)">
+                  <shared-button variant="outline" size="sm" (click)="handleCloseAccount(account)">
                     Закрыть счет
                   </shared-button>
                 </div>
@@ -74,6 +77,9 @@
       <shared-dialog-description>Введите сумму для пополнения</shared-dialog-description>
     </shared-dialog-header>
     <div class="accounts-page__dialog-body">
+      @if (actionError(); as err) {
+        <p class="accounts-page__error">{{ err }}</p>
+      }
       <div class="accounts-page__field">
         <shared-label>Сумма (₽)</shared-label>
         <shared-input
@@ -86,7 +92,7 @@
     </div>
     <shared-dialog-footer>
       <shared-button variant="outline" (click)="closeDeposit()">Отмена</shared-button>
-      <shared-button (click)="handleDeposit()" [disabled]="!amount()">Пополнить</shared-button>
+      <shared-button (click)="handleDeposit()" [disabled]="!amount() || actionLoading()">Пополнить</shared-button>
     </shared-dialog-footer>
   </shared-dialog>
 
@@ -96,6 +102,9 @@
       <shared-dialog-description>Введите сумму для снятия</shared-dialog-description>
     </shared-dialog-header>
     <div class="accounts-page__dialog-body">
+      @if (actionError(); as err) {
+        <p class="accounts-page__error">{{ err }}</p>
+      }
       <div class="accounts-page__field">
         <shared-label>Сумма (₽)</shared-label>
         <shared-input
@@ -108,7 +117,7 @@
     </div>
     <shared-dialog-footer>
       <shared-button variant="outline" (click)="closeWithdraw()">Отмена</shared-button>
-      <shared-button (click)="handleWithdraw()" [disabled]="!amount()">Снять</shared-button>
+      <shared-button (click)="handleWithdraw()" [disabled]="!amount() || actionLoading()">Снять</shared-button>
     </shared-dialog-footer>
   </shared-dialog>
 
@@ -125,16 +134,14 @@
           <shared-table-row>
             <shared-table-head>Дата</shared-table-head>
             <shared-table-head>Тип</shared-table-head>
-            <shared-table-head>Описание</shared-table-head>
             <shared-table-head [align]="'right'">Сумма</shared-table-head>
           </shared-table-row>
         </shared-table-header>
         <shared-table-body>
-          @for (tx of accountTransactions(); track tx.id) {
+          @for (tx of (accountTransactions$ | async) ?? []; track tx.id) {
             <shared-table-row>
               <shared-table-cell>{{ formatDate(tx.createdAt) }}</shared-table-cell>
               <shared-table-cell>{{ getTransactionLabel(tx.type) }}</shared-table-cell>
-              <shared-table-cell>{{ tx.description }}</shared-table-cell>
               <shared-table-cell [align]="'right'" [class.accounts-page__cell-incoming]="isIncoming(tx.type)" [class.accounts-page__cell-outgoing]="!isIncoming(tx.type)">
                 {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount) }}
               </shared-table-cell>

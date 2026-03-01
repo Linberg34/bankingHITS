@@ -1,3 +1,12 @@
+﻿.state-text {
+  color: #4f4668;
+  font-size: 14px;
+  margin: 0 0 12px;
+}
+
+.state-text--error {
+  color: #c22424;
+}
 .domain-page h1 {
   color: #241f35;
   font-size: 46px;
@@ -56,6 +65,23 @@ tbody tr:last-child td {
   border-bottom: 0;
 }
 
+.history-modal {
+  display: grid;
+  gap: 12px;
+}
+
+.history-account {
+  color: #3b3550;
+  font-weight: 600;
+  margin: 0;
+}
+
+.history-table th,
+.history-table td {
+  font-size: 14px;
+  padding: 10px 12px;
+}
+
 @media (max-width: 900px) {
   .domain-page h1 {
     font-size: 34px;
@@ -67,3 +93,4 @@ tbody tr:last-child td {
     padding: 12px 10px;
   }
 }
+
