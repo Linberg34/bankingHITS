@@ -80,7 +80,7 @@ public class CreditService {
             throw new IllegalStateException("Кредит уже закрыт или просрочен");
         }
 
-        boolean success = coreClient.withdraw(credit.getAccountId(), credit.getRemainingDebt());
+        boolean success = coreClient.tryWithdraw(credit.getAccountId(), credit.getRemainingDebt());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств для погашения кредита");
         }
@@ -107,7 +107,7 @@ public class CreditService {
             );
         }
 
-        boolean success = coreClient.withdraw(credit.getAccountId(), req.getAmount());
+        boolean success = coreClient.tryWithdraw(credit.getAccountId(), req.getAmount());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств на счёте");
         }

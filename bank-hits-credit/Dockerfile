@@ -1,5 +1,5 @@
 FROM eclipse-temurin:21-jre
 WORKDIR /app
-COPY build/libs/bank-hits-user-*.jar app.jar
+COPY build/libs/bank-hits-credit-*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

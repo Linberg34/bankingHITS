@@ -1,43 +1,24 @@
 package com.gautama.bankhitscredit.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.http.*;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.math.BigDecimal;
 import java.util.Map;
 
-@Component
-public class CoreServiceClient {
+@FeignClient(name = "core-service", url = "${core-service.url}")
+public interface CoreServiceClient {
+    @PostMapping("/account/{accountId}/debit")
+    void withdraw(@PathVariable Long accountId, @RequestBody Map<String, Object> body);
 
-    private final RestTemplate restTemplate;
-    private final String coreUrl;
-
-    public CoreServiceClient(@Value("${core-service.url}") String coreUrl) {
-        this.restTemplate = new RestTemplate();
-        this.coreUrl = coreUrl;
-    }
-
-    public boolean withdraw(Long accountId, BigDecimal amount) {
+    default boolean tryWithdraw(Long accountId, BigDecimal amount) {
         try {
-            String url = coreUrl + "account/{accountid}/debit";
-            Map<String, Object> body = Map.of("amount", amount);
-            ResponseEntity<Void> response = restTemplate.postForEntity(
-                    url,
-                    new HttpEntity<>(body, jsonHeaders()),
-                    Void.class,
-                    accountId
-            );
-            return response.getStatusCode().is2xxSuccessful();
+            withdraw(accountId, Map.of("amount", amount));
+            return true;
         } catch (Exception e) {
             return false;
         }
-    }
-
-    private HttpHeaders jsonHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        return headers;
     }
 }

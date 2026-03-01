@@ -55,7 +55,7 @@ public class CreditPaymentScheduler {
             payment = credit.getRemainingDebt();
         }
 
-        boolean success = coreClient.withdraw(credit.getAccountId(), payment);
+        boolean success = coreClient.tryWithdraw(credit.getAccountId(), payment);
 
         if (success) {
             credit.setRemainingDebt(credit.getRemainingDebt().subtract(payment));
