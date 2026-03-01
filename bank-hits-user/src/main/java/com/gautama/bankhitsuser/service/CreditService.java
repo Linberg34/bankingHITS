@@ -40,11 +40,12 @@ public class CreditService {
         User user = getUserOrThrow(userId);
         requireRole(user, Role.CLIENT);
 
-        if (!user.getId().equals(req.getClientId())) {
-            throw new IllegalArgumentException("Нельзя брать кредит от имени другого клиента");
-        }
-
-        return creditServiceClient.takeCredit(req);
+        return creditServiceClient.takeCredit(new TakeCreditInternalRequest(
+                user.getId(),
+                req.getAccountId(),
+                req.getTariffId(),
+                req.getAmount()
+        ));
     }
 
     public List<CreditResponse> getClientCredits(Long userId, Long clientId) {

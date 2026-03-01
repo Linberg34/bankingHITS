@@ -1,6 +1,6 @@
 package com.gautama.bankhitscredit.service;
 
-import com.gautama.bankhitscredit.config.CoreServiceClient;
+import com.gautama.bankhitscredit.client.CoreServiceClient;
 import com.gautama.bankhitscredit.entity.Credit;
 import com.gautama.bankhitscredit.repository.CreditRepository;
 import lombok.RequiredArgsConstructor;

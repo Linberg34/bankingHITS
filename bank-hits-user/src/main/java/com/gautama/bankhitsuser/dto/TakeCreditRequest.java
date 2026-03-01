@@ -9,9 +9,6 @@ import java.math.BigDecimal;
 @Data
 public class TakeCreditRequest {
     @NotNull
-    private Long clientId;
-
-    @NotNull
     private Long accountId;
 
     @NotNull

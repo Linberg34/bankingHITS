@@ -21,7 +21,7 @@ public interface CreditServiceClient {
     List<CreditResponse> getAllCredits();
 
     @PostMapping("/api/credits")
-    CreditResponse takeCredit(@RequestBody TakeCreditRequest req);
+    CreditResponse takeCredit(@RequestBody TakeCreditInternalRequest req);
 
     @GetMapping("/api/credits/client/{clientId}")
     List<CreditResponse> getClientCredits(@PathVariable Long clientId);

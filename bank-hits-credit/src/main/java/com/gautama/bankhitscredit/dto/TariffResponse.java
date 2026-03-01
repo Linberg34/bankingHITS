@@ -17,6 +17,7 @@ public class TariffResponse {
         r.setId(t.getId());
         r.setName(t.getName());
         r.setAnnualRate(t.getAnnualRate());
+        r.setCreatedAt(t.getCreatedAt());
         return r;
     }
 }

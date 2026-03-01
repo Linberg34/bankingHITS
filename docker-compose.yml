@@ -30,9 +30,41 @@ services:
         condition: service_healthy
       service-credit:
         condition: service_started
+      service-account:
+        condition: service_started
     networks: [ appnet ]
     ports:
       - "8081:8080"
+
+  # ─── ACCOUNT SERVICE ───────────────────────────────────────
+  db-account:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: account_db
+      POSTGRES_USER: account_user
+      POSTGRES_PASSWORD: account_pass
+    networks: [ appnet ]
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U account_user -d account_db" ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  service-account:
+    build:
+      context: ./bank-hits-account
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-account:5432/account_db
+      SPRING_DATASOURCE_USERNAME: account_user
+      SPRING_DATASOURCE_PASSWORD: account_pass
+      CORE_SERVICE_URL: http://service-user:8080
+    depends_on:
+      db-account:
+        condition: service_healthy
+    networks: [ appnet ]
+    ports:
+      - "8082:8080"
 
   # ─── CREDIT SERVICE ───────────────────────────────────────
   db-credit:
@@ -60,12 +92,11 @@ services:
     depends_on:
       db-credit:
         condition: service_healthy
-#      service-account:
-#        condition: service_started
+      service-account:
+        condition: service_started
     networks: [ appnet ]
     ports:
       - "8083:8080"
-
 
 networks:
   appnet:
