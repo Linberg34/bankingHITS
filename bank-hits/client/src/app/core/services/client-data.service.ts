@@ -165,7 +165,7 @@ function mapCreditDtoToCredit(dto: CreditDto): Credit {
 
 function mapCreditStatus(status: string): 'active' | 'paid' | 'overdue' {
   const s = String(status).toLowerCase();
-  if (s.includes('paid') || s.includes('погаш')) return 'paid';
+  if (s.includes('paid') || s.includes('погаш') || s.includes('closed') || s.includes('закрыт')) return 'paid';
   if (s.includes('overdue') || s.includes('проср')) return 'overdue';
   return 'active';
 }
