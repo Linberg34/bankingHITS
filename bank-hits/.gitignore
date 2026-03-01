@@ -43,6 +43,7 @@ Thumbs.db
 
 .angular
 
+shared/api/api-base-url.secret.ts
 # Editor / tooling
 .cursor
 error.log
