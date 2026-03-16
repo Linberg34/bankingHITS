@@ -1,10 +1,9 @@
 package com.iisovaii.client_bff.controller;
 
 import com.iisovaii.client_bff.dto.account.AccountListResponse;
+import com.iisovaii.client_bff.dto.account.CloseAccountResponse;
 import com.iisovaii.client_bff.dto.account.OpenAccountRequest;
-import com.iisovaii.client_bff.dto.operation.OperationAcceptedResponse;
-import com.iisovaii.client_bff.dto.operation.OperationStatus;
-import com.iisovaii.client_bff.kafka.OperationProducer;
+import com.iisovaii.client_bff.dto.account.OpenAccountResponse;
 import com.iisovaii.client_bff.security.CurrentUser;
 import com.iisovaii.client_bff.service.ProxyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +23,6 @@ import java.util.UUID;
 public class AccountController {
 
     private final ProxyService proxyService;
-    private final OperationProducer operationProducer;
 
     @GetMapping
     @Operation(
@@ -39,29 +37,25 @@ public class AccountController {
     @PostMapping
     @Operation(
             summary = "Открыть новый счет",
-            description = "Создаёт запрос на открытие счета через очередь Kafka и возвращает operationId."
+            description = "Открывает новый счет через AccountService и возвращает созданный счет."
     )
-    public ResponseEntity<OperationAcceptedResponse> openAccount(
+    public ResponseEntity<OpenAccountResponse> openAccount(
             @CurrentUser UUID userId,
             @RequestBody @Valid OpenAccountRequest request) {
-        UUID operationId = UUID.randomUUID();
-        operationProducer.sendOpenAccount(operationId, request, userId);
-        return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+        OpenAccountResponse response = proxyService.openAccount(userId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @DeleteMapping("/{accountId}")
     @Operation(
             summary = "Закрыть счет",
-            description = "Создаёт запрос на закрытие счета через очередь Kafka и возвращает operationId."
+            description = "Закрывает счет через AccountService и возвращает итоговый статус счета."
     )
-    public ResponseEntity<OperationAcceptedResponse> closeAccount(
+    public ResponseEntity<CloseAccountResponse> closeAccount(
             @CurrentUser UUID userId,
             @PathVariable UUID accountId) {
         proxyService.checkAccountOwnership(userId, accountId);
-        UUID operationId = UUID.randomUUID();
-        operationProducer.sendCloseAccount(operationId, accountId, userId);
-        return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+        CloseAccountResponse response = proxyService.closeAccount(userId, accountId);
+        return ResponseEntity.ok(response);
     }
 }

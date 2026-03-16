@@ -1,10 +1,7 @@
 package com.iisovaii.client_bff.controller;
 
 import com.iisovaii.client_bff.dto.credit.*;
-import com.iisovaii.client_bff.dto.operation.OperationAcceptedResponse;
-import com.iisovaii.client_bff.dto.operation.OperationStatus;
 import com.iisovaii.client_bff.security.CurrentUser;
-import com.iisovaii.client_bff.kafka.OperationProducer;
 import com.iisovaii.client_bff.service.ProxyService;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +21,6 @@ import java.util.UUID;
 public class CreditController {
 
     private final ProxyService proxyService;
-    private final OperationProducer operationProducer;
 
     @GetMapping
     @Operation(
@@ -63,33 +59,29 @@ public class CreditController {
     @PostMapping
     @Operation(
             summary = "Взять кредит",
-            description = "Создаёт команду на выдачу кредита через Kafka и возвращает operationId."
+            description = "Выдаёт кредит через CreditService и возвращает информацию о новом кредите."
     )
-    public ResponseEntity<OperationAcceptedResponse> takeCredit(
+    public ResponseEntity<TakeCreditResponse> takeCredit(
             @CurrentUser UUID userId,
             @RequestBody @Valid TakeCreditRequest request) {
         proxyService.checkAccountOwnership(userId, request.accountId());
-        UUID operationId = UUID.randomUUID();
-        operationProducer.sendTakeCredit(operationId, request, userId);
-        return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+        TakeCreditResponse response = proxyService.takeCredit(userId, request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PostMapping("/{creditId}/repay")
     @Operation(
             summary = "Погасить кредит",
-            description = "Создаёт команду на погашение кредита через Kafka и возвращает operationId."
+            description = "Погашает кредит через CreditService и возвращает остаток долга."
     )
-    public ResponseEntity<OperationAcceptedResponse> repayCredit(
+    public ResponseEntity<RepayCreditResponse> repayCredit(
             @CurrentUser UUID userId,
             @PathVariable UUID creditId,
             @RequestBody @Valid RepayCreditRequest request) {
         proxyService.checkCreditOwnership(userId, creditId);
         proxyService.checkAccountOwnership(userId, request.accountId());
-        UUID operationId = UUID.randomUUID();
-        operationProducer.sendRepayCredit(operationId, creditId, request, userId);
-        return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+        RepayCreditResponse response = proxyService.repayCredit(userId, creditId, request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/rating")

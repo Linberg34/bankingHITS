@@ -36,7 +36,7 @@ public class AuthController {
     @GetMapping("/callback")
     @Operation(
             summary = "Callback от SSO с authorization code",
-            description = "Принимает authorization code от SSO, обменивает его на access_token и устанавливает httpOnly cookie."
+            description = "Принимает authorization code от SSO, обменивает его на access_token, устанавливает httpOnly cookie и делает редирект на клиентское приложение."
     )
     public ResponseEntity<Void> callback(
             @RequestParam String code,

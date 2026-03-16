@@ -4,23 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="some fixes">
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/RepayCreditCommandPayload.java" afterDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="Added a description for Swagger">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/JwtChannelInterceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/JwtChannelInterceptor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/WebSocketConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/WebSocketConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -423,7 +409,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773688063425</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added a description for Swagger">
+      <option name="closed" value="true" />
+      <created>1773690872229</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1773690872229</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -451,6 +445,7 @@
     <MESSAGE value="fix2" />
     <MESSAGE value="The BFF client is almost working, but I still need to edit the files." />
     <MESSAGE value="some fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="some fixes" />
+    <MESSAGE value="Added a description for Swagger" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added a description for Swagger" />
   </component>
 </project>
