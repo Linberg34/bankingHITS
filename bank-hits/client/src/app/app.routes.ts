@@ -5,6 +5,7 @@ import { ClientLoginPageComponent } from '../pages/login/client-login-page.compo
 import { ClientAccountsPageComponent } from '../pages/accounts/client-accounts-page.component';
 import { ClientCreditsPageComponent } from '../pages/credits/client-credits-page.component';
 import { ClientDashboardPageComponent } from '../pages/dashboard/client-dashboard-page.component';
+import { ErrorFallbackPageComponent } from '../../../shared/frontend-core';
 
 export const appRoutes: Route[] = [
   {
@@ -48,7 +49,11 @@ export const appRoutes: Route[] = [
     ],
   },
   {
+    path: 'error',
+    component: ErrorFallbackPageComponent,
+  },
+  {
     path: '**',
-    redirectTo: 'registration',
+    component: ErrorFallbackPageComponent,
   },
 ];

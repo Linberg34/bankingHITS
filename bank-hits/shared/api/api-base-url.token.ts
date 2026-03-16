@@ -1,5 +1,5 @@
 import { InjectionToken } from '@angular/core';
-import { DEFAULT_API_BASE_URL } from './secrets';
+import { DEFAULT_API_BASE_URL } from './api-base-url.secret';
 
 interface GlobalApiConfig {
   __BANK_HITS_API_URL__?: string;

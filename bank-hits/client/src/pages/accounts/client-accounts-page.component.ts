@@ -1,42 +1,44 @@
-import { Component, inject, signal, computed, OnInit } from '@angular/core';
-import { AsyncPipe } from '@angular/common';
+﻿import { AsyncPipe } from '@angular/common';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { switchMap, of, catchError } from 'rxjs';
-import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
-import { ClientDataService } from '../../app/core/services/client-data.service';
-import {
-  CardComponent,
-  CardHeaderComponent,
-  CardTitleComponent,
-  CardDescriptionComponent,
-  CardContentComponent,
-} from '../../../../shared/ui/card';
+import { catchError, of, switchMap } from 'rxjs';
+import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
 import { ButtonComponent } from '../../../../shared/ui/button';
 import {
+  CardComponent,
+  CardContentComponent,
+  CardDescriptionComponent,
+  CardHeaderComponent,
+  CardTitleComponent,
+} from '../../../../shared/ui/card';
+import { ConfirmDialogComponent } from '../../../../shared/ui/confirm-dialog';
+import {
   DialogComponent,
-  DialogHeaderComponent,
-  DialogTitleComponent,
   DialogDescriptionComponent,
   DialogFooterComponent,
+  DialogHeaderComponent,
+  DialogTitleComponent,
 } from '../../../../shared/ui/dialog';
 import { InputComponent } from '../../../../shared/ui/input';
 import { LabelComponent } from '../../../../shared/ui/label';
 import { SelectComponent, type SelectOption } from '../../../../shared/ui/select';
 import {
-  TableComponent,
-  TableHeaderComponent,
   TableBodyComponent,
-  TableRowComponent,
-  TableHeadComponent,
   TableCellComponent,
+  TableComponent,
+  TableHeadComponent,
+  TableHeaderComponent,
+  TableRowComponent,
 } from '../../../../shared/ui/table';
+import { ClientDataUseCasesService } from '../../app/application/use-cases/client-data-use-cases.service';
+import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import type { Account, Transaction } from '../../app/core/models/client.types';
 
 const TRANSACTION_LABELS: Record<string, string> = {
   deposit: 'Пополнение',
   withdrawal: 'Снятие',
   credit_issue: 'Выдача кредита',
-  credit_payment: 'Оплата кредита',
+  credit_payment: 'Погашение кредита',
 };
 
 @Component({
@@ -55,6 +57,7 @@ const TRANSACTION_LABELS: Record<string, string> = {
     DialogTitleComponent,
     DialogDescriptionComponent,
     DialogFooterComponent,
+    ConfirmDialogComponent,
     InputComponent,
     LabelComponent,
     SelectComponent,
@@ -70,75 +73,79 @@ const TRANSACTION_LABELS: Record<string, string> = {
   styleUrl: './client-accounts-page.component.scss',
 })
 export class ClientAccountsPageComponent implements OnInit {
-  private readonly data = inject(ClientDataService);
+  private readonly data = inject(ClientDataUseCasesService);
+  private readonly notifications = inject(NotificationService);
 
   protected openNewAccount = signal(false);
   protected openDeposit = signal(false);
   protected openWithdraw = signal(false);
   protected openHistory = signal(false);
+  protected openCloseConfirm = signal(false);
+
   protected selectedAccountId = signal('');
   protected selectedAccountNumber = signal('');
+  protected selectedAccountToClose = signal<Account | null>(null);
+
   protected amount = signal('');
-  protected actionError = signal<string | null>(null);
-  protected actionLoading = signal(false);
+  protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
 
   protected activeAccounts$ = this.data.getActiveAccounts();
   protected accountTransactions$ = toObservable(this.selectedAccountNumber).pipe(
     switchMap((accountNumber) =>
       accountNumber
-        ? this.data.loadOperations(accountNumber).pipe(
-            catchError(() => of<Transaction[]>([]))
-          )
+        ? this.data.loadOperations(accountNumber).pipe(catchError(() => of<Transaction[]>([])))
         : of<Transaction[]>([])
     )
   );
+
   protected selectedAccountForHistory = computed(() => {
     const id = this.selectedAccountId();
-    const num = this.selectedAccountNumber();
-    return id || num ? this.data.getAccountById(id || num) : undefined;
+    const number = this.selectedAccountNumber();
+    return id || number ? this.data.getAccountById(id || number) : undefined;
   });
 
-  protected currencyOptions: SelectOption[] = [
-    { value: 'RUB', label: 'Российский рубль (₽)' },
-    { value: 'USD', label: 'Доллар США ($)' },
-    { value: 'EUR', label: 'Евро (€)' },
-  ];
+  protected currencyOptions: SelectOption[] = [{ value: 'RUB', label: 'Российский рубль (?)' }];
 
   ngOnInit(): void {
-    this.data.loadAccounts().subscribe();
+    this.data.loadAccounts().subscribe({
+      error: () => this.notifications.error('Failed to load accounts.'),
+    });
   }
 
   protected formatMoney(n: number): string {
-    return n.toLocaleString('ru-RU') + ' ₽';
+    return `${n.toLocaleString('ru-RU')} ?`;
   }
 
   protected getTransactionLabel(type: string): string {
     return TRANSACTION_LABELS[type] ?? type;
   }
 
-  protected formatDate(d: string): string {
-    return new Date(d).toLocaleDateString('ru-RU');
+  protected formatDate(value: string): string {
+    return new Date(value).toLocaleDateString('ru-RU');
   }
 
   protected openNewAccountDialog(): void {
     this.openNewAccount.set(true);
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
   }
+
   protected closeNewAccount(): void {
     this.openNewAccount.set(false);
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
   }
+
   protected handleOpenAccount(): void {
-    this.actionLoading.set(true);
-    this.actionError.set(null);
+    this.actionState.set({ status: 'loading' });
     this.data.openCurrentAccount().subscribe({
       next: () => {
-        this.actionLoading.set(false);
+        this.actionState.set({ status: 'success', message: 'Account opened.' });
+        this.notifications.success('Account opened successfully.');
         this.closeNewAccount();
       },
-      error: (err) => {
-        this.actionLoading.set(false);
-        this.actionError.set(err?.error?.message ?? 'Не удалось открыть счёт');
+      error: (error: unknown) => {
+        const mapped = mapUnknownError(error);
+        this.actionState.set({ status: 'error', message: mapped.message });
+        this.notifications.error(mapped.message);
       },
     });
   }
@@ -146,28 +153,34 @@ export class ClientAccountsPageComponent implements OnInit {
   protected openDepositDialog(account: Account): void {
     this.selectedAccountId.set(account.id);
     this.amount.set('');
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
     this.openDeposit.set(true);
   }
+
   protected closeDeposit(): void {
     this.openDeposit.set(false);
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
   }
+
   protected handleDeposit(): void {
-    const id = this.selectedAccountId();
+    const accountId = this.selectedAccountId();
     const sum = Number(this.amount());
-    if (!id || !sum || sum <= 0) return;
-    this.actionLoading.set(true);
-    this.actionError.set(null);
-    this.data.deposit(id, sum).subscribe({
+    if (!accountId || !sum || sum <= 0) {
+      return;
+    }
+
+    this.actionState.set({ status: 'loading' });
+    this.data.deposit(accountId, sum).subscribe({
       next: () => {
-        this.actionLoading.set(false);
+        this.actionState.set({ status: 'success', message: 'Balance updated.' });
+        this.notifications.success('Account balance updated.');
         this.amount.set('');
         this.closeDeposit();
       },
-      error: (err) => {
-        this.actionLoading.set(false);
-        this.actionError.set(err?.error?.message ?? 'Не удалось пополнить счёт');
+      error: (error: unknown) => {
+        const mapped = mapUnknownError(error);
+        this.actionState.set({ status: 'error', message: mapped.message });
+        this.notifications.error(mapped.message);
       },
     });
   }
@@ -175,28 +188,34 @@ export class ClientAccountsPageComponent implements OnInit {
   protected openWithdrawDialog(account: Account): void {
     this.selectedAccountId.set(account.id);
     this.amount.set('');
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
     this.openWithdraw.set(true);
   }
+
   protected closeWithdraw(): void {
     this.openWithdraw.set(false);
-    this.actionError.set(null);
+    this.actionState.set(IDLE_ACTION_STATE);
   }
+
   protected handleWithdraw(): void {
-    const id = this.selectedAccountId();
+    const accountId = this.selectedAccountId();
     const sum = Number(this.amount());
-    if (!id || !sum || sum <= 0) return;
-    this.actionLoading.set(true);
-    this.actionError.set(null);
-    this.data.withdraw(id, sum).subscribe({
+    if (!accountId || !sum || sum <= 0) {
+      return;
+    }
+
+    this.actionState.set({ status: 'loading' });
+    this.data.withdraw(accountId, sum).subscribe({
       next: () => {
-        this.actionLoading.set(false);
+        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });
+        this.notifications.success('Withdrawal completed.');
         this.amount.set('');
         this.closeWithdraw();
       },
-      error: (err) => {
-        this.actionLoading.set(false);
-        this.actionError.set(err?.error?.message ?? 'Не удалось снять средства');
+      error: (error: unknown) => {
+        const mapped = mapUnknownError(error);
+        this.actionState.set({ status: 'error', message: mapped.message });
+        this.notifications.error(mapped.message);
       },
     });
   }
@@ -206,20 +225,35 @@ export class ClientAccountsPageComponent implements OnInit {
     this.selectedAccountNumber.set(account.accountNumber);
     this.openHistory.set(true);
   }
+
   protected closeHistory(): void {
     this.openHistory.set(false);
     this.selectedAccountNumber.set('');
   }
 
-  protected handleCloseAccount(account: Account): void {
-    if (!confirm('Закрыть счёт ' + account.accountNumber + '?')) return;
-    this.actionLoading.set(true);
-    this.actionError.set(null);
+  protected requestCloseAccount(account: Account): void {
+    this.selectedAccountToClose.set(account);
+    this.openCloseConfirm.set(true);
+  }
+
+  protected handleCloseAccount(): void {
+    const account = this.selectedAccountToClose();
+    if (!account) {
+      return;
+    }
+
+    this.actionState.set({ status: 'loading' });
     this.data.deleteAccount(account.id).subscribe({
-      next: () => this.actionLoading.set(false),
-      error: (err) => {
-        this.actionLoading.set(false);
-        this.actionError.set(err?.error?.message ?? 'Не удалось закрыть счёт');
+      next: () => {
+        this.actionState.set({ status: 'success', message: 'Account closed.' });
+        this.notifications.success('Account closed.');
+        this.openCloseConfirm.set(false);
+        this.selectedAccountToClose.set(null);
+      },
+      error: (error: unknown) => {
+        const mapped = mapUnknownError(error);
+        this.actionState.set({ status: 'error', message: mapped.message });
+        this.notifications.error(mapped.message);
       },
     });
   }
@@ -228,3 +262,4 @@ export class ClientAccountsPageComponent implements OnInit {
     return type === 'deposit' || type === 'credit_issue';
   }
 }
+

@@ -9,10 +9,12 @@ export interface CreateAccountRequest {
 }
 
 export interface AccountDto {
+  id?: AccountId;
   clientId: UserId;
   accountNumber: string;
   balance: number;
   status: string;
+  createdAt?: string;
 }
 
 export interface AccountListQuery {

@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { AccountsApiService, AccountOperationDto, type AccountDto } from 'shared/entities/accounts';
-import { UsersApiService, type UserDto } from 'shared/entities/users';
+import { type AccountDto, type AccountOperationDto } from 'shared/entities/accounts';
+import { type UserDto } from 'shared/entities/users';
+import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface AccountPageRecord {
   client: string;
@@ -23,15 +24,12 @@ export interface AccountOperationRecord {
   providedIn: 'root',
 })
 export class AccountsPageService {
-  constructor(
-    private readonly accountsApiService: AccountsApiService,
-    private readonly usersApiService: UsersApiService
-  ) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   loadAccounts(): Observable<AccountPageRecord[]> {
     return forkJoin({
-      list: this.accountsApiService.getAccountsList({ page: 0, size: 200, sort: ['id', 'desc'] }),
-      users: this.usersApiService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
+      list: this.requestService.getAccountsList(),
+      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
     }).pipe(
       map(({ list, users }) => {
         const usersById = new Map<string, UserDto>();
@@ -45,8 +43,8 @@ export class AccountsPageService {
   }
 
   loadOperations(accountNumber: string): Observable<AccountOperationRecord[]> {
-    return this.accountsApiService
-      .getOperations(accountNumber)
+    return this.requestService
+      .getAccountOperations(accountNumber)
       .pipe(map((operations) => operations.map((operation) => this.mapOperation(operation))));
   }
 
@@ -81,6 +79,7 @@ export class AccountsPageService {
     if (normalized === 'BANNED' || normalized === 'BLOCKED') {
       return 'Заблокирован';
     }
+
     return status;
   }
 
@@ -92,6 +91,7 @@ export class AccountsPageService {
     if (normalized.includes('WITHDRAW')) {
       return 'Снятие';
     }
+
     return operationType;
   }
 
@@ -112,6 +112,7 @@ export class AccountsPageService {
     if (normalized.includes('DEPOSIT')) {
       return `+${base}`;
     }
+
     return base;
   }
 
@@ -120,6 +121,7 @@ export class AccountsPageService {
     if (Number.isNaN(date.getTime())) {
       return value;
     }
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();

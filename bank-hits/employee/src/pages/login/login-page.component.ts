@@ -1,8 +1,9 @@
-import { HttpErrorResponse } from '@angular/common/http';
+﻿import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { NotificationService } from '../../../../shared/frontend-core';
 import { EmployeeLoginPageService } from './model';
 
 @Component({
@@ -19,9 +20,10 @@ export class LoginPageComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly employeeLoginPageService: EmployeeLoginPageService
+    private readonly employeeLoginPageService: EmployeeLoginPageService,
+    private readonly notifications: NotificationService
   ) {}
-  
+
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
     if (!normalizedEmail || this.isSubmitting) {
@@ -36,10 +38,12 @@ export class LoginPageComponent {
       .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
         next: () => {
+          this.notifications.success('Вход выполнен.');
           void this.router.navigate(['/panel/accounts']);
         },
         error: (error: unknown) => {
           this.errorText = this.resolveErrorText(error);
+          this.notifications.error(this.errorText);
         },
       });
   }
@@ -57,3 +61,4 @@ export class LoginPageComponent {
     return backendMessage || 'Не удалось выполнить вход. Проверьте email и повторите попытку.';
   }
 }
+

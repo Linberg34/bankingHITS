@@ -1,0 +1,39 @@
+﻿.notification-center {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 2000;
+  display: grid;
+  gap: 8px;
+  max-width: 360px;
+}
+
+.notification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: #f5f5f5;
+  border: 1px solid #d7d7d7;
+  color: #272727;
+}
+
+.notification--success {
+  background: #ecfdf3;
+  border-color: #86efac;
+}
+
+.notification--error {
+  background: #fef2f2;
+  border-color: #fca5a5;
+}
+
+.notification button {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+

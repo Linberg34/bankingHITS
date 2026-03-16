@@ -1,0 +1,9 @@
+﻿<div class="notification-center">
+  @for (item of notificationService.notifications(); track item.id) {
+    <div class="notification" [class.notification--success]="item.level === 'success'" [class.notification--error]="item.level === 'error'">
+      <span>{{ item.message }}</span>
+      <button type="button" (click)="notificationService.dismiss(item.id)">x</button>
+    </div>
+  }
+</div>
+
