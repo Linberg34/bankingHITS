@@ -1,0 +1,104 @@
+﻿<section class="domain-page">
+  <header class="page-header">
+    <h1>Все кредиты</h1>
+    <div class="filters">
+      <label class="filter-item">
+        <span>Клиент</span>
+        <select [(ngModel)]="selectedClient" (ngModelChange)="applyFilters()">
+          <option value="all">Все клиенты</option>
+          @for (client of clientOptions(); track client) {
+            @if (client !== 'all') {
+              <option [value]="client">{{ client }}</option>
+            }
+          }
+        </select>
+      </label>
+    </div>
+  </header>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
+
+  <article class="table-card">
+    <table>
+      <thead>
+        <tr>
+          @for (column of columns; track column) {
+            <th>{{ column }}</th>
+          }
+        </tr>
+      </thead>
+      <tbody>
+        @for (credit of credits(); track credit.id) {
+          <tr class="credit-row" (click)="openDetails(credit)">
+            <td>{{ credit.clientName }}</td>
+            <td>{{ credit.account }}</td>
+            <td>{{ credit.tariff }}</td>
+            <td>{{ credit.amount }}</td>
+            <td>{{ credit.remaining }}</td>
+            <td>{{ credit.rate }}</td>
+            <td>
+              <span
+                class="status"
+                [class.status-active]="isActiveStatus(credit.status)"
+                [class.status-paid]="isPaidStatus(credit.status)"
+                [class.status-overdue]="isOverdueStatus(credit.status)"
+              >
+                {{ credit.status }}
+              </span>
+            </td>
+            <td>{{ credit.issuedAt }}</td>
+          </tr>
+        }
+        @if (!credits().length) {
+          <tr>
+            <td colspan="8">Кредиты не найдены</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </article>
+
+  <shared-basic-modal [open]="detailsModalOpen" [title]="'Детали кредита'" (closed)="closeDetails()">
+    @if (selectedCredit) {
+      <section class="credit-details">
+        <div class="details-top">
+          <h3>{{ selectedCredit.clientName }}</h3>
+          <span class="credit-id">{{ selectedCredit.id }}</span>
+        </div>
+
+        <div class="details-grid">
+          <article>
+            <small>Счет</small>
+            <strong>{{ selectedCredit.account }}</strong>
+          </article>
+          <article>
+            <small>Тариф</small>
+            <strong>{{ selectedCredit.tariff }}</strong>
+          </article>
+          <article>
+            <small>Сумма кредита</small>
+            <strong>{{ selectedCredit.amount }}</strong>
+          </article>
+          <article>
+            <small>Остаток</small>
+            <strong>{{ selectedCredit.remaining }}</strong>
+          </article>
+          <article>
+            <small>Срок</small>
+            <strong>{{ selectedCredit.termMonths }} мес.</strong>
+          </article>
+          <article>
+            <small>Оплачено</small>
+            <strong>{{ selectedCredit.paidMonths }} мес.</strong>
+          </article>
+          <article>
+            <small>Дата закрытия</small>
+            <strong>{{ selectedCredit.closedAt }}</strong>
+          </article>
+        </div>
+      </section>
+    }
+  </shared-basic-modal>
+</section>

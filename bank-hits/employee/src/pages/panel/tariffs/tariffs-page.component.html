@@ -1,0 +1,69 @@
+﻿<section class="domain-page">
+  <header class="page-header">
+    <h1>Кредитные тарифы</h1>
+    <button type="button" class="action" (click)="openAddTariffModal()">Добавить тариф</button>
+  </header>
+
+  @if (errorText()) {
+    <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
+
+  <section class="cards-grid">
+    @for (tariff of tariffs(); track tariff.id) {
+      <article class="tariff-card">
+        <div class="card-top">
+          <h2>{{ tariff.name }}</h2>
+          <span>%</span>
+        </div>
+        <p>Создан: {{ tariff.createdAt }}</p>
+        <div class="rate-box">
+          <small>Процентная ставка</small>
+          <strong>{{ tariff.rate }}</strong>
+        </div>
+      </article>
+    }
+
+    @if (!tariffs().length) {
+      <p class="empty-text">Тарифы пока не созданы.</p>
+    }
+  </section>
+
+  <shared-basic-modal [open]="addTariffModalOpen()" [title]="'Добавить кредитный тариф'" (closed)="closeAddTariffModal()">
+    <form class="modal-form" (ngSubmit)="addTariff()">
+      <label>
+        Название тарифа
+        <input
+          [(ngModel)]="newTariff.name"
+          (ngModelChange)="onNameChange()"
+          name="tariffName"
+          type="text"
+          [class.input-error]="hasNameError"
+          required
+        />
+      </label>
+      @if (hasNameError) {
+        <p class="field-error">{{ nameError }}</p>
+      }
+
+      <label>
+        Ставка, %
+        <input
+          [(ngModel)]="newTariff.rate"
+          (ngModelChange)="onRateChange()"
+          name="tariffRate"
+          type="number"
+          min="0.1"
+          max="100"
+          step="0.1"
+          [class.input-error]="hasRateError"
+          required
+        />
+      </label>
+      @if (hasRateError) {
+        <p class="field-error">{{ rateError }}</p>
+      }
+
+      <button type="submit" class="submit-btn" [disabled]="actionInProgress()">Сохранить тариф</button>
+    </form>
+  </shared-basic-modal>
+</section>

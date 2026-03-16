@@ -1,0 +1,11 @@
+:host.shared-table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+.shared-table__inner {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}

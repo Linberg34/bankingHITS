@@ -1,0 +1,43 @@
+<section class="login-screen">
+  <div class="login-card">
+    <div class="login-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M4 9.2L12 4.5L20 9.2V20H4V9.2Z"
+          stroke="white"
+          stroke-width="1.6"
+          stroke-linejoin="round"
+        />
+        <path d="M8 20V12H16V20" stroke="white" stroke-width="1.6" />
+        <path d="M7 12H17" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <h1>Интернет-Банк</h1>
+    <p>Введите email</p>
+
+    <div class="username-field">
+      <input
+        id="email-input"
+        class="username-input"
+        type="email"
+        placeholder="Введите email"
+        [(ngModel)]="email"
+        (keyup.enter)="register()"
+      />
+      <button
+        class="username-submit"
+        type="button"
+        aria-label="Continue"
+        (click)="register()"
+        [disabled]="isSubmitting"
+      >
+        <span aria-hidden="true">→</span>
+      </button>
+    </div>
+
+    @if (errorText) {
+      <p class="login-error">{{ errorText }}</p>
+    }
+  </div>
+</section>

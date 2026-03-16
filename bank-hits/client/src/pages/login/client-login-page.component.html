@@ -1,0 +1,48 @@
+<section class="login-screen">
+  <div class="login-card">
+    <div class="login-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path
+          d="M4 9.2L12 4.5L20 9.2V20H4V9.2Z"
+          stroke="white"
+          stroke-width="1.6"
+          stroke-linejoin="round"
+        />
+        <path d="M8 20V12H16V20" stroke="white" stroke-width="1.6" />
+        <path d="M7 12H17" stroke="white" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+    </div>
+
+    <h1>Интернет-Банк</h1>
+    <p>Введите email для входа</p>
+
+    @if (error()) {
+      <p class="login-error" role="alert">{{ error() }}</p>
+    }
+    <form #loginForm="ngForm" class="login-form" (ngSubmit)="submit(loginForm)">
+      <div class="login-field">
+        <input
+          id="email-input"
+          class="login-input"
+          type="email"
+          placeholder="example@mail.ru"
+          autocomplete="email"
+          required
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+          [ngModel]="email()"
+          (ngModelChange)="email.set($event); error.set('')"
+          [disabled]="loading()"
+          name="email"
+        />
+        <button
+          class="login-submit"
+          type="submit"
+          aria-label="Войти"
+          [disabled]="loading()"
+        >
+          <span aria-hidden="true">{{ loading() ? '…' : '→' }}</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
