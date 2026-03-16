@@ -2,7 +2,13 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../api';
-import { CreditDto, CreditId, UserId } from './credits-api.models';
+import {
+  CreditDto,
+  CreditId,
+  RepayPartialRequest,
+  TakeCreditRequest,
+  UserId,
+} from './credits-api.models';
 
 @Injectable({
   providedIn: 'root',
@@ -23,6 +29,21 @@ export class CreditsApiService {
 
   getCreditsByClientId(clientId: UserId): Observable<CreditDto[]> {
     return this.httpClient.get<CreditDto[]>(`${this.normalizedBaseUrl}/api/credits/client/${clientId}`);
+  }
+
+  takeCredit(payload: TakeCreditRequest): Observable<CreditDto> {
+    return this.httpClient.post<CreditDto>(`${this.normalizedBaseUrl}/api/credits`, payload);
+  }
+
+  repayFull(creditId: CreditId): Observable<CreditDto> {
+    return this.httpClient.post<CreditDto>(`${this.normalizedBaseUrl}/api/credits/${creditId}/repay`, null);
+  }
+
+  repayPartial(creditId: CreditId, payload: RepayPartialRequest): Observable<CreditDto> {
+    return this.httpClient.post<CreditDto>(
+      `${this.normalizedBaseUrl}/api/credits/${creditId}/repay/partial`,
+      payload
+    );
   }
 
   private get normalizedBaseUrl(): string {

@@ -1,5 +1,6 @@
 ﻿import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
 import { CreditRecord, CreditsPageService } from './model';
 
@@ -22,7 +23,10 @@ export class CreditsPageComponent {
   selectedCredit: CreditRecord | null = null;
   errorText = signal('');
 
-  constructor(private readonly creditsPageService: CreditsPageService) {
+  constructor(
+    private readonly creditsPageService: CreditsPageService,
+    private readonly notifications: NotificationService
+  ) {
     this.loadCredits();
   }
 
@@ -70,11 +74,16 @@ export class CreditsPageComponent {
         if (!this.clientOptions().includes(this.selectedClient)) {
           this.selectedClient = 'all';
         }
+
         this.applyFilters();
+        this.notifications.info('Кредиты обновлены.');
       },
       error: () => {
-        this.errorText.set('Не удалось загрузить кредиты.');
+        const message = 'Не удалось загрузить кредиты.';
+        this.errorText.set(message);
+        this.notifications.error(message);
       },
     });
   }
 }
+

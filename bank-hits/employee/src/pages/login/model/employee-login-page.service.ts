@@ -1,18 +1,15 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { AuthApiService } from '../../../../../shared/entities/auth';
+import { EmployeeAdminRequestService } from '../../../app/infrastructure/request/employee-admin-request.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeeLoginPageService {
-  constructor(private readonly authApiService: AuthApiService) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   login(email: string): Observable<void> {
-    return this.authApiService
-      .login({
-        email,
-      })
-      .pipe(map(() => void 0));
+    return this.requestService.login(email).pipe(map(() => void 0));
   }
 }
+

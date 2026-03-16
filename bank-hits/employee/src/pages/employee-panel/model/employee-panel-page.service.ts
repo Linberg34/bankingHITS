@@ -1,17 +1,18 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Observable, finalize, map } from 'rxjs';
-import { AuthApiService } from '../../../../../shared/entities/auth';
+import { EmployeeAdminRequestService } from '../../../app/infrastructure/request/employee-admin-request.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class EmployeePanelPageService {
-  constructor(private readonly authApiService: AuthApiService) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   logout(): Observable<void> {
-    return this.authApiService.logout().pipe(
-      finalize(() => this.authApiService.clearAuth()),
+    return this.requestService.logout().pipe(
+      finalize(() => this.requestService.clearAuth()),
       map(() => void 0)
     );
   }
 }
+

@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { AuthApiService } from 'shared/entities/auth';
-import { UserDto, UserId, UsersApiService } from 'shared/entities/users';
+import { type UserDto, type UserId } from 'shared/entities/users';
+import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
-export type UsersPageRole = 'Клиент' | 'Сотрудник';
+export type UsersPageRole = 'Клиент' | 'Сотрудник' | string;
 
 export interface UsersPageRecord {
   id: string;
@@ -22,37 +22,30 @@ export interface UsersPageData {
   providedIn: 'root',
 })
 export class UsersPageService {
-  constructor(
-    private readonly usersApiService: UsersApiService,
-    private readonly authApiService: AuthApiService
-  ) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   getClientUsers(): Observable<UsersPageRecord[]> {
-    return this.usersApiService.getUsers('CLIENTS').pipe(map((users) => users.map((user) => this.mapUser(user))));
+    return this.requestService.getUsers('CLIENTS').pipe(map((users) => users.map((user) => this.mapUser(user))));
   }
 
   getEmployeeUsers(): Observable<UsersPageRecord[]> {
-    return this.usersApiService
+    return this.requestService
       .getUsers('EMPLOYEES')
       .pipe(map((users) => users.map((user) => this.mapUser(user))));
   }
 
   banUser(userId: UserId): Observable<UsersPageRecord> {
-    return this.usersApiService.banUser(userId).pipe(map((user) => this.mapUser(user)));
+    return this.requestService.banUser(userId).pipe(map((user) => this.mapUser(user)));
   }
 
   unbanUser(userId: UserId): Observable<UsersPageRecord> {
-    return this.usersApiService.unbanUser(userId).pipe(map((user) => this.mapUser(user)));
+    return this.requestService.unbanUser(userId).pipe(map((user) => this.mapUser(user)));
   }
 
   createUser(name: string, email: string, role: UsersPageRole): Observable<void> {
-    const payload = { name, email };
-    const request$ =
-      role === 'Сотрудник'
-        ? this.authApiService.registerEmployeeWithoutAuth(payload)
-        : this.authApiService.registerWithoutAuth(payload);
-
-    return request$.pipe(map(() => void 0));
+    return this.requestService
+      .createUser(name, email, role === 'Сотрудник')
+      .pipe(map(() => void 0));
   }
 
   private mapUser(user: UserDto): UsersPageRecord {
@@ -70,6 +63,7 @@ export class UsersPageService {
     if (normalizedStatus === 'BANNED' || normalizedStatus === 'BLOCKED') {
       return 'Заблокирован';
     }
+
     return 'Активен';
   }
 
@@ -84,3 +78,4 @@ export class UsersPageService {
     return `${day}.${month}.${year}`;
   }
 }
+

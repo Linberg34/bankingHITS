@@ -1,0 +1,12 @@
+﻿<shared-dialog [open]="open()" (openChange)="openChange.emit($event)">
+  <shared-dialog-header>
+    <shared-dialog-title>{{ title() }}</shared-dialog-title>
+    <shared-dialog-description>{{ description() }}</shared-dialog-description>
+  </shared-dialog-header>
+
+  <shared-dialog-footer>
+    <shared-button variant="outline" (click)="openChange.emit(false)">{{ cancelText() }}</shared-button>
+    <shared-button [disabled]="confirmDisabled()" (click)="onConfirm()">{{ confirmText() }}</shared-button>
+  </shared-dialog-footer>
+</shared-dialog>
+

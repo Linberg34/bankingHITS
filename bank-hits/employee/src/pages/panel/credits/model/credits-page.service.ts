@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { CreditsApiService, type CreditDto } from 'shared/entities/credits';
-import { UsersApiService, type UserDto } from 'shared/entities/users';
+import { type CreditDto } from 'shared/entities/credits';
+import { type UserDto } from 'shared/entities/users';
+import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface CreditRecord {
   id: string;
@@ -22,15 +23,12 @@ export interface CreditRecord {
   providedIn: 'root',
 })
 export class CreditsPageService {
-  constructor(
-    private readonly creditsApiService: CreditsApiService,
-    private readonly usersApiService: UsersApiService
-  ) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   loadCredits(): Observable<CreditRecord[]> {
     return forkJoin({
-      credits: this.creditsApiService.getAllCredits(),
-      users: this.usersApiService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
+      credits: this.requestService.getCredits(),
+      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
     }).pipe(map(({ credits, users }) => this.mapCredits(credits, users)));
   }
 
@@ -44,11 +42,12 @@ export class CreditsPageService {
       const client = userById.get(String(credit.clientId));
       const issuedDate = this.formatDate(credit.issuedAt);
       const closedDate = credit.closedAt ? this.formatDate(credit.closedAt) : '-';
+      const accountValue = credit.accountNumber ?? (credit.accountId != null ? String(credit.accountId) : '-');
 
       return {
         id: String(credit.id),
         clientName: client?.name ?? `ID ${credit.clientId}`,
-        account: `ID ${credit.accountId}`,
+        account: accountValue,
         tariff: credit.tariffName,
         amount: this.formatAmount(credit.principalAmount),
         remaining: this.formatAmount(credit.remainingDebt),
@@ -73,6 +72,7 @@ export class CreditsPageService {
     if (normalized === 'OVERDUE') {
       return 'Просрочен';
     }
+
     return status;
   }
 
@@ -96,3 +96,4 @@ export class CreditsPageService {
     return `${day}.${month}.${year}`;
   }
 }
+
