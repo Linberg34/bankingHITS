@@ -16,9 +16,6 @@ import java.util.Objects;
 // проверяет JWT в STOMP заголовке при CONNECT
 @RequiredArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
-
-    private final JwtValidator jwtValidator;
-
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor =

@@ -37,6 +37,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         // дополнительная проверка JWT в STOMP CONNECT фрейме
-        registration.interceptors(new JwtChannelInterceptor(jwtValidator));
+        registration.interceptors(new JwtChannelInterceptor());
     }
 }

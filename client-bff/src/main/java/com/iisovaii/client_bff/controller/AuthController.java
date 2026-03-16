@@ -4,6 +4,8 @@ import com.iisovaii.client_bff.dto.auth.LoginUrlResponse;
 import com.iisovaii.client_bff.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,18 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/bff/client/auth")
 @RequiredArgsConstructor
+@Tag(name = "Auth", description = "OAuth2 / SSO аутентификация клиента")
 public class AuthController {
 
     private final AuthService authService;
 
-    // Angular запрашивает ссылку для редиректа на SSO
     @GetMapping("/login-url")
+    @Operation(
+            summary = "Получить URL для логина через SSO",
+            description = "Возвращает ссылку для редиректа на страницу аутентификации SSO (OAuth2 Authorization Code Flow)."
+    )
     public ResponseEntity<LoginUrlResponse> getLoginUrl() {
         return ResponseEntity.ok(authService.buildLoginUrl());
     }
 
-    // SSO редиректит сюда после логина с code
     @GetMapping("/callback")
+    @Operation(
+            summary = "Callback от SSO с authorization code",
+            description = "Принимает authorization code от SSO, обменивает его на access_token и устанавливает httpOnly cookie."
+    )
     public ResponseEntity<Void> callback(
             @RequestParam String code,
             HttpServletResponse response) {
@@ -40,6 +49,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
+    @Operation(
+            summary = "Logout клиента",
+            description = "Очищает httpOnly cookie с access_token и завершает сессию на стороне BFF."
+    )
     public ResponseEntity<Void> logout(
             HttpServletRequest request,
             HttpServletResponse response) {

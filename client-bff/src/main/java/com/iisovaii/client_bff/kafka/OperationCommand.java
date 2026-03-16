@@ -15,9 +15,6 @@ public class OperationCommand {
     private UUID userId;
     private Object payload;
 
-    public OperationCommand() {
-    }
-
     public OperationCommand(UUID operationId, String type, UUID userId, Object payload) {
         this.operationId = operationId;
         this.type = type;
