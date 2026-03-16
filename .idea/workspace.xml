@@ -5,88 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="The BFF client is almost working, but I still need to edit the files.">
-      <change afterPath="$PROJECT_DIR$/client-bff/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/AccountServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/CreditServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/SsoServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/UserServiceClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/FeignConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/GlobalExceptionHandler.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/JwtChannelInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/JwtHandshakeInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/KafkaConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/StompPrincipal.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/WebMvcConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/WebSocketConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/domain/Theme.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/domain/UserSettings.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/AccountDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/AccountListResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/AccountStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/CloseAccountResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/OpenAccountRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/OpenAccountResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/auth/LoginUrlResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/common/Currency.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditDetailResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditListResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditPaymentDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditRatingResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/CreditSummaryDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/PaymentStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/RepayCreditRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/RepayCreditResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/TakeCreditRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/credit/TakeCreditResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/error/ErrorResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/DepositRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/OperationAcceptedResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/OperationDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/OperationPageResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/OperationStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/OperationType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/TransferRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/operation/WithdrawRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/profile/ClientProfileResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/profile/UserStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/settings/SettingsDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/settings/Theme.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/tariff/TariffDto.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/ws/WsBalanceEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/ws/WsEventType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/ws/WsOperationEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationCommand.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/mapper/auth/AuthMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/repository/UserSettingsRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/CurrentUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/CurrentUserArgumentResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/JwtAuthFilter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/JwtExpiredException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/JwtInvalidException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/JwtValidator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/security/UnauthorizedException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/service/ProxyService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/service/SettingsService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/ws/OperationsWsController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/ws/WsSessionRegistry.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client-bff/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/ClientBffApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/ClientBffApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/client-bff/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -473,7 +394,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772383892746</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="The BFF client is almost working, but I still need to edit the files.">
+      <option name="closed" value="true" />
+      <created>1773686333241</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1773686333241</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
