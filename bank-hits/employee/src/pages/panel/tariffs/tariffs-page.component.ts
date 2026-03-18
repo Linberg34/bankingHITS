@@ -82,9 +82,7 @@ export class TariffsPageComponent {
       .subscribe({
         next: (tariff) => {
           this.tariffs.update((records) => [tariff, ...records]);
-          this.closeAddTariffModal();
-          this.notifications.success('Тариф создан.');
-        },
+          this.closeAddTariffModal();        },
         error: (error: unknown) => {
           const message = this.resolveErrorText(error);
           this.errorText.set(message);
@@ -100,9 +98,7 @@ export class TariffsPageComponent {
       .loadTariffs()
       .subscribe({
         next: (tariffs) => {
-          this.tariffs.set(tariffs);
-          this.notifications.info('Тарифы обновлены.');
-        },
+          this.tariffs.set(tariffs);        },
         error: () => {
           const message = 'Не удалось загрузить тарифы.';
           this.errorText.set(message);
@@ -188,4 +184,5 @@ export class TariffsPageComponent {
     return backendMessage || 'Не удалось сохранить тариф.';
   }
 }
+
 

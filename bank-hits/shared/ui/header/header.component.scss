@@ -4,8 +4,12 @@
 
 .header {
   align-items: center;
-  background: linear-gradient(90deg, #6b16e3 0%, #c61fe2 100%);
-  box-shadow: 0 8px 20px rgba(91, 38, 164, 0.3);
+  background: linear-gradient(
+    90deg,
+    var(--color-header-start, #6b16e3) 0%,
+    var(--color-header-end, #c61fe2) 100%
+  );
+  box-shadow: var(--shadow-header, 0 8px 20px rgba(91, 38, 164, 0.3));
   color: #fff;
   display: flex;
   justify-content: space-between;
@@ -47,10 +51,16 @@
   white-space: nowrap;
 }
 
+.header__actions {
+  display: inline-flex;
+  gap: 8px;
+}
+
+.theme-toggle,
 .logout {
   align-items: center;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: var(--color-header-button-bg, rgba(255, 255, 255, 0.14));
+  border: 1px solid var(--color-header-button-border, rgba(255, 255, 255, 0.35));
   border-radius: 8px;
   color: inherit;
   cursor: pointer;
@@ -59,7 +69,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background: rgba(255, 255, 255, 0.24);
+    background: var(--color-header-button-hover, rgba(255, 255, 255, 0.24));
   }
 
   &:focus-visible {
@@ -91,7 +101,7 @@
     flex-direction: column;
   }
 
-  .logout {
+  .header__actions {
     align-self: flex-end;
   }
 }

@@ -1,19 +1,22 @@
 ﻿import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { NotificationService } from '../../../../shared/frontend-core';
+import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
+import { HeaderComponent } from '../../../../shared/ui/header';
 import { EmployeeLoginPageService } from './model';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HeaderComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
+  private readonly themeModeService = inject(ThemeModeService);
+
   email = '';
   isSubmitting = false;
   errorText = '';
@@ -23,6 +26,14 @@ export class LoginPageComponent {
     private readonly employeeLoginPageService: EmployeeLoginPageService,
     private readonly notifications: NotificationService
   ) {}
+
+  protected get themeMode(): 'light' | 'dark' {
+    return this.themeModeService.mode;
+  }
+
+  protected onThemeToggle(): void {
+    this.themeModeService.toggle();
+  }
 
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
@@ -37,9 +48,7 @@ export class LoginPageComponent {
       .login(normalizedEmail)
       .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
-        next: () => {
-          this.notifications.success('Вход выполнен.');
-          void this.router.navigate(['/panel/accounts']);
+        next: () => {          void this.router.navigate(['/panel/accounts']);
         },
         error: (error: unknown) => {
           this.errorText = this.resolveErrorText(error);
@@ -61,4 +70,5 @@ export class LoginPageComponent {
     return backendMessage || 'Не удалось выполнить вход. Проверьте email и повторите попытку.';
   }
 }
+
 

@@ -2,9 +2,9 @@
   min-height: 100vh;
   background: linear-gradient(
     135deg,
-    #f5f1ff 0%,
-    #fce7ff 50%,
-    #ede9fe 100%
+    var(--color-app-bg-gradient-start, #f5f1ff) 0%,
+    var(--color-app-bg-gradient-middle, #fce7ff) 50%,
+    var(--color-app-bg-gradient-end, #ede9fe) 100%
   );
 }
 
@@ -40,8 +40,8 @@
   transition: background 0.15s, color 0.15s;
 
   &:hover {
-    background: rgba(165, 107, 255, 0.1);
-    color: #6b21a8;
+    background: color-mix(in srgb, var(--color-primary-start, #a56bff) 20%, transparent);
+    color: var(--color-primary-start, #6b21a8);
   }
 
   &.client-shell__nav-link--active {

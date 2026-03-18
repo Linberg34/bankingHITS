@@ -96,9 +96,7 @@ export class AccountsPageComponent {
 
     this.accountsPageService.loadAccounts().subscribe({
       next: (records) => {
-        this.accountRecords.set(records);
-        this.notifications.info('Счета обновлены.');
-      },
+        this.accountRecords.set(records);      },
       error: () => {
         const message = 'Не удалось загрузить список счетов.';
         this.errorText.set(message);
@@ -107,4 +105,5 @@ export class AccountsPageComponent {
     });
   }
 }
+
 

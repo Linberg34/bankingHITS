@@ -138,9 +138,7 @@ export class ClientAccountsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.openCurrentAccount().subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Account opened.' });
-        this.notifications.success('Account opened successfully.');
-        this.closeNewAccount();
+        this.actionState.set({ status: 'success', message: 'Account opened.' });        this.closeNewAccount();
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);
@@ -172,9 +170,7 @@ export class ClientAccountsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.deposit(accountId, sum).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Balance updated.' });
-        this.notifications.success('Account balance updated.');
-        this.amount.set('');
+        this.actionState.set({ status: 'success', message: 'Balance updated.' });        this.amount.set('');
         this.closeDeposit();
       },
       error: (error: unknown) => {
@@ -207,9 +203,7 @@ export class ClientAccountsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.withdraw(accountId, sum).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });
-        this.notifications.success('Withdrawal completed.');
-        this.amount.set('');
+        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });        this.amount.set('');
         this.closeWithdraw();
       },
       error: (error: unknown) => {
@@ -245,9 +239,7 @@ export class ClientAccountsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.deleteAccount(account.id).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Account closed.' });
-        this.notifications.success('Account closed.');
-        this.openCloseConfirm.set(false);
+        this.actionState.set({ status: 'success', message: 'Account closed.' });        this.openCloseConfirm.set(false);
         this.selectedAccountToClose.set(null);
       },
       error: (error: unknown) => {
@@ -262,4 +254,5 @@ export class ClientAccountsPageComponent implements OnInit {
     return type === 'deposit' || type === 'credit_issue';
   }
 }
+
 

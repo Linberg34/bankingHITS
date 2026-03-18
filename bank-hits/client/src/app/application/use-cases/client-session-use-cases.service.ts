@@ -20,7 +20,6 @@ export class ClientSessionUseCasesService {
       map((user) => {
         this.authRoleService.setRole(user.role.toLowerCase() as 'client' | 'employee');
         void this.router.navigate(['/panel']);
-        this.notificationService.success('Login successful.');
         return { success: true } as const;
       }),
       catchError((error: unknown) => {
@@ -41,7 +40,6 @@ export class ClientSessionUseCasesService {
       map(() => {
         this.request.clearAuth();
         this.authRoleService.clearRole();
-        this.notificationService.info('You signed out.');
         return void 0;
       })
     );
@@ -68,4 +66,3 @@ function resolveErrorMessage(error: AppError): string {
 
   return error.message || 'Action failed. Please retry.';
 }
-

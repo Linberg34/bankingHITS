@@ -176,9 +176,7 @@ export class ClientCreditsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.takeCredit(accountNumber, tariff, amount).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Credit created.' });
-        this.notifications.success('Credit created.');
-        this.closeNewCredit();
+        this.actionState.set({ status: 'success', message: 'Credit created.' });        this.closeNewCredit();
         this.reloadCredits();
       },
       error: (error: unknown) => {
@@ -213,9 +211,7 @@ export class ClientCreditsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.repayCreditPartial(creditId, amount).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Payment completed.' });
-        this.notifications.success('Credit payment completed.');
-        this.closePayCredit();
+        this.actionState.set({ status: 'success', message: 'Payment completed.' });        this.closePayCredit();
         this.paymentAmount.set('');
         this.selectedCreditId.set('');
         this.reloadCredits();
@@ -248,4 +244,5 @@ export class ClientCreditsPageComponent implements OnInit {
     });
   }
 }
+
 

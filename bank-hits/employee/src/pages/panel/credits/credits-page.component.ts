@@ -75,9 +75,7 @@ export class CreditsPageComponent {
           this.selectedClient = 'all';
         }
 
-        this.applyFilters();
-        this.notifications.info('Кредиты обновлены.');
-      },
+        this.applyFilters();      },
       error: () => {
         const message = 'Не удалось загрузить кредиты.';
         this.errorText.set(message);
@@ -86,4 +84,5 @@ export class CreditsPageComponent {
     });
   }
 }
+
 

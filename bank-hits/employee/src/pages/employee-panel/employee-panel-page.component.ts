@@ -1,6 +1,6 @@
-﻿import { Component } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { NotificationService } from '../../../../shared/frontend-core';
+import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../shared/ui/header';
 import { EmployeePanelPageService } from './model';
 
@@ -12,6 +12,8 @@ import { EmployeePanelPageService } from './model';
   styleUrl: './employee-panel-page.component.scss',
 })
 export class EmployeePanelPageComponent {
+  protected readonly themeModeService = inject(ThemeModeService);
+
   constructor(
     private readonly router: Router,
     private readonly employeePanelPageService: EmployeePanelPageService,
@@ -21,7 +23,6 @@ export class EmployeePanelPageComponent {
   logout(): void {
     this.employeePanelPageService.logout().subscribe({
       next: () => {
-        this.notifications.info('Вы вышли из системы.');
         void this.router.navigateByUrl('/registration');
       },
       error: () => {
@@ -30,5 +31,12 @@ export class EmployeePanelPageComponent {
       },
     });
   }
-}
 
+  protected get themeMode(): 'light' | 'dark' {
+    return this.themeModeService.mode;
+  }
+
+  protected onThemeToggle(): void {
+    this.themeModeService.toggle();
+  }
+}

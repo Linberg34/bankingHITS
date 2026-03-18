@@ -67,9 +67,7 @@ export class UsersPageComponent {
           }
 
           this.resetAddUserForm();
-          this.addModalOpen.set(false);
-          this.notifications.success('Пользователь создан.');
-        },
+          this.addModalOpen.set(false);        },
         error: () => {
           const message = 'Не удалось создать пользователя. Проверьте данные и повторите попытку.';
           this.errorText.set(message);
@@ -111,9 +109,7 @@ export class UsersPageComponent {
       .subscribe({
         next: (updatedUser) => {
           this.replaceUser(updatedUser);
-          this.closeBlockModal();
-          this.notifications.success(target.isBlocked ? 'Пользователь разблокирован.' : 'Пользователь заблокирован.');
-        },
+          this.closeBlockModal();        },
         error: () => {
           const message = 'Не удалось выполнить операцию. Попробуйте позже.';
           this.errorText.set(message);
@@ -196,4 +192,5 @@ export class UsersPageComponent {
     });
   }
 }
+
 
