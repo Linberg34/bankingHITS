@@ -1,27 +1,40 @@
-import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+﻿import { HttpErrorResponse } from '@angular/common/http';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
+import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
+import { HeaderComponent } from '../../../../shared/ui/header';
 import { EmployeeLoginPageService } from './model';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HeaderComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
+  private readonly themeModeService = inject(ThemeModeService);
+
   email = '';
   isSubmitting = false;
   errorText = '';
 
   constructor(
     private readonly router: Router,
-    private readonly employeeLoginPageService: EmployeeLoginPageService
+    private readonly employeeLoginPageService: EmployeeLoginPageService,
+    private readonly notifications: NotificationService
   ) {}
-  
+
+  protected get themeMode(): 'light' | 'dark' {
+    return this.themeModeService.mode;
+  }
+
+  protected onThemeToggle(): void {
+    this.themeModeService.toggle();
+  }
+
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
     if (!normalizedEmail || this.isSubmitting) {
@@ -35,11 +48,11 @@ export class LoginPageComponent {
       .login(normalizedEmail)
       .pipe(finalize(() => (this.isSubmitting = false)))
       .subscribe({
-        next: () => {
-          void this.router.navigate(['/panel/accounts']);
+        next: () => {          void this.router.navigate(['/panel/accounts']);
         },
         error: (error: unknown) => {
           this.errorText = this.resolveErrorText(error);
+          this.notifications.error(this.errorText);
         },
       });
   }
@@ -57,3 +70,5 @@ export class LoginPageComponent {
     return backendMessage || 'Не удалось выполнить вход. Проверьте email и повторите попытку.';
   }
 }
+
+

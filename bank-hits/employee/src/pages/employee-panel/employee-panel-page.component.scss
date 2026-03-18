@@ -1,12 +1,17 @@
 .panel-page {
   min-height: 100vh;
-  background: #efecf8;
+  background: linear-gradient(
+    135deg,
+    var(--color-app-bg-gradient-start, #f5f1ff) 0%,
+    var(--color-app-bg-gradient-middle, #fce7ff) 50%,
+    var(--color-app-bg-gradient-end, #ede9fe) 100%
+  );
 }
 
 .tabs {
   align-items: center;
-  background: #f8f6fd;
-  border-bottom: 1px solid #ddd8eb;
+  background: color-mix(in srgb, var(--color-surface, #ffffff) 90%, transparent);
+  border-bottom: 1px solid var(--color-border, #ddd8eb);
   display: flex;
   gap: 8px;
   min-height: 52px;
@@ -15,16 +20,21 @@
 
 .tab-link {
   border-bottom: 2px solid transparent;
-  color: #5f5973;
+  color: var(--color-text, #5f5973);
   font-size: 17px;
   font-weight: 500;
   padding: 14px 18px 12px;
   text-decoration: none;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.tab-link:hover {
+  color: var(--color-primary-end, #5f3df4);
 }
 
 .tab-link.is-active {
-  border-bottom-color: #5f3df4;
-  color: #5f3df4;
+  border-bottom-color: var(--color-primary-start, #5f3df4);
+  color: var(--color-primary-start, #5f3df4);
 }
 
 .panel-content {

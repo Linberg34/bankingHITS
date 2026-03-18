@@ -1,6 +1,7 @@
-import { Injectable } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { TariffsApiService, type TariffDto } from 'shared/entities/tariffs';
+import { type TariffDto } from 'shared/entities/tariffs';
+import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface TariffRecord {
   id: string;
@@ -13,17 +14,17 @@ export interface TariffRecord {
   providedIn: 'root',
 })
 export class TariffsPageService {
-  constructor(private readonly tariffsApiService: TariffsApiService) {}
+  constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   loadTariffs(): Observable<TariffRecord[]> {
-    return this.tariffsApiService
+    return this.requestService
       .getTariffs()
       .pipe(map((tariffs) => tariffs.map((tariff) => this.mapTariff(tariff))));
   }
 
   createTariff(name: string, annualRate: number): Observable<TariffRecord> {
-    return this.tariffsApiService
-      .createTariff({ name, annualRate })
+    return this.requestService
+      .createTariff(name, annualRate)
       .pipe(map((tariff) => this.mapTariff(tariff)));
   }
 
@@ -41,6 +42,7 @@ export class TariffsPageService {
     if (Number.isNaN(date.getTime())) {
       return value;
     }
+
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();

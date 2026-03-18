@@ -1,6 +1,7 @@
 ﻿import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
 import { AccountOperationRecord, AccountPageRecord, AccountsPageService } from './model';
 
@@ -56,7 +57,10 @@ export class AccountsPageComponent {
     return next;
   });
 
-  constructor(private readonly accountsPageService: AccountsPageService) {
+  constructor(
+    private readonly accountsPageService: AccountsPageService,
+    private readonly notifications: NotificationService
+  ) {
     this.loadAccounts();
   }
 
@@ -74,7 +78,9 @@ export class AccountsPageComponent {
           this.selectedAccountOperations.set(operations);
         },
         error: () => {
-          this.errorText.set('Не удалось загрузить историю операций.');
+          const message = 'Не удалось загрузить историю операций.';
+          this.errorText.set(message);
+          this.notifications.error(message);
         },
       });
   }
@@ -90,11 +96,14 @@ export class AccountsPageComponent {
 
     this.accountsPageService.loadAccounts().subscribe({
       next: (records) => {
-        this.accountRecords.set(records);
-      },
+        this.accountRecords.set(records);      },
       error: () => {
-        this.errorText.set('Не удалось загрузить список счетов.');
+        const message = 'Не удалось загрузить список счетов.';
+        this.errorText.set(message);
+        this.notifications.error(message);
       },
     });
   }
 }
+
+

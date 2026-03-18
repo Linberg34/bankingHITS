@@ -16,32 +16,32 @@
 }
 
 .filter-item span {
-  color: #6f6783;
+  color: var(--color-muted, #6f6783);
   font-size: 12px;
   font-weight: 600;
 }
 
 h1 {
-  color: #241f35;
+  color: var(--color-text, #241f35);
   font-size: 46px;
   margin: 0;
 }
 
 .state-text {
-  color: #4f4668;
+  color: var(--color-text, #4f4668);
   font-size: 14px;
   margin: 0 0 12px;
 }
 
 .state-text--error {
-  color: #c22424;
+  color: #ff7d7d;
 }
 
 select {
-  background: #fff;
-  border: 1px solid #ddd8eb;
+  background: var(--color-input, #fff);
+  border: 1px solid var(--color-border, #ddd8eb);
   border-radius: 10px;
-  color: #38324a;
+  color: var(--color-text, #38324a);
   font-size: 16px;
   min-height: 42px;
   min-width: 180px;
@@ -49,8 +49,8 @@ select {
 }
 
 .table-card {
-  background: #fff;
-  border: 1px solid #e2ddee;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2ddee);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -62,20 +62,20 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid #ece8f5;
+  border-bottom: 1px solid var(--color-border, #ece8f5);
   padding: 16px 20px;
   text-align: left;
 }
 
 th {
-  color: #7c768f;
+  color: var(--color-muted, #7c768f);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
 }
 
 td {
-  color: #2d2942;
+  color: var(--color-text, #2d2942);
   font-size: 15px;
 }
 
@@ -85,7 +85,7 @@ td {
 }
 
 .credit-row:hover {
-  background: #f7f4ff;
+  background: color-mix(in srgb, var(--color-surface, #fff) 90%, var(--color-primary-start, #5f3df4));
 }
 
 .status {
@@ -125,15 +125,15 @@ td {
 }
 
 .details-top h3 {
-  color: #2d2840;
+  color: var(--color-text, #2d2840);
   font-size: 24px;
   margin: 0;
 }
 
 .credit-id {
-  background: #efe9ff;
+  background: color-mix(in srgb, var(--color-input, #efe9ff) 80%, var(--color-primary-start, #5e44bd));
   border-radius: 8px;
-  color: #5e44bd;
+  color: var(--color-text, #5e44bd);
   font-size: 13px;
   font-weight: 700;
   padding: 4px 10px;
@@ -146,40 +146,60 @@ td {
 }
 
 .details-grid article {
-  background: #f7f5fd;
+  background: var(--color-input, #f7f5fd);
   border-radius: 10px;
   padding: 10px 12px;
 }
 
 .details-grid small {
-  color: #706885;
+  color: var(--color-muted, #706885);
   display: block;
   font-size: 12px;
 }
 
 .details-grid strong {
-  color: #2f2942;
+  color: var(--color-text, #2f2942);
   display: block;
   font-size: 15px;
   margin-top: 2px;
 }
 
 .purpose-box {
-  background: #f0ecfa;
+  background: var(--color-input, #f0ecfa);
   border-radius: 10px;
   padding: 12px;
 }
 
 .purpose-box small {
-  color: #696178;
+  color: var(--color-muted, #696178);
   display: block;
   font-size: 12px;
 }
 
 .purpose-box p {
-  color: #312b44;
+  color: var(--color-text, #312b44);
   font-size: 15px;
   margin: 4px 0 0;
+}
+
+[data-theme='dark'] .status {
+  background: #2a3953;
+  color: #d2ddf4;
+}
+
+[data-theme='dark'] .status-active {
+  background: #1f3a2d;
+  color: #a7f3d0;
+}
+
+[data-theme='dark'] .status-paid {
+  background: #233b5b;
+  color: #b8daff;
+}
+
+[data-theme='dark'] .status-overdue {
+  background: #4a2633;
+  color: #ffc1cd;
 }
 
 @media (max-width: 900px) {

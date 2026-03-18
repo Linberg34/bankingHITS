@@ -2,6 +2,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
 import { UsersPageRecord, UsersPageRole, UsersPageService } from './model';
 
@@ -36,7 +37,10 @@ export class UsersPageComponent {
     status: 'Активен',
   };
 
-  constructor(private readonly usersPageService: UsersPageService) {
+  constructor(
+    private readonly usersPageService: UsersPageService,
+    private readonly notifications: NotificationService
+  ) {
     this.loadUsers();
   }
 
@@ -63,10 +67,11 @@ export class UsersPageComponent {
           }
 
           this.resetAddUserForm();
-          this.addModalOpen.set(false);
-        },
+          this.addModalOpen.set(false);        },
         error: () => {
-          this.errorText.set('Не удалось создать пользователя. Проверьте данные и повторите попытку.');
+          const message = 'Не удалось создать пользователя. Проверьте данные и повторите попытку.';
+          this.errorText.set(message);
+          this.notifications.error(message);
         },
       });
   }
@@ -104,10 +109,11 @@ export class UsersPageComponent {
       .subscribe({
         next: (updatedUser) => {
           this.replaceUser(updatedUser);
-          this.closeBlockModal();
-        },
+          this.closeBlockModal();        },
         error: () => {
-          this.errorText.set('Не удалось выполнить операцию. Попробуйте позже.');
+          const message = 'Не удалось выполнить операцию. Попробуйте позже.';
+          this.errorText.set(message);
+          this.notifications.error(message);
         },
       });
   }
@@ -150,17 +156,11 @@ export class UsersPageComponent {
     );
   }
 
-  private formatDate(date: Date): string {
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
-  }
-
   private resolveLoadError(error: unknown, section: 'клиентов' | 'сотрудников'): string {
     if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {
       return `Нет доступа к данным ${section}. Проверьте авторизацию.`;
     }
+
     return `Не удалось загрузить данные ${section}.`;
   }
 
@@ -170,7 +170,9 @@ export class UsersPageComponent {
         this.clientUsers.set(clientUsers);
       },
       error: (error: unknown) => {
-        this.errorText.set(this.resolveLoadError(error, 'клиентов'));
+        const message = this.resolveLoadError(error, 'клиентов');
+        this.errorText.set(message);
+        this.notifications.error(message);
       },
     });
   }
@@ -183,8 +185,12 @@ export class UsersPageComponent {
       error: (error: unknown) => {
         const nextMessage = this.resolveLoadError(error, 'сотрудников');
         const currentError = this.errorText();
-        this.errorText.set(currentError ? `${currentError} ${nextMessage}` : nextMessage);
+        const fullMessage = currentError ? `${currentError} ${nextMessage}` : nextMessage;
+        this.errorText.set(fullMessage);
+        this.notifications.error(nextMessage);
       },
     });
   }
 }
+
+

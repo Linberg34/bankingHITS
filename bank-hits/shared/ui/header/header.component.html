@@ -1,4 +1,4 @@
-<header class="header">
+﻿<header class="header">
   <div class="brand">
     <span class="brand__icon" aria-hidden="true">
       <svg viewBox="0 0 24 24" focusable="false">
@@ -10,12 +10,25 @@
     <span class="brand__title">{{ title }}</span>
   </div>
 
-  <button class="logout" type="button" (click)="logout.emit()">
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <path
-        d="M11 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8v-2h8V5h-8V3Zm2.7 9-2.8-2.8 1.4-1.4 5.2 5.2-5.2 5.2-1.4-1.4 2.8-2.8H3v-2h10.7Z"
-      />
-    </svg>
-    <span>{{ logoutLabel }}</span>
-  </button>
+  <div class="header__actions">
+    <button class="theme-toggle" type="button" (click)="themeToggle.emit()">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path
+          d="M12 4.5a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0V5.5a1 1 0 0 1 1-1Zm0 12.8a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0v-1.2a1 1 0 0 1 1-1Zm7.5-4.3a1 1 0 0 1 0 2h-1.2a1 1 0 1 1 0-2h1.2Zm-12.8 0a1 1 0 1 1 0 2H5.5a1 1 0 1 1 0-2h1.2Zm9.1-5.6a1 1 0 0 1 1.4 0l.8.8a1 1 0 0 1-1.4 1.4l-.8-.8a1 1 0 0 1 0-1.4Zm-8.8 8.8a1 1 0 0 1 1.4 0l.8.8a1 1 0 1 1-1.4 1.4l-.8-.8a1 1 0 0 1 0-1.4Zm0-8.8a1 1 0 0 1 0 1.4l-.8.8A1 1 0 1 1 5 8.2l.8-.8a1 1 0 0 1 1.4 0Zm8.8 8.8a1 1 0 0 1 0 1.4l-.8.8a1 1 0 1 1-1.4-1.4l.8-.8a1 1 0 0 1 1.4 0ZM12 9a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Z"
+        />
+      </svg>
+      <span>{{ themeToggleLabel }}</span>
+    </button>
+
+    @if (showLogout) {
+      <button class="logout" type="button" (click)="logout.emit()">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path
+            d="M11 3h8a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-8v-2h8V5h-8V3Zm2.7 9-2.8-2.8 1.4-1.4 5.2 5.2-5.2 5.2-1.4-1.4 2.8-2.8H3v-2h10.7Z"
+          />
+        </svg>
+        <span>{{ logoutLabel }}</span>
+      </button>
+    }
+  </div>
 </header>

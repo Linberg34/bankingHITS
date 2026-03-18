@@ -1,8 +1,8 @@
-import { Component, inject } from '@angular/core';
+﻿import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationService, ThemeModeService } from '../../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../../shared/ui/header';
-import { AuthApiService } from '../../core/services/auth-api.service';
-import { AuthRoleService } from '../../../../../shared/auth';
+import { ClientSessionUseCasesService } from '../../application/use-cases/client-session-use-cases.service';
 
 @Component({
   selector: 'app-client-shell',
@@ -14,8 +14,9 @@ import { AuthRoleService } from '../../../../../shared/auth';
 export class ClientShellComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
-  private readonly authApi = inject(AuthApiService);
-  private readonly authRole = inject(AuthRoleService);
+  private readonly sessionUseCases = inject(ClientSessionUseCasesService);
+  private readonly notifications = inject(NotificationService);
+  private readonly themeModeService = inject(ThemeModeService);
 
   protected pageTitle = (this.route.snapshot.data['title'] as string) ?? 'Клиент';
   protected headerTitle = 'Интернет-Банк - ' + this.pageTitle;
@@ -26,16 +27,24 @@ export class ClientShellComponent {
     { path: 'credits', label: 'Кредиты' },
   ];
 
+  protected get themeMode(): 'light' | 'dark' {
+    return this.themeModeService.mode;
+  }
+
   protected onLogout(): void {
-    this.authApi.logout().subscribe({
+    this.sessionUseCases.logout().subscribe({
       next: () => {
-        this.authRole.clearRole();
         void this.router.navigate(['/registration']);
       },
       error: () => {
-        this.authRole.clearRole();
+        this.sessionUseCases.clearSession();
+        this.notifications.error('Не удалось выйти. Сессия очищена локально.');
         void this.router.navigate(['/registration']);
       },
     });
+  }
+
+  protected onThemeToggle(): void {
+    this.themeModeService.toggle();
   }
 }

@@ -1,10 +1,11 @@
-import { Route } from '@angular/router';
+﻿import { Route } from '@angular/router';
+import { ErrorFallbackPageComponent } from '../../../shared/frontend-core';
 import { roleGuard } from '../../../shared/auth';
-import { ClientPanelPageComponent } from '../pages/client-panel/client-panel-page.component';
-import { ClientLoginPageComponent } from '../pages/login/client-login-page.component';
+import { ClientDashboardPageComponent } from '../pages/dashboard/client-dashboard-page.component';
 import { ClientAccountsPageComponent } from '../pages/accounts/client-accounts-page.component';
 import { ClientCreditsPageComponent } from '../pages/credits/client-credits-page.component';
-import { ClientDashboardPageComponent } from '../pages/dashboard/client-dashboard-page.component';
+import { ClientLoginPageComponent } from '../pages/login/client-login-page.component';
+import { ClientPanelPageComponent } from '../pages/client-panel/client-panel-page.component';
 
 export const appRoutes: Route[] = [
   {
@@ -48,7 +49,11 @@ export const appRoutes: Route[] = [
     ],
   },
   {
+    path: 'error',
+    component: ErrorFallbackPageComponent,
+  },
+  {
     path: '**',
-    redirectTo: 'registration',
+    component: ErrorFallbackPageComponent,
   },
 ];

@@ -1,14 +1,15 @@
 ﻿.state-text {
-  color: #4f4668;
+  color: var(--color-text, #4f4668);
   font-size: 14px;
   margin: 0 0 12px;
 }
 
 .state-text--error {
-  color: #c22424;
+  color: #ff7d7d;
 }
+
 .domain-page h1 {
-  color: #241f35;
+  color: var(--color-text, #241f35);
   font-size: 46px;
   margin: 0 0 18px;
 }
@@ -21,7 +22,7 @@
 }
 
 .filters label {
-  color: #3b3550;
+  color: var(--color-text, #3b3550);
   display: grid;
   font-size: 13px;
   font-weight: 600;
@@ -29,16 +30,18 @@
 }
 
 .filters select {
-  border: 1px solid #d9d2eb;
+  background: var(--color-input, #f4f3f8);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 8px;
+  color: var(--color-text, #3b3550);
   font-size: 14px;
   min-height: 36px;
   padding: 0 10px;
 }
 
 .table-card {
-  background: #fff;
-  border: 1px solid #e2ddee;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2ddee);
   border-radius: 14px;
   overflow: hidden;
 }
@@ -50,14 +53,15 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid #ece8f5;
+  border-bottom: 1px solid var(--color-border, #ece8f5);
+  color: var(--color-text, #3b3550);
   font-size: 17px;
   padding: 16px 20px;
   text-align: left;
 }
 
 th {
-  color: #7c768f;
+  color: var(--color-muted, #7c768f);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -79,7 +83,7 @@ th {
 button {
   background: none;
   border: 0;
-  color: #6542f2;
+  color: var(--color-primary-start, #6542f2);
   cursor: pointer;
   font-size: 18px;
 }
@@ -94,7 +98,7 @@ tbody tr:last-child td {
 }
 
 .history-account {
-  color: #3b3550;
+  color: var(--color-text, #3b3550);
   font-weight: 600;
   margin: 0;
 }
@@ -103,6 +107,15 @@ tbody tr:last-child td {
 .history-table td {
   font-size: 14px;
   padding: 10px 12px;
+}
+
+[data-theme='dark'] .badge {
+  background: #1f3a2d;
+  color: #a7f3d0;
+}
+
+[data-theme='dark'] .table-card {
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 900px) {
@@ -120,4 +133,3 @@ tbody tr:last-child td {
     padding: 12px 10px;
   }
 }
-

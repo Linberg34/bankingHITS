@@ -2,6 +2,7 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
 import { TariffRecord, TariffsPageService } from './model';
 
@@ -26,7 +27,10 @@ export class TariffsPageComponent {
     rate: '',
   };
 
-  constructor(private readonly tariffsPageService: TariffsPageService) {
+  constructor(
+    private readonly tariffsPageService: TariffsPageService,
+    private readonly notifications: NotificationService
+  ) {
     this.loadTariffs();
   }
 
@@ -78,10 +82,11 @@ export class TariffsPageComponent {
       .subscribe({
         next: (tariff) => {
           this.tariffs.update((records) => [tariff, ...records]);
-          this.closeAddTariffModal();
-        },
+          this.closeAddTariffModal();        },
         error: (error: unknown) => {
-          this.errorText.set(this.resolveErrorText(error));
+          const message = this.resolveErrorText(error);
+          this.errorText.set(message);
+          this.notifications.error(message);
         },
       });
   }
@@ -93,10 +98,11 @@ export class TariffsPageComponent {
       .loadTariffs()
       .subscribe({
         next: (tariffs) => {
-          this.tariffs.set(tariffs);
-        },
+          this.tariffs.set(tariffs);        },
         error: () => {
-          this.errorText.set('Не удалось загрузить тарифы.');
+          const message = 'Не удалось загрузить тарифы.';
+          this.errorText.set(message);
+          this.notifications.error(message);
         },
       });
   }
@@ -178,3 +184,5 @@ export class TariffsPageComponent {
     return backendMessage || 'Не удалось сохранить тариф.';
   }
 }
+
+

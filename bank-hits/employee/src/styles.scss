@@ -10,7 +10,7 @@
 body {
   margin: 0;
   font-family: 'Manrope', 'Segoe UI', sans-serif;
-  background: #f5f1ff;
+  background: var(--color-app-bg, #f5f1ff);
   color: var(--color-text);
 }
 
