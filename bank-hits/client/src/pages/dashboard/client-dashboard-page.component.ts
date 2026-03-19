@@ -1,4 +1,5 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AsyncPipe } from '@angular/common';
 import { NotificationService } from '../../../../shared/frontend-core';
 import { ClientDataUseCasesService } from '../../app/application/use-cases/client-data-use-cases.service';
@@ -11,7 +12,7 @@ import {
   CardDescriptionComponent,
   CardContentComponent,
 } from '../../../../shared/ui/card';
-import { map } from 'rxjs';
+import { map, switchMap } from 'rxjs';
 
 @Component({
   selector: 'app-client-dashboard-page',
@@ -32,6 +33,7 @@ export class ClientDashboardPageComponent implements OnInit {
   private readonly data = inject(ClientDataUseCasesService);
   private readonly sessionUseCases = inject(ClientSessionUseCasesService);
   private readonly notifications = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected clientAccounts$ = this.data.getActiveAccounts();
   protected clientCredits$ = this.data.getCredits();
@@ -43,14 +45,19 @@ export class ClientDashboardPageComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.data.loadAccounts().subscribe({
+    this.data.loadAccounts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       error: () => this.notifications.error('Failed to load accounts.'),
     });
-    this.sessionUseCases.getCurrentUser().subscribe((user) => {
-      this.data.loadCredits(Number(user.id)).subscribe({
+
+    this.sessionUseCases
+      .getCurrentUser()
+      .pipe(
+        switchMap((user) => this.data.loadCredits(Number(user.id))),
+        takeUntilDestroyed(this.destroyRef)
+      )
+      .subscribe({
         error: () => this.notifications.error('Failed to load credits.'),
       });
-    });
   }
 
   protected formatDate(d: string): string {

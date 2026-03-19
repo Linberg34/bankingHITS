@@ -1,28 +1,41 @@
 ﻿import { HttpErrorResponse } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import { NotificationService } from '../../../../shared/frontend-core';
-import { EmployeeLoginPageService } from './model';
+import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
+import { HeaderComponent } from '../../../../shared/ui/header';
+import { EmployeeSessionUseCasesService } from '../../app/application/use-cases/employee-session-use-cases.service';
 
 @Component({
   selector: 'app-login-page',
   standalone: true,
-  imports: [FormsModule],
+  imports: [FormsModule, HeaderComponent],
   templateUrl: './login-page.component.html',
   styleUrl: './login-page.component.scss',
 })
 export class LoginPageComponent {
+  private readonly themeModeService = inject(ThemeModeService);
+  private readonly destroyRef = inject(DestroyRef);
+
   email = '';
   isSubmitting = false;
   errorText = '';
 
   constructor(
     private readonly router: Router,
-    private readonly employeeLoginPageService: EmployeeLoginPageService,
+    private readonly sessionUseCases: EmployeeSessionUseCasesService,
     private readonly notifications: NotificationService
   ) {}
+
+  protected get themeMode(): 'light' | 'dark' {
+    return this.themeModeService.mode;
+  }
+
+  protected onThemeToggle(): void {
+    this.themeModeService.toggle();
+  }
 
   register(): void {
     const normalizedEmail = this.email.trim().toLowerCase();
@@ -33,12 +46,14 @@ export class LoginPageComponent {
     this.errorText = '';
     this.isSubmitting = true;
 
-    this.employeeLoginPageService
+    this.sessionUseCases
       .login(normalizedEmail)
-      .pipe(finalize(() => (this.isSubmitting = false)))
+      .pipe(
+        finalize(() => (this.isSubmitting = false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: () => {
-          this.notifications.success('Вход выполнен.');
           void this.router.navigate(['/panel/accounts']);
         },
         error: (error: unknown) => {
@@ -61,4 +76,5 @@ export class LoginPageComponent {
     return backendMessage || 'Не удалось выполнить вход. Проверьте email и повторите попытку.';
   }
 }
+
 

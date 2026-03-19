@@ -1,4 +1,5 @@
 ﻿.domain-page h1 {
+  color: var(--color-text, #241f35);
   font-size: 44px;
   margin: 0;
 }
@@ -11,24 +12,24 @@
 }
 
 .state-text {
-  color: #4f4668;
+  color: var(--color-text, #4f4668);
   font-size: 14px;
   margin: 0 0 16px;
 }
 
 .state-text--error {
-  color: #c22424;
+  color: #ff7d7d;
 }
 
 h2 {
-  color: #312b44;
+  color: var(--color-text, #312b44);
   font-size: 30px;
   margin: 20px 0 10px;
 }
 
 .table-card {
-  background: #fff;
-  border: 1px solid #e2ddee;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2ddee);
   border-radius: 14px;
   margin-bottom: 12px;
   overflow: hidden;
@@ -41,14 +42,15 @@ table {
 
 th,
 td {
-  border-bottom: 1px solid #ece8f5;
+  border-bottom: 1px solid var(--color-border, #ece8f5);
+  color: var(--color-text, #2d2942);
   font-size: 17px;
   padding: 16px 20px;
   text-align: left;
 }
 
 th {
-  color: #7c768f;
+  color: var(--color-muted, #7c768f);
   font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
@@ -64,7 +66,11 @@ th {
 }
 
 .action {
-  background: linear-gradient(135deg, #6b16e3, #3c4ef2);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-start, #6b16e3),
+    var(--color-primary-end, #3c4ef2)
+  );
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -82,15 +88,15 @@ td button {
 }
 
 td button.block-action {
-  color: #d63152;
+  color: #ff8ca5;
 }
 
 td button.unblock-action {
-  color: #2f5cff;
+  color: #8fb7ff;
 }
 
 td button[disabled] {
-  color: #8f8a9c;
+  color: var(--color-muted, #8f8a9c);
   cursor: default;
 }
 
@@ -104,7 +110,7 @@ tbody tr:last-child td {
 }
 
 .modal-form label {
-  color: #312b44;
+  color: var(--color-text, #312b44);
   display: grid;
   font-size: 14px;
   font-weight: 600;
@@ -113,15 +119,21 @@ tbody tr:last-child td {
 
 .modal-form input,
 .modal-form select {
-  border: 1px solid #d9d2eb;
+  background: var(--color-input, #f4f3f8);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 8px;
+  color: var(--color-text, #312b44);
   font-size: 15px;
   min-height: 38px;
   padding: 0 10px;
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #6b16e3, #3c4ef2);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-start, #6b16e3),
+    var(--color-primary-end, #3c4ef2)
+  );
   border: 0;
   border-radius: 8px;
   color: #fff;
@@ -132,10 +144,10 @@ tbody tr:last-child td {
 }
 
 .cancel-btn {
-  background: #f1edf9;
-  border: 0;
+  background: var(--color-input, #f1edf9);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 8px;
-  color: #433b59;
+  color: var(--color-text, #433b59);
   cursor: pointer;
   font-weight: 600;
   min-height: 38px;
@@ -148,7 +160,7 @@ tbody tr:last-child td {
 }
 
 .block-modal-content p {
-  color: #312b44;
+  color: var(--color-text, #312b44);
   margin: 0;
 }
 
@@ -156,6 +168,11 @@ tbody tr:last-child td {
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+}
+
+[data-theme='dark'] .badge {
+  background: #1f3a2d;
+  color: #a7f3d0;
 }
 
 @media (max-width: 900px) {

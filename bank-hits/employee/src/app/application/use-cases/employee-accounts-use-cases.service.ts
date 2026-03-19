@@ -1,8 +1,8 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { type AccountDto, type AccountOperationDto } from 'shared/entities/accounts';
 import { type UserDto } from 'shared/entities/users';
-import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { EmployeeAdminApiService } from '../../data-access/api/employee-admin-api.service';
 
 export interface AccountPageRecord {
   client: string;
@@ -20,16 +20,14 @@ export interface AccountOperationRecord {
   description: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AccountsPageService {
-  constructor(private readonly requestService: EmployeeAdminRequestService) {}
+@Injectable({ providedIn: 'root' })
+export class EmployeeAccountsUseCasesService {
+  private readonly api = inject(EmployeeAdminApiService);
 
   loadAccounts(): Observable<AccountPageRecord[]> {
     return forkJoin({
-      list: this.requestService.getAccountsList(),
-      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
+      list: this.api.getAccountsList({ page: 0, size: 200, sort: ['id', 'desc'] }),
+      users: this.api.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
     }).pipe(
       map(({ list, users }) => {
         const usersById = new Map<string, UserDto>();
@@ -43,7 +41,7 @@ export class AccountsPageService {
   }
 
   loadOperations(accountNumber: string): Observable<AccountOperationRecord[]> {
-    return this.requestService
+    return this.api
       .getAccountOperations(accountNumber)
       .pipe(map((operations) => operations.map((operation) => this.mapOperation(operation))));
   }
@@ -130,4 +128,3 @@ export class AccountsPageService {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 }
-

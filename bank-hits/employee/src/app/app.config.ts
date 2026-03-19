@@ -6,13 +6,19 @@ import {
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { usersAuthTokenInterceptor } from '../../../shared/api';
-import { appErrorInterceptor, GlobalAppErrorHandler } from '../../../shared/frontend-core';
+import {
+  appErrorInterceptor,
+  GlobalAppErrorHandler,
+  pendingHttpInterceptor,
+} from '../../../shared/frontend-core';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([usersAuthTokenInterceptor, appErrorInterceptor])),
+    provideHttpClient(
+      withInterceptors([usersAuthTokenInterceptor, pendingHttpInterceptor, appErrorInterceptor])
+    ),
     provideRouter(appRoutes),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
   ],

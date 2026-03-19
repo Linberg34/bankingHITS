@@ -1,4 +1,4 @@
-.page-header {
+﻿.page-header {
   align-items: center;
   display: flex;
   justify-content: space-between;
@@ -6,13 +6,17 @@
 }
 
 h1 {
-  color: #241f35;
+  color: var(--color-text, #241f35);
   font-size: 46px;
   margin: 0;
 }
 
 .action {
-  background: linear-gradient(135deg, #6b16e3, #3c4ef2);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-start, #6b16e3),
+    var(--color-primary-end, #3c4ef2)
+  );
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -23,13 +27,13 @@ h1 {
 }
 
 .state-text {
-  color: #4f4668;
+  color: var(--color-text, #4f4668);
   font-size: 14px;
   margin: 0 0 12px;
 }
 
 .state-text--error {
-  color: #c22424;
+  color: #ff7d7d;
 }
 
 .cards-grid {
@@ -40,14 +44,14 @@ h1 {
 }
 
 .empty-text {
-  color: #575066;
+  color: var(--color-muted, #575066);
   font-size: 16px;
   margin: 0;
 }
 
 .tariff-card {
-  background: #fff;
-  border: 1px solid #e2ddee;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #e2ddee);
   border-radius: 14px;
   box-shadow: 0 6px 18px rgba(76, 48, 130, 0.07);
   padding: 16px;
@@ -60,37 +64,37 @@ h1 {
 }
 
 h2 {
-  color: #2e2940;
+  color: var(--color-text, #2e2940);
   font-size: 36px;
   margin: 0;
 }
 
 .card-top span {
-  color: #5f3df4;
+  color: var(--color-text, #5f3df4);
   font-size: 34px;
   font-weight: 700;
 }
 
 p {
-  color: #575066;
+  color: var(--color-muted, #575066);
   font-size: 18px;
   margin: 6px 0 12px;
 }
 
 .rate-box {
-  background: #ebe8f7;
+  background: var(--color-input, #ebe8f7);
   border-radius: 10px;
   padding: 12px 14px;
 }
 
 small {
-  color: #635c72;
+  color: var(--color-muted, #635c72);
   display: block;
   font-size: 16px;
 }
 
 strong {
-  color: #5f3df4;
+  color: var(--color-text, #5f3df4);
   display: block;
   font-size: 44px;
 }
@@ -101,7 +105,7 @@ strong {
 }
 
 .modal-form label {
-  color: #312b44;
+  color: var(--color-text, #312b44);
   display: grid;
   font-size: 14px;
   font-weight: 600;
@@ -109,25 +113,31 @@ strong {
 }
 
 .modal-form input {
-  border: 1px solid #d9d2eb;
+  background: var(--color-input, #f4f3f8);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 8px;
+  color: var(--color-text, #312b44);
   font-size: 15px;
   min-height: 38px;
   padding: 0 10px;
 }
 
 .modal-form input.input-error {
-  border-color: #d63152;
+  border-color: #ff7d7d;
 }
 
 .field-error {
-  color: #d63152;
+  color: #ff7d7d;
   font-size: 13px;
   margin: -4px 0 2px;
 }
 
 .submit-btn {
-  background: linear-gradient(135deg, #6b16e3, #3c4ef2);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-start, #6b16e3),
+    var(--color-primary-end, #3c4ef2)
+  );
   border: 0;
   border-radius: 8px;
   color: #fff;
@@ -135,6 +145,10 @@ strong {
   font-weight: 600;
   min-height: 38px;
   padding: 0 14px;
+}
+
+[data-theme='dark'] .tariff-card {
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.35);
 }
 
 @media (max-width: 900px) {

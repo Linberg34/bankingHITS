@@ -1,4 +1,9 @@
-<shared-header [title]="headerTitle" (logout)="onLogout()"></shared-header>
+<shared-header
+  [title]="headerTitle"
+  [themeMode]="themeMode"
+  (themeToggle)="onThemeToggle()"
+  (logout)="onLogout()"
+></shared-header>
 <div class="client-shell">
   <div class="client-shell__container">
     <aside class="client-shell__sidebar">

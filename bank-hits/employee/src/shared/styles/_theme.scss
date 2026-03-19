@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-theme='light'] {
   --color-bg-start: #7a20f1;
   --color-bg-end: #d129ff;
   --color-surface: #ffffff;
@@ -8,8 +9,41 @@
   --color-input: #f4f3f8;
   --color-primary-start: #a56bff;
   --color-primary-end: #f46bff;
+  --color-app-bg: #f5f1ff;
+  --color-app-bg-gradient-start: #f5f1ff;
+  --color-app-bg-gradient-middle: #fce7ff;
+  --color-app-bg-gradient-end: #ede9fe;
+  --color-header-start: #6b16e3;
+  --color-header-end: #c61fe2;
+  --color-header-button-bg: rgba(255, 255, 255, 0.14);
+  --color-header-button-border: rgba(255, 255, 255, 0.35);
+  --color-header-button-hover: rgba(255, 255, 255, 0.24);
+  --shadow-header: 0 8px 20px rgba(91, 38, 164, 0.3);
   --shadow-card: 0 18px 60px rgba(24, 9, 50, 0.28);
   --radius-xl: 18px;
   --radius-lg: 14px;
   --radius-md: 10px;
+}
+
+[data-theme='dark'] {
+  --color-bg-start: #4e7bff;
+  --color-bg-end: #2bb7ff;
+  --color-surface: #1f2d45;
+  --color-text: #f3f7ff;
+  --color-muted: #becde9;
+  --color-border: #3b4c6e;
+  --color-input: #152136;
+  --color-primary-start: #8faaff;
+  --color-primary-end: #5dc8ff;
+  --color-app-bg: #0f1a2b;
+  --color-app-bg-gradient-start: #0f1a2b;
+  --color-app-bg-gradient-middle: #13233a;
+  --color-app-bg-gradient-end: #103256;
+  --color-header-start: #233d66;
+  --color-header-end: #2a5d8f;
+  --color-header-button-bg: rgba(146, 175, 221, 0.14);
+  --color-header-button-border: rgba(180, 209, 255, 0.35);
+  --color-header-button-hover: rgba(167, 195, 241, 0.24);
+  --shadow-header: 0 8px 20px rgba(3, 10, 25, 0.6);
+  --shadow-card: 0 20px 50px rgba(0, 0, 0, 0.5);
 }

@@ -1,6 +1,6 @@
-.modal-backdrop {
+﻿.modal-backdrop {
   align-items: center;
-  background: rgba(27, 16, 46, 0.35);
+  background: rgba(10, 18, 34, 0.58);
   display: flex;
   inset: 0;
   justify-content: center;
@@ -9,9 +9,11 @@
 }
 
 .modal-card {
-  background: #fff;
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(44, 24, 83, 0.24);
+  box-shadow: var(--shadow-card, 0 12px 30px rgba(44, 24, 83, 0.24));
+  color: var(--color-text, #2d2840);
   max-width: 500px;
   padding: 18px;
   position: relative;
@@ -19,13 +21,13 @@
 }
 
 h3 {
-  color: #2d2840;
+  color: var(--color-text, #2d2840);
   font-size: 22px;
   margin: 0 0 8px;
 }
 
 p {
-  color: #5f5973;
+  color: var(--color-muted, #5f5973);
   margin: 0 0 14px;
 }
 
@@ -35,10 +37,10 @@ p {
 
 .icon-close {
   align-items: center;
-  background: #f1ecfb;
-  border: 0;
+  background: var(--color-input, #f1ecfb);
+  border: 1px solid var(--color-border, #d9d2eb);
   border-radius: 999px;
-  color: #4b3d6b;
+  color: var(--color-text, #4b3d6b);
   cursor: pointer;
   display: inline-flex;
   font-size: 20px;
@@ -51,5 +53,5 @@ p {
 }
 
 .icon-close:hover {
-  background: #e4dbf8;
+  background: color-mix(in srgb, var(--color-input, #f1ecfb) 70%, var(--color-primary-start, #6b16e3));
 }

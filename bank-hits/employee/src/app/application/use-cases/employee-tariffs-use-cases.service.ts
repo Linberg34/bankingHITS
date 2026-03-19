@@ -1,7 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { type TariffDto } from 'shared/entities/tariffs';
-import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { EmployeeAdminApiService } from '../../data-access/api/employee-admin-api.service';
 
 export interface TariffRecord {
   id: string;
@@ -10,22 +10,16 @@ export interface TariffRecord {
   rate: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class TariffsPageService {
-  constructor(private readonly requestService: EmployeeAdminRequestService) {}
+@Injectable({ providedIn: 'root' })
+export class EmployeeTariffsUseCasesService {
+  private readonly api = inject(EmployeeAdminApiService);
 
   loadTariffs(): Observable<TariffRecord[]> {
-    return this.requestService
-      .getTariffs()
-      .pipe(map((tariffs) => tariffs.map((tariff) => this.mapTariff(tariff))));
+    return this.api.getTariffs().pipe(map((tariffs) => tariffs.map((tariff) => this.mapTariff(tariff))));
   }
 
   createTariff(name: string, annualRate: number): Observable<TariffRecord> {
-    return this.requestService
-      .createTariff(name, annualRate)
-      .pipe(map((tariff) => this.mapTariff(tariff)));
+    return this.api.createTariff(name, annualRate).pipe(map((tariff) => this.mapTariff(tariff)));
   }
 
   private mapTariff(tariff: TariffDto): TariffRecord {
