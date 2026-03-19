@@ -1,4 +1,5 @@
 ﻿import { Injectable, signal } from '@angular/core';
+import { timer } from 'rxjs';
 
 export type NotificationLevel = 'success' | 'error' | 'info';
 
@@ -32,7 +33,6 @@ export class NotificationService {
   private push(level: NotificationLevel, message: string): void {
     const id = ++this.idCounter;
     this.notifications.update((current) => [...current, { id, level, message }]);
-    setTimeout(() => this.dismiss(id), 4000);
+    timer(4000).subscribe(() => this.dismiss(id));
   }
 }
-

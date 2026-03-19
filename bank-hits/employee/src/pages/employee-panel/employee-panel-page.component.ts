@@ -1,8 +1,10 @@
 ﻿import { Component, inject } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../shared/ui/header';
-import { EmployeePanelPageService } from './model';
+import { EmployeeSessionUseCasesService } from '../../app/application/use-cases/employee-session-use-cases.service';
 
 @Component({
   selector: 'employee-panel-page',
@@ -13,15 +15,19 @@ import { EmployeePanelPageService } from './model';
 })
 export class EmployeePanelPageComponent {
   protected readonly themeModeService = inject(ThemeModeService);
+  private readonly destroyRef = inject(DestroyRef);
 
   constructor(
     private readonly router: Router,
-    private readonly employeePanelPageService: EmployeePanelPageService,
+    private readonly sessionUseCases: EmployeeSessionUseCasesService,
     private readonly notifications: NotificationService
   ) {}
 
   logout(): void {
-    this.employeePanelPageService.logout().subscribe({
+    this.sessionUseCases
+      .logout()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: () => {
         void this.router.navigateByUrl('/registration');
       },
@@ -29,7 +35,7 @@ export class EmployeePanelPageComponent {
         this.notifications.error('Не удалось завершить сессию корректно.');
         void this.router.navigateByUrl('/registration');
       },
-    });
+      });
   }
 
   protected get themeMode(): 'light' | 'dark' {

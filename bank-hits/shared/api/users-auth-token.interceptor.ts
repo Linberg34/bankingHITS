@@ -1,8 +1,8 @@
-import { HttpInterceptorFn } from '@angular/common/http';
+﻿import { HttpInterceptorFn } from '@angular/common/http';
 
 const PROTECTED_API_PATHS = ['/api/auth', '/api/users', '/api/account', '/api/tariffs', '/api/credits'];
 
-export const AUTH_TOKEN_STORAGE_KEY = 'auth_token';
+const AUTH_TOKEN_STORAGE_KEY = 'auth_token';
 
 const AUTH_PATHS_WITHOUT_TOKEN = ['/api/auth/login', '/api/auth/register'];
 
@@ -39,3 +39,4 @@ function readAuthToken(): string | null {
     return null;
   }
 }
+

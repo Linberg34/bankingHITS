@@ -1,5 +1,6 @@
 ﻿import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
-import { ThemeMode } from '../../frontend-core/theme/theme-mode.service';
+
+type ThemeMode = 'light' | 'dark';
 
 @Component({
   selector: 'shared-header',

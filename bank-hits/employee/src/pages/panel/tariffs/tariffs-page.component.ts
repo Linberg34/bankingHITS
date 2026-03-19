@@ -2,9 +2,14 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
+import { DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { TariffRecord, TariffsPageService } from './model';
+import {
+  EmployeeTariffsUseCasesService,
+  TariffRecord,
+} from '../../../app/application/use-cases/employee-tariffs-use-cases.service';
 
 @Component({
   selector: 'employee-tariffs-page',
@@ -14,6 +19,8 @@ import { TariffRecord, TariffsPageService } from './model';
   styleUrl: './tariffs-page.component.scss',
 })
 export class TariffsPageComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   addTariffModalOpen = signal(false);
   actionInProgress = signal(false);
   errorText = signal('');
@@ -28,7 +35,7 @@ export class TariffsPageComponent {
   };
 
   constructor(
-    private readonly tariffsPageService: TariffsPageService,
+    private readonly tariffsUseCases: EmployeeTariffsUseCasesService,
     private readonly notifications: NotificationService
   ) {
     this.loadTariffs();
@@ -76,13 +83,17 @@ export class TariffsPageComponent {
     this.actionInProgress.set(true);
     this.errorText.set('');
 
-    this.tariffsPageService
+    this.tariffsUseCases
       .createTariff(trimmedName, parsedRate)
-      .pipe(finalize(() => this.actionInProgress.set(false)))
+      .pipe(
+        finalize(() => this.actionInProgress.set(false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
         next: (tariff) => {
           this.tariffs.update((records) => [tariff, ...records]);
-          this.closeAddTariffModal();        },
+          this.closeAddTariffModal();
+        },
         error: (error: unknown) => {
           const message = this.resolveErrorText(error);
           this.errorText.set(message);
@@ -94,11 +105,13 @@ export class TariffsPageComponent {
   private loadTariffs(): void {
     this.errorText.set('');
 
-    this.tariffsPageService
+    this.tariffsUseCases
       .loadTariffs()
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (tariffs) => {
-          this.tariffs.set(tariffs);        },
+          this.tariffs.set(tariffs);
+        },
         error: () => {
           const message = 'Не удалось загрузить тарифы.';
           this.errorText.set(message);

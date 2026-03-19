@@ -1,11 +1,12 @@
 ﻿import { HttpErrorResponse } from '@angular/common/http';
-import { Component, inject } from '@angular/core';
+import { Component, DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { NotificationService, ThemeModeService } from '../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../shared/ui/header';
-import { EmployeeLoginPageService } from './model';
+import { EmployeeSessionUseCasesService } from '../../app/application/use-cases/employee-session-use-cases.service';
 
 @Component({
   selector: 'app-login-page',
@@ -16,6 +17,7 @@ import { EmployeeLoginPageService } from './model';
 })
 export class LoginPageComponent {
   private readonly themeModeService = inject(ThemeModeService);
+  private readonly destroyRef = inject(DestroyRef);
 
   email = '';
   isSubmitting = false;
@@ -23,7 +25,7 @@ export class LoginPageComponent {
 
   constructor(
     private readonly router: Router,
-    private readonly employeeLoginPageService: EmployeeLoginPageService,
+    private readonly sessionUseCases: EmployeeSessionUseCasesService,
     private readonly notifications: NotificationService
   ) {}
 
@@ -44,11 +46,15 @@ export class LoginPageComponent {
     this.errorText = '';
     this.isSubmitting = true;
 
-    this.employeeLoginPageService
+    this.sessionUseCases
       .login(normalizedEmail)
-      .pipe(finalize(() => (this.isSubmitting = false)))
+      .pipe(
+        finalize(() => (this.isSubmitting = false)),
+        takeUntilDestroyed(this.destroyRef)
+      )
       .subscribe({
-        next: () => {          void this.router.navigate(['/panel/accounts']);
+        next: () => {
+          void this.router.navigate(['/panel/accounts']);
         },
         error: (error: unknown) => {
           this.errorText = this.resolveErrorText(error);

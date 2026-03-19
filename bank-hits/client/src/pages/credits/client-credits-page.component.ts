@@ -1,7 +1,7 @@
 ﻿import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, map } from 'rxjs';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { combineLatest, forkJoin, map, switchMap, tap } from 'rxjs';
 import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
 import { BadgeComponent } from '../../../../shared/ui/badge';
 import { ButtonComponent } from '../../../../shared/ui/button';
@@ -56,6 +56,7 @@ export class ClientCreditsPageComponent implements OnInit {
   private readonly data = inject(ClientDataUseCasesService);
   private readonly sessionUseCases = inject(ClientSessionUseCasesService);
   private readonly notifications = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected openNewCredit = signal(false);
   protected openPayCredit = signal(false);
@@ -94,24 +95,18 @@ export class ClientCreditsPageComponent implements OnInit {
   ]).pipe(map(([id, credits]) => (id ? credits.find((item) => item.id === id) : undefined)));
 
   ngOnInit(): void {
-    this.data.loadAccounts().subscribe({
-      error: () => this.notifications.error('Failed to load accounts.'),
-    });
-
-    this.data.loadTariffs().subscribe({
-      error: () => this.notifications.error('Failed to load tariffs.'),
-    });
-
-    this.sessionUseCases.getCurrentUser().subscribe({
-      next: (user) => {
-        const id = Number(user.id);
-        this.currentUserId.set(id);
-        this.data.loadCredits(id).subscribe({
-          error: () => this.notifications.error('Failed to load credits.'),
-        });
-      },
-      error: () => this.notifications.error('Failed to load user profile.'),
-    });
+    forkJoin([
+      this.data.loadAccounts(),
+      this.data.loadTariffs(),
+      this.sessionUseCases.getCurrentUser().pipe(
+        tap((user) => this.currentUserId.set(Number(user.id))),
+        switchMap((user) => this.data.loadCredits(Number(user.id)))
+      ),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: () => this.notifications.error('Failed to load user profile.'),
+      });
   }
 
   protected formatMoney(n: number): string {
@@ -174,17 +169,21 @@ export class ClientCreditsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.takeCredit(accountNumber, tariff, amount).subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Credit created.' });        this.closeNewCredit();
-        this.reloadCredits();
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .takeCredit(accountNumber, tariff, amount)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Credit created.' });
+          this.closeNewCredit();
+          this.reloadCredits();
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected openPayCreditDialog(credit: Credit): void {
@@ -209,19 +208,23 @@ export class ClientCreditsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.repayCreditPartial(creditId, amount).subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Payment completed.' });        this.closePayCredit();
-        this.paymentAmount.set('');
-        this.selectedCreditId.set('');
-        this.reloadCredits();
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .repayCreditPartial(creditId, amount)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Payment completed.' });
+          this.closePayCredit();
+          this.paymentAmount.set('');
+          this.selectedCreditId.set('');
+          this.reloadCredits();
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected canSubmitCredit(): boolean {
@@ -239,9 +242,12 @@ export class ClientCreditsPageComponent implements OnInit {
       return;
     }
 
-    this.data.loadCredits(currentUserId).subscribe({
-      error: () => this.notifications.error('Failed to refresh credits.'),
-    });
+    this.data
+      .loadCredits(currentUserId)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: () => this.notifications.error('Failed to refresh credits.'),
+      });
   }
 }
 

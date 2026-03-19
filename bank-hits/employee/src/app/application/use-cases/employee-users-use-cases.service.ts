@@ -1,7 +1,7 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { type UserDto, type UserId } from 'shared/entities/users';
-import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { EmployeeAdminApiService } from '../../data-access/api/employee-admin-api.service';
 
 export type UsersPageRole = 'Клиент' | 'Сотрудник' | string;
 
@@ -13,39 +13,28 @@ export interface UsersPageRecord {
   registeredAt: string;
 }
 
-export interface UsersPageData {
-  clientUsers: UsersPageRecord[];
-  employeeUsers: UsersPageRecord[];
-}
-
-@Injectable({
-  providedIn: 'root',
-})
-export class UsersPageService {
-  constructor(private readonly requestService: EmployeeAdminRequestService) {}
+@Injectable({ providedIn: 'root' })
+export class EmployeeUsersUseCasesService {
+  private readonly api = inject(EmployeeAdminApiService);
 
   getClientUsers(): Observable<UsersPageRecord[]> {
-    return this.requestService.getUsers('CLIENTS').pipe(map((users) => users.map((user) => this.mapUser(user))));
+    return this.api.getUsers('CLIENTS').pipe(map((users) => users.map((user) => this.mapUser(user))));
   }
 
   getEmployeeUsers(): Observable<UsersPageRecord[]> {
-    return this.requestService
-      .getUsers('EMPLOYEES')
-      .pipe(map((users) => users.map((user) => this.mapUser(user))));
+    return this.api.getUsers('EMPLOYEES').pipe(map((users) => users.map((user) => this.mapUser(user))));
   }
 
   banUser(userId: UserId): Observable<UsersPageRecord> {
-    return this.requestService.banUser(userId).pipe(map((user) => this.mapUser(user)));
+    return this.api.banUser(userId).pipe(map((user) => this.mapUser(user)));
   }
 
   unbanUser(userId: UserId): Observable<UsersPageRecord> {
-    return this.requestService.unbanUser(userId).pipe(map((user) => this.mapUser(user)));
+    return this.api.unbanUser(userId).pipe(map((user) => this.mapUser(user)));
   }
 
   createUser(name: string, email: string, role: UsersPageRole): Observable<void> {
-    return this.requestService
-      .createUser(name, email, role === 'Сотрудник')
-      .pipe(map(() => void 0));
+    return this.api.createUser(name, email, role === 'Сотрудник').pipe(map(() => void 0));
   }
 
   private mapUser(user: UserDto): UsersPageRecord {
@@ -78,4 +67,3 @@ export class UsersPageService {
     return `${day}.${month}.${year}`;
   }
 }
-

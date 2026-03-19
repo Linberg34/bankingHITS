@@ -1,16 +1,19 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import {
   AccountsApiService,
+  type AccountListQuery,
   type AccountListResponse,
   type AccountOperationDto,
 } from 'shared/entities/accounts';
-import { AuthApiService, type AuthTokenResponse } from 'shared/entities/auth';
-import { CreditsApiService, type CreditDto } from 'shared/entities/credits';
 import {
-  TariffsApiService,
-  type TariffDto,
-} from 'shared/entities/tariffs';
+  AuthApiService,
+  type AuthLoginRequest,
+  type AuthRegisterRequest,
+  type AuthTokenResponse,
+} from 'shared/entities/auth';
+import { CreditsApiService, type CreditDto } from 'shared/entities/credits';
+import { TariffsApiService, type CreateTariffRequest, type TariffDto } from 'shared/entities/tariffs';
 import {
   UsersApiService,
   type UserDto,
@@ -19,15 +22,15 @@ import {
 } from 'shared/entities/users';
 
 @Injectable({ providedIn: 'root' })
-export class EmployeeAdminRequestService {
+export class EmployeeNetworkService {
   private readonly accountsApi = inject(AccountsApiService);
   private readonly authApi = inject(AuthApiService);
   private readonly creditsApi = inject(CreditsApiService);
   private readonly tariffsApi = inject(TariffsApiService);
   private readonly usersApi = inject(UsersApiService);
 
-  login(email: string): Observable<AuthTokenResponse> {
-    return this.authApi.login({ email });
+  login(payload: AuthLoginRequest): Observable<AuthTokenResponse> {
+    return this.authApi.login(payload);
   }
 
   logout(): Observable<string> {
@@ -36,6 +39,14 @@ export class EmployeeAdminRequestService {
 
   clearAuth(): void {
     this.authApi.clearAuth();
+  }
+
+  registerUser(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
+    return this.authApi.registerWithoutAuth(payload);
+  }
+
+  registerEmployee(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
+    return this.authApi.registerEmployeeWithoutAuth(payload);
   }
 
   getUsers(queryType: UsersQueryType): Observable<UserDto[]> {
@@ -50,16 +61,8 @@ export class EmployeeAdminRequestService {
     return this.usersApi.unbanUser(userId);
   }
 
-  createUser(name: string, email: string, employee: boolean): Observable<AuthTokenResponse> {
-    if (employee) {
-      return this.authApi.registerEmployeeWithoutAuth({ name, email });
-    }
-
-    return this.authApi.registerWithoutAuth({ name, email });
-  }
-
-  getAccountsList(): Observable<AccountListResponse> {
-    return this.accountsApi.getAccountsList({ page: 0, size: 200, sort: ['id', 'desc'] });
+  getAccountsList(request: AccountListQuery): Observable<AccountListResponse> {
+    return this.accountsApi.getAccountsList(request);
   }
 
   getAccountOperations(accountNumber: string): Observable<AccountOperationDto[]> {
@@ -74,8 +77,7 @@ export class EmployeeAdminRequestService {
     return this.tariffsApi.getTariffs();
   }
 
-  createTariff(name: string, annualRate: number): Observable<TariffDto> {
-    return this.tariffsApi.createTariff({ name, annualRate });
+  createTariff(payload: CreateTariffRequest): Observable<TariffDto> {
+    return this.tariffsApi.createTariff(payload);
   }
 }
-

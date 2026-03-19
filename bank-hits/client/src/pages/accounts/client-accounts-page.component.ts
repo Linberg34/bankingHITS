@@ -1,6 +1,6 @@
 ﻿import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { Component, DestroyRef, OnInit, computed, inject, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { catchError, of, switchMap } from 'rxjs';
 import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
 import { ButtonComponent } from '../../../../shared/ui/button';
@@ -75,6 +75,7 @@ const TRANSACTION_LABELS: Record<string, string> = {
 export class ClientAccountsPageComponent implements OnInit {
   private readonly data = inject(ClientDataUseCasesService);
   private readonly notifications = inject(NotificationService);
+  private readonly destroyRef = inject(DestroyRef);
 
   protected openNewAccount = signal(false);
   protected openDeposit = signal(false);
@@ -107,7 +108,7 @@ export class ClientAccountsPageComponent implements OnInit {
   protected currencyOptions: SelectOption[] = [{ value: 'RUB', label: 'Российский рубль (?)' }];
 
   ngOnInit(): void {
-    this.data.loadAccounts().subscribe({
+    this.data.loadAccounts().pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
       error: () => this.notifications.error('Failed to load accounts.'),
     });
   }
@@ -136,16 +137,20 @@ export class ClientAccountsPageComponent implements OnInit {
 
   protected handleOpenAccount(): void {
     this.actionState.set({ status: 'loading' });
-    this.data.openCurrentAccount().subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Account opened.' });        this.closeNewAccount();
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .openCurrentAccount()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Account opened.' });
+          this.closeNewAccount();
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected openDepositDialog(account: Account): void {
@@ -168,17 +173,21 @@ export class ClientAccountsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.deposit(accountId, sum).subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Balance updated.' });        this.amount.set('');
-        this.closeDeposit();
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .deposit(accountId, sum)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Balance updated.' });
+          this.amount.set('');
+          this.closeDeposit();
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected openWithdrawDialog(account: Account): void {
@@ -201,17 +210,21 @@ export class ClientAccountsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.withdraw(accountId, sum).subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });        this.amount.set('');
-        this.closeWithdraw();
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .withdraw(accountId, sum)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });
+          this.amount.set('');
+          this.closeWithdraw();
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected openHistoryDialog(account: Account): void {
@@ -237,17 +250,21 @@ export class ClientAccountsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.deleteAccount(account.id).subscribe({
-      next: () => {
-        this.actionState.set({ status: 'success', message: 'Account closed.' });        this.openCloseConfirm.set(false);
-        this.selectedAccountToClose.set(null);
-      },
-      error: (error: unknown) => {
-        const mapped = mapUnknownError(error);
-        this.actionState.set({ status: 'error', message: mapped.message });
-        this.notifications.error(mapped.message);
-      },
-    });
+    this.data
+      .deleteAccount(account.id)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () => {
+          this.actionState.set({ status: 'success', message: 'Account closed.' });
+          this.openCloseConfirm.set(false);
+          this.selectedAccountToClose.set(null);
+        },
+        error: (error: unknown) => {
+          const mapped = mapUnknownError(error);
+          this.actionState.set({ status: 'error', message: mapped.message });
+          this.notifications.error(mapped.message);
+        },
+      });
   }
 
   protected isIncoming(type: string): boolean {

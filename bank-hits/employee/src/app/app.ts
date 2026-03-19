@@ -1,9 +1,13 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NotificationCenterComponent, ThemeModeService } from '../../../shared/frontend-core';
+import {
+  NotificationCenterComponent,
+  PendingRequestIndicatorComponent,
+  ThemeModeService,
+} from '../../../shared/frontend-core';
 
 @Component({
-  imports: [RouterOutlet, NotificationCenterComponent],
+  imports: [RouterOutlet, NotificationCenterComponent, PendingRequestIndicatorComponent],
   selector: 'app-root',
   templateUrl: './app.html',
   styleUrl: './app.scss',

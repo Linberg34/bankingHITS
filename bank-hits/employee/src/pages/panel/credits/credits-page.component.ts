@@ -1,8 +1,13 @@
 ﻿import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { DestroyRef, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { CreditRecord, CreditsPageService } from './model';
+import {
+  CreditRecord,
+  EmployeeCreditsUseCasesService,
+} from '../../../app/application/use-cases/employee-credits-use-cases.service';
 
 const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Дата выдачи'];
 
@@ -14,6 +19,8 @@ const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сум�
   styleUrl: './credits-page.component.scss',
 })
 export class CreditsPageComponent {
+  private readonly destroyRef = inject(DestroyRef);
+
   columns = CREDIT_TABLE_COLUMNS;
   credits = signal<CreditRecord[]>([]);
   readonly allCredits = signal<CreditRecord[]>([]);
@@ -24,7 +31,7 @@ export class CreditsPageComponent {
   errorText = signal('');
 
   constructor(
-    private readonly creditsPageService: CreditsPageService,
+    private readonly creditsUseCases: EmployeeCreditsUseCasesService,
     private readonly notifications: NotificationService
   ) {
     this.loadCredits();
@@ -67,7 +74,10 @@ export class CreditsPageComponent {
   private loadCredits(): void {
     this.errorText.set('');
 
-    this.creditsPageService.loadCredits().subscribe({
+    this.creditsUseCases
+      .loadCredits()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
       next: (records) => {
         this.allCredits.set(records);
         this.clientOptions.set(['all', ...new Set(records.map((credit) => credit.clientName))]);
@@ -75,13 +85,14 @@ export class CreditsPageComponent {
           this.selectedClient = 'all';
         }
 
-        this.applyFilters();      },
+        this.applyFilters();
+      },
       error: () => {
         const message = 'Не удалось загрузить кредиты.';
         this.errorText.set(message);
         this.notifications.error(message);
       },
-    });
+      });
   }
 }
 

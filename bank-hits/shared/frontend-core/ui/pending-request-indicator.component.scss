@@ -1,0 +1,39 @@
+.pending-indicator {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  z-index: 1900;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  transform: translateX(-50%);
+  border: 1px solid var(--surface-border, rgba(255, 255, 255, 0.2));
+  background: var(--surface-1, rgba(16, 22, 44, 0.9));
+  color: var(--text-primary, #f3f4f6);
+  font-size: 12px;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+}
+
+.pending-indicator__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  animation: pending-pulse 1s ease-in-out infinite;
+}
+
+@keyframes pending-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

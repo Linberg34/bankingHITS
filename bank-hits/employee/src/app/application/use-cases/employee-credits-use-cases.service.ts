@@ -1,8 +1,8 @@
-﻿import { Injectable } from '@angular/core';
+﻿import { Injectable, inject } from '@angular/core';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 import { type CreditDto } from 'shared/entities/credits';
 import { type UserDto } from 'shared/entities/users';
-import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { EmployeeAdminApiService } from '../../data-access/api/employee-admin-api.service';
 
 export interface CreditRecord {
   id: string;
@@ -19,16 +19,14 @@ export interface CreditRecord {
   closedAt: string;
 }
 
-@Injectable({
-  providedIn: 'root',
-})
-export class CreditsPageService {
-  constructor(private readonly requestService: EmployeeAdminRequestService) {}
+@Injectable({ providedIn: 'root' })
+export class EmployeeCreditsUseCasesService {
+  private readonly api = inject(EmployeeAdminApiService);
 
   loadCredits(): Observable<CreditRecord[]> {
     return forkJoin({
-      credits: this.requestService.getCredits(),
-      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
+      credits: this.api.getCredits(),
+      users: this.api.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
     }).pipe(map(({ credits, users }) => this.mapCredits(credits, users)));
   }
 
@@ -96,4 +94,3 @@ export class CreditsPageService {
     return `${day}.${month}.${year}`;
   }
 }
-
