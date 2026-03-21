@@ -1,22 +1,28 @@
 package com.gautama.bankhitscredit.entity;
 
+import com.gautama.bankhitscredit.enums.CreditStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "credits")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Credit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     // ID клиента из сервиса пользователей
     @Column(nullable = false)
-    private Long clientId;
+    private UUID clientId;
 
     @Column(nullable = false)
     private String accountNumber;
@@ -43,7 +49,6 @@ public class Credit {
     @Column(nullable = false)
     private CreditStatus status;
 
-    public enum CreditStatus {
-        ACTIVE, CLOSED, OVERDUE
-    }
+    @Column(nullable = false)
+    private LocalDateTime nextPaymentAt;
 }

@@ -6,6 +6,7 @@ import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "credit_tariffs")
@@ -15,10 +16,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class CreditTariff {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String name;
@@ -28,6 +28,8 @@ public class CreditTariff {
 
     @OneToMany(mappedBy = "tariff", fetch = FetchType.LAZY)
     private List<Credit> credits;
+
+    private int termDays;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
