@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="client_bff_db@localhost" uuid="743f69b9-2a6b-4389-9deb-244d578084b2">
+    <data-source source="LOCAL" name="sso_db@localhost" uuid="e739569f-6329-4a0f-a2f0-3cb671cc1396">
       <driver-ref>postgresql</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
-      <jdbc-url>jdbc:postgresql://localhost:5433/client_bff_db</jdbc-url>
+      <jdbc-url>jdbc:postgresql://localhost:5438/sso_db</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="dataSourceStorageLocal" created-in="IU-251.26094.121">
-    <data-source name="client_bff_db@localhost" uuid="743f69b9-2a6b-4389-9deb-244d578084b2">
+    <data-source name="sso_db@localhost" uuid="e739569f-6329-4a0f-a2f0-3cb671cc1396">
       <database-info product="PostgreSQL" version="16.13 (Debian 16.13-1.pgdg13+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.7.3" dbms="POSTGRES" exact-version="16.13" exact-driver-version="42.7">
         <identifier-quote-string>&quot;</identifier-quote-string>
       </database-info>
       <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
       <secret-storage>master_key</secret-storage>
-      <user-name>client_bff_user</user-name>
+      <user-name>sso_user</user-name>
       <schema-mapping>
         <introspection-scope>
           <node kind="database" qname="@">

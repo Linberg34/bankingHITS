@@ -7,11 +7,18 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks: [ appnet ]
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo 'ruok' | timeout 2 bash -c 'cat > /dev/tcp/localhost/2181'" ]
+      interval: 10s
+      timeout: 15s
+      retries: 10
+      start_period: 30s
 
   kafka:
     image: confluentinc/cp-kafka:7.7.0
     depends_on:
-      - zookeeper
+      zookeeper:
+        condition: service_healthy
     ports:
       - "9092:9092"
     environment:
@@ -24,6 +31,12 @@ services:
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
       KAFKA_MIN_INSYNC_REPLICAS: 1
     networks: [ appnet ]
+    healthcheck:
+      test: ["CMD-SHELL", "kafka-topics --bootstrap-server localhost:9092 --list"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
 
   # ─── USER SERVICE ─────────────────────────────────────────
   db-user:
@@ -34,7 +47,7 @@ services:
       POSTGRES_PASSWORD: user_pass
     networks: [ appnet ]
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U user_user -d user_db" ]
+      test: ["CMD-SHELL", "pg_isready -U user_user -d user_db"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -67,7 +80,7 @@ services:
       service-account:
         condition: service_started
       kafka:
-        condition: service_started
+        condition: service_healthy
     networks: [ appnet ]
     ports:
       - "8081:8080"
@@ -81,7 +94,7 @@ services:
       POSTGRES_PASSWORD: account_pass
     networks: [ appnet ]
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U account_user -d account_db" ]
+      test: ["CMD-SHELL", "pg_isready -U account_user -d account_db"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -102,7 +115,7 @@ services:
       db-account:
         condition: service_healthy
       kafka:
-        condition: service_started
+        condition: service_healthy
     networks: [ appnet ]
     ports:
       - "8082:8080"
@@ -116,7 +129,7 @@ services:
       POSTGRES_PASSWORD: credit_pass
     networks: [ appnet ]
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U credit_user -d credit_db" ]
+      test: ["CMD-SHELL", "pg_isready -U credit_user -d credit_db"]
       interval: 5s
       timeout: 3s
       retries: 20
@@ -140,107 +153,12 @@ services:
       service-account:
         condition: service_started
       kafka:
-        condition: service_started
+        condition: service_healthy
     networks: [ appnet ]
     ports:
       - "8083:8080"
 
-  # ─── CLIENT BFF ────────────────────────────────────────────
-  db-client-bff:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: client_bff_db
-      POSTGRES_USER: client_bff_user
-      POSTGRES_PASSWORD: client_bff_pass
-    networks: [ appnet ]
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U client_bff_user -d client_bff_db" ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-    ports:
-      - "5436:5432"
-
-  service-client-bff:
-    build:
-      context: ./client-bff
-      dockerfile: Dockerfile
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db-client-bff:5432/client_bff_db
-      SPRING_DATASOURCE_USERNAME: client_bff_user
-      SPRING_DATASOURCE_PASSWORD: client_bff_pass
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
-      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
-      SERVICES_USER_SERVICE_URL: http://service-user:8080
-      SSO_BASE_URL: http://service-sso:8080
-      SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.json
-      SERVER_PORT: 8084
-    depends_on:
-      db-client-bff:
-        condition: service_healthy
-      service-account:
-        condition: service_started
-      service-credit:
-        condition: service_started
-      service-user:
-        condition: service_started
-      kafka:
-        condition: service_started
-    networks: [ appnet ]
-    ports:
-      - "8084:8084"
-
-  # ─── EMPLOYEE BFF ────────────────────────────────────────────
-  db-employee-bff:
-    image: postgres:16
-    environment:
-      POSTGRES_DB: employee_bff_db
-      POSTGRES_USER: employee_bff_user
-      POSTGRES_PASSWORD: employee_bff_pass
-    networks: [ appnet ]
-    healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U employee_bff_user -d employee_bff_db" ]
-      interval: 5s
-      timeout: 3s
-      retries: 20
-    ports:
-      - "5437:5432"
-
-  service-employee-bff:
-    build:
-      context: ./employee-bff
-      dockerfile: Dockerfile
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db-employee-bff:5432/employee_bff_db
-      SPRING_DATASOURCE_USERNAME: employee_bff_user
-      SPRING_DATASOURCE_PASSWORD: employee_bff_pass
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SERVICES_USER_SERVICE_URL: http://service-user:8080
-      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
-      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
-      SSO_BASE_URL: http://service-sso:8080
-      SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.html
-      SERVER_PORT: 8085
-    depends_on:
-      service-sso:
-        condition: service_started
-      db-employee-bff:
-        condition: service_healthy
-      service-user:
-        condition: service_started
-      service-account:
-        condition: service_started
-      service-credit:
-        condition: service_started
-      kafka:
-        condition: service_started
-    networks: [ appnet ]
-    ports:
-      - "8085:8085"
-
+  # ─── SSO SERVICE ──────────────────────────────────────────
   db-sso:
     image: postgres:16
     environment:
@@ -272,6 +190,104 @@ services:
     networks: [ appnet ]
     ports:
       - "8086:8086"
+
+  # ─── CLIENT BFF ────────────────────────────────────────────
+  db-client-bff:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: client_bff_db
+      POSTGRES_USER: client_bff_user
+      POSTGRES_PASSWORD: client_bff_pass
+    networks: [ appnet ]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U client_bff_user -d client_bff_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    ports:
+      - "5436:5432"
+
+  service-client-bff:
+    build:
+      context: ./client-bff
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-client-bff:5432/client_bff_db
+      SPRING_DATASOURCE_USERNAME: client_bff_user
+      SPRING_DATASOURCE_PASSWORD: client_bff_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
+      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
+      SERVICES_USER_SERVICE_URL: http://service-user:8080
+      SSO_BASE_URL: http://service-sso:8086
+      SSO_JWKS_URL: http://service-sso:8086/.well-known/jwks.json
+      SERVER_PORT: 8084
+    depends_on:
+      db-client-bff:
+        condition: service_healthy
+      service-sso:
+        condition: service_started
+      service-account:
+        condition: service_started
+      service-credit:
+        condition: service_started
+      service-user:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    networks: [ appnet ]
+    ports:
+      - "8084:8084"
+
+  # ─── EMPLOYEE BFF ────────────────────────────────────────────
+  db-employee-bff:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: employee_bff_db
+      POSTGRES_USER: employee_bff_user
+      POSTGRES_PASSWORD: employee_bff_pass
+    networks: [ appnet ]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U employee_bff_user -d employee_bff_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    ports:
+      - "5437:5432"
+
+  service-employee-bff:
+    build:
+      context: ./employee-bff
+      dockerfile: Dockerfile
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-employee-bff:5432/employee_bff_db
+      SPRING_DATASOURCE_USERNAME: employee_bff_user
+      SPRING_DATASOURCE_PASSWORD: employee_bff_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SERVICES_USER_SERVICE_URL: http://service-user:8080
+      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
+      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
+      SSO_BASE_URL: http://service-sso:8086
+      SSO_JWKS_URL: http://service-sso:8086/.well-known/jwks.json
+      SERVER_PORT: 8085
+    depends_on:
+      db-employee-bff:
+        condition: service_healthy
+      service-sso:
+        condition: service_started
+      service-user:
+        condition: service_started
+      service-account:
+        condition: service_started
+      service-credit:
+        condition: service_started
+      kafka:
+        condition: service_healthy
+    networks: [ appnet ]
+    ports:
+      - "8085:8085"
 
 networks:
   appnet:
