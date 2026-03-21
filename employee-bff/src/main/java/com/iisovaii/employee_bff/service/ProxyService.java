@@ -149,9 +149,11 @@ public class ProxyService {
     }
 
     public CreditDetailEmployeeResponse getCreditDetail(UUID creditId) {
-        return creditMapper.toCreditDetailEmployeeResponse(
-                creditServiceClient.getCreditDetailForEmployee(creditId)
-        );
+        CreditDetailResponse credit = creditServiceClient.getCreditDetailForEmployee(creditId);
+        CreditDetailEmployeeResponse response =
+                creditMapper.toCreditDetailEmployeeResponse(credit);
+        response.setOwnerFullName(userServiceClient.getUser(credit.getClientId()).getName());
+        return response;
     }
 
     public List<CreditPaymentDto> getCreditPayments(UUID creditId) {

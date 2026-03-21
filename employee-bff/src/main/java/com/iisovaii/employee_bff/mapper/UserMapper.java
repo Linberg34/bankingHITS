@@ -20,20 +20,21 @@ public interface UserMapper {
     // userId -> userId автоматически
     ClientDetailResponse toClientDetailResponse(UserResponse response);
 
-    // userId -> employeeId — разные имена, нужен явный маппинг
     @Mapping(target = "employeeId", source = "userId")
+    @Mapping(target = "firstName", source = "name")
+    @Mapping(target = "lastName", ignore = true)
     EmployeeProfileResponse toEmployeeProfileResponse(UserResponse response);
 
-    // userId -> userId автоматически
     CreateClientResponse toCreateClientResponse(UserResponse response);
 
-    // userId -> employeeId
     @Mapping(target = "employeeId", source = "userId")
+    @Mapping(target = "firstName", source = "name")
+    @Mapping(target = "lastName", ignore = true)
     CreateEmployeeResponse toCreateEmployeeResponse(UserResponse response);
 
-    // userId -> userId автоматически
+    @Mapping(target = "firstName", source = "name")
+    @Mapping(target = "lastName", ignore = true)
     UpdateUserResponse toUpdateUserResponse(UserResponse response);
 
-    // userId -> userId автоматически
     UserStatusResponse toUserStatusResponse(UserResponse response);
 }

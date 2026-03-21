@@ -13,11 +13,12 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends JpaRepository<Account, UUID> {
 
-    List<Account> findByClientId(Long clientId);
+    List<Account> findByClientId(UUID clientId);
 
     Optional<Account> findByAccountNumber(String accountNumber);
 
@@ -37,7 +38,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             "(:minBalance IS NULL OR a.balance >= :minBalance) AND " +
             "(:maxBalance IS NULL OR a.balance <= :maxBalance)")
     Page<Account> findWithFilters(
-            @Param("userId") Long userId,
+            @Param("userId") UUID userId,
             @Param("status") String status,
             @Param("minBalance") BigDecimal minBalance,
             @Param("maxBalance") BigDecimal maxBalance,
