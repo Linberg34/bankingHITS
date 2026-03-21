@@ -4,27 +4,47 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="docker fix">
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix">
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/information_schema.FNRwLQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/public.abK9xQ.meta" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/client-bff.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_03_2026_22_35_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_03_2026_22_35__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_21_03_2026_22_29_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_21_03_2026_22_29__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_03_2026_22_35_[Changes]/shelved.patch" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_03_2026_22_35__Changes_.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/.gitattributes" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/build.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/gradlew" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/gradlew.bat" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/settings.gradle" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/SsoServiceApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/RsaKeyConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/controller/AuthController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/controller/JwksController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/domain/SsoUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/LoginRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/RegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/TokenResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/repository/SsoUserRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/AuthService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/TokenService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/resources/application.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sso-service/src/test/java/com/iisovaii/sso_service/SsoServiceApplicationTests.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/BankHitsUserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/BankHitsUserApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SeedDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SeedDataInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/GlobalExceptionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/CreditMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/CreditMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,7 +88,12 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="sso-service" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -117,6 +142,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "Docker.docker-compose.yml.service-employee-bff: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.service-sso: Compose Deployment.executor": "Run",
     "Gradle.Build bank-hits-credit.executor": "Run",
     "Gradle.bank-hits-account [clean].executor": "Run",
     "Gradle.bank-hits-credit [bootJar].executor": "Run",
@@ -139,7 +165,7 @@
     "git-widget-placeholder": "feature/bff",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "F:/code/bankingHITS",
+    "last_opened_file_path": "F:/code/bankingHITS/sso-service",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -157,6 +183,7 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\code\bankingHITS\sso-service" />
       <recent name="F:\code\bankingHITS\bank-hits-user\src\main\java\com\gautama\bankhitsuser\dto" />
       <recent name="F:\code\bankingHITS\bank-hits-credit" />
     </key>
@@ -176,33 +203,11 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.employee-bff [clean]">
+  <component name="RunManager" selected="Docker.docker-compose.yml.service-sso: Compose Deployment">
     <configuration name="bank-hits-account [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-account" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="bank-hits-credit [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-credit" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -324,13 +329,26 @@
       </deployment>
       <method v="2" />
     </configuration>
+    <configuration name="docker-compose.yml.service-sso: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="services">
+            <list>
+              <option value="service-sso" />
+            </list>
+          </option>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.docker-compose.yml.service-sso: Compose Deployment" />
         <item itemvalue="Gradle.employee-bff [clean]" />
         <item itemvalue="Docker.docker-compose.yml.service-employee-bff: Compose Deployment" />
         <item itemvalue="Gradle.bank-hits-account [clean]" />
         <item itemvalue="Gradle.bank-hits-user [clean]" />
-        <item itemvalue="Gradle.bank-hits-credit [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -431,7 +449,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774110897851</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="fix">
+      <option name="closed" value="true" />
+      <created>1774113231703</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1774113231703</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -455,10 +481,10 @@
     <MESSAGE value="I created endpoints from the bank-hits-credit to the bank-hits-user. I need to fix the autofill of user id and createdAt fields for tariffs." />
     <MESSAGE value="Add autofill for some controllers, fix createdAt fields for tariffs. Add bank-hits-account to docker-compose.yml" />
     <MESSAGE value="fix accounts" />
-    <MESSAGE value="fix" />
     <MESSAGE value="fix2" />
     <MESSAGE value="fix employee bff" />
     <MESSAGE value="docker fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="docker fix" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>

@@ -239,5 +239,37 @@ services:
     ports:
       - "8085:8085"
 
+  db-sso:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: sso_db
+      POSTGRES_USER: sso_user
+      POSTGRES_PASSWORD: sso_pass
+    networks: [ appnet ]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sso_user -d sso_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    ports:
+      - "5438:5432"
+
+  service-sso:
+    build:
+      context: ./sso-service
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-sso:5432/sso_db
+      SPRING_DATASOURCE_USERNAME: sso_user
+      SPRING_DATASOURCE_PASSWORD: sso_pass
+      SSO_ISSUER: http://service-sso:8086
+      SERVER_PORT: 8086
+    depends_on:
+      db-sso:
+        condition: service_healthy
+    networks: [ appnet ]
+    ports:
+      - "8086:8086"
+
 networks:
   appnet:
