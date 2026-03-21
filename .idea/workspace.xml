@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix2" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -39,9 +39,17 @@
         <task path="$PROJECT_DIR$/bank-hits-account">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/client-bff">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="employee-bff" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -51,6 +59,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -58,7 +68,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="feature/back/user-service" />
+        <entry key="$PROJECT_DIR$" value="master/back" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -72,13 +82,16 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/Linberg34/bankingHITS.git&quot;,
-    &quot;accountId&quot;: &quot;2a5a7bcf-e03a-4198-b64a-15c891139f61&quot;
+    &quot;accountId&quot;: &quot;84643392-0f06-4b46-b2ef-e4461c104768&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -87,47 +100,57 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Gradle.Build bank-hits-credit.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-account [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [dependencies].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BankHitsCreditApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master/back&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/code/bankingHITS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.docker-compose.yml.db-client-bff: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.kafka: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.service-client-bff: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.zookeeper: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
+    "Gradle.Build bank-hits-credit.executor": "Run",
+    "Gradle.Build client-bff.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.bank-hits-account [clean].executor": "Run",
+    "Gradle.bank-hits-credit [bootJar].executor": "Run",
+    "Gradle.bank-hits-credit [build].executor": "Run",
+    "Gradle.bank-hits-credit [clean].executor": "Run",
+    "Gradle.bank-hits-credit [dependencies].executor": "Run",
+    "Gradle.bank-hits-user [bootJar].executor": "Run",
+    "Gradle.bank-hits-user [build].executor": "Run",
+    "Gradle.bank-hits-user [clean].executor": "Run",
+    "Gradle.client-bff [clean].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "Spring Boot.BankHitsCreditApplication.executor": "Run",
+    "Spring Boot.ClientBffApplication.executor": "Run",
+    "git-widget-placeholder": "Merging feature/client-bff",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/code/bankingHITS/employee-bff",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\code\bankingHITS\employee-bff" />
       <recent name="F:\code\bankingHITS\bank-hits-user\src\main\java\com\gautama\bankhitsuser\dto" />
       <recent name="F:\code\bankingHITS\bank-hits-credit" />
     </key>
@@ -147,7 +170,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Gradle.bank-hits-account [clean]">
+  <component name="RunManager" selected="Docker.docker-compose.yml: Compose Deployment">
     <configuration name="bank-hits-account [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -160,28 +183,6 @@
         <option name="taskNames">
           <list>
             <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="bank-hits-credit [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-credit" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -214,7 +215,7 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="bank-hits-user [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="bank-hits-user [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-user" />
@@ -225,7 +226,7 @@
         </option>
         <option name="taskNames">
           <list>
-            <option value="build" />
+            <option value="clean" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -236,10 +237,10 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="bank-hits-user [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="client-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-user" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/client-bff" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -293,13 +294,27 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
+      <deployment type="docker-compose.yml">
+        <settings />
+      </deployment>
+      <method v="2" />
+    </configuration>
+    <configuration name="docker-compose.yml: Compose Deployment" type="docker-deploy" factoryName="docker-compose.yml" temporary="true" server-name="Docker">
+      <deployment type="docker-compose.yml">
+        <settings>
+          <option name="sourceFilePath" value="docker-compose.yml" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Gradle.bank-hits-account [clean]" />
+        <item itemvalue="Docker.docker-compose.yml: Compose Deployment" />
         <item itemvalue="Gradle.bank-hits-user [clean]" />
         <item itemvalue="Gradle.bank-hits-credit [clean]" />
-        <item itemvalue="Gradle.bank-hits-credit [build]" />
-        <item itemvalue="Gradle.bank-hits-credit [clean]" />
+        <item itemvalue="Gradle.bank-hits-account [clean]" />
+        <item itemvalue="Gradle.client-bff [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -327,6 +342,9 @@
       <workItem from="1773186242564" duration="1612000" />
       <workItem from="1773500226683" duration="878000" />
       <workItem from="1773654558354" duration="1342000" />
+      <workItem from="1773773257935" duration="2104000" />
+      <workItem from="1773839106564" duration="2433000" />
+      <workItem from="1774039340110" duration="14822000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -392,7 +410,87 @@
       <option name="project" value="LOCAL" />
       <updated>1772383892746</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="The BFF client is almost working, but I still need to edit the files.">
+      <option name="closed" value="true" />
+      <created>1773686333241</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1773686333241</updated>
+    </task>
+    <task id="LOCAL-00010" summary="some fixes">
+      <option name="closed" value="true" />
+      <created>1773688063425</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1773688063425</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Added a description for Swagger">
+      <option name="closed" value="true" />
+      <created>1773690872229</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1773690872229</updated>
+    </task>
+    <task id="LOCAL-00012" summary="fix">
+      <option name="closed" value="true" />
+      <created>1773692584604</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1773692584604</updated>
+    </task>
+    <task id="LOCAL-00013" summary="add EmployeeBff - need fixes">
+      <option name="closed" value="true" />
+      <created>1773703026285</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1773703026285</updated>
+    </task>
+    <task id="LOCAL-00014" summary="change UserService">
+      <option name="closed" value="true" />
+      <created>1774058008504</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1774058008504</updated>
+    </task>
+    <task id="LOCAL-00015" summary="fix bff for UserService">
+      <option name="closed" value="true" />
+      <created>1774058778098</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1774058778098</updated>
+    </task>
+    <task id="LOCAL-00016" summary="try to start bff">
+      <option name="closed" value="true" />
+      <created>1774092123543</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1774092123543</updated>
+    </task>
+    <task id="LOCAL-00017" summary="change credit service">
+      <option name="closed" value="true" />
+      <created>1774099901801</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1774099901801</updated>
+    </task>
+    <task id="LOCAL-00018" summary="fix">
+      <option name="closed" value="true" />
+      <created>1774106142957</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1774106142957</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -416,8 +514,16 @@
     <MESSAGE value="I created endpoints from the bank-hits-credit to the bank-hits-user. I need to fix the autofill of user id and createdAt fields for tariffs." />
     <MESSAGE value="Add autofill for some controllers, fix createdAt fields for tariffs. Add bank-hits-account to docker-compose.yml" />
     <MESSAGE value="fix accounts" />
-    <MESSAGE value="fix" />
     <MESSAGE value="fix2" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix2" />
+    <MESSAGE value="The BFF client is almost working, but I still need to edit the files." />
+    <MESSAGE value="some fixes" />
+    <MESSAGE value="Added a description for Swagger" />
+    <MESSAGE value="add EmployeeBff - need fixes" />
+    <MESSAGE value="change UserService" />
+    <MESSAGE value="fix bff for UserService" />
+    <MESSAGE value="try to start bff" />
+    <MESSAGE value="change credit service" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>

@@ -1,17 +1,12 @@
 package com.gautama.bankhitsuser.model;
 
-import com.gautama.bankhitsuser.enums.Role;
 import com.gautama.bankhitsuser.enums.Status;
 import jakarta.persistence.*;
 import lombok.*;
-import org.jspecify.annotations.Nullable;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
-import java.util.Collection;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -19,36 +14,21 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "users")
-public class User implements UserDetails {
+public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String name;
     private String email;
     private Status status = Status.ACTIVE;
-    private LocalDate registeredAt = LocalDate.now();
-    private String password;
+    private LocalDateTime registeredAt = LocalDate.now().atStartOfDay();
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
-    public boolean isAccountNonLocked() {
-        return status != Status.BANNED;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
-    }
-
-    @Override
-    public @Nullable String getPassword() {
-        return password;
-    }
-
-    @Override
-    public String getUsername() {
-        return email;
-    }
+//    public boolean isAccountNonLocked() {
+//        return status != Status.BANNED;
+//    }
+//
+//    public String getUsername() {
+//        return email;
+//    }
 }
