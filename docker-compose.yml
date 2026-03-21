@@ -225,6 +225,8 @@ services:
       SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.html
       SERVER_PORT: 8085
     depends_on:
+      service-sso:
+        condition: service_started
       db-employee-bff:
         condition: service_healthy
       service-user:

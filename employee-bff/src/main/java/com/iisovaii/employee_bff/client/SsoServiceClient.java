@@ -14,16 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
         configuration = FeignConfig.class
 )
 public interface SsoServiceClient {
-    // обмен authorization code на токены
-    @PostMapping("/auth/token")
-    TokenResponse exchangeCode(
-            @RequestParam("grant_type") String grantType,
-            @RequestParam("code") String code,
-            @RequestParam("redirect_uri") String redirectUri,
-            @RequestParam("client_id") String clientId
-    );
-
-    // регистрация пользователя в SSO — вызывается при создании клиента/сотрудника
     @PostMapping("/auth/register")
     void register(@RequestBody SsoRegisterRequest request);
 }

@@ -23,30 +23,33 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity
 @RequiredArgsConstructor
-@Profile({"!dev", "!docker"})
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http)
+            throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(
+                        corsConfigurationSource())
+                )
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
-//                        // публичные эндпоинты
-//                        .requestMatchers(
-//                                "/bff/employee/auth/login-url",
-//                                "/bff/employee/auth/callback",
-//                                "/ws/**"
-//                        ).permitAll()
-//                        // только сотрудники
-//                        .requestMatchers("/bff/employee/**")
-//                        .hasAuthority("EMPLOYEE")
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/bff/employee/auth/login-url",
+                                "/bff/employee/auth/logout",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/ws/**"
+                        ).permitAll()
+                        .requestMatchers("/bff/employee/**")
+                        .hasAuthority("EMPLOYEE")
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(
                         jwtAuthFilter,
@@ -59,7 +62,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4201"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:4201",
+                "http://localhost:4200"
+        ));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
         );

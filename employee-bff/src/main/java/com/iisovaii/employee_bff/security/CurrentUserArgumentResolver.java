@@ -14,7 +14,6 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.util.UUID;
 
 @Component
-@Profile({"!dev", "!docker"})
 public class CurrentUserArgumentResolver
         implements HandlerMethodArgumentResolver {
 
@@ -34,7 +33,10 @@ public class CurrentUserArgumentResolver
         Authentication auth =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null
+                || !auth.isAuthenticated()
+                || auth.getPrincipal() == null
+                || !(auth.getPrincipal() instanceof UUID)) {
             throw new UnauthorizedException(
                     "Пользователь не аутентифицирован"
             );
