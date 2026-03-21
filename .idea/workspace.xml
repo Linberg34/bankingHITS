@@ -5,35 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="change credit service">
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/AccountDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditPaymentResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditRatingResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/OperationDTO.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/OperationResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditPayment.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/enums/CreditStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/enums/PaymentStatus.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/mapper/CreditMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditPaymentRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/RatingService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/AccountServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreateTariffRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreateTariffRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TariffResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TariffResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditPaymentScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditPaymentScheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -374,7 +346,7 @@
       <workItem from="1773654558354" duration="1342000" />
       <workItem from="1773773257935" duration="2104000" />
       <workItem from="1773839106564" duration="2433000" />
-      <workItem from="1774039340110" duration="12331000" />
+      <workItem from="1774039340110" duration="14512000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -504,7 +476,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774092123543</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="change credit service">
+      <option name="closed" value="true" />
+      <created>1774099901801</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1774099901801</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
