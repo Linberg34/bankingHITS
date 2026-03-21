@@ -51,9 +51,9 @@ public class ProxyService {
     }
 
     public OperationPageResponse getOperations(
-            UUID accountId, int page, int size) {
+            String accountNumber, int page, int size) {
         PageResponse<OperationResponse> raw =
-                accountServiceClient.getOperations(accountId, page, size);
+                accountServiceClient.getOperations(accountNumber, page, size);
         return accountMapper.toOperationPageResponse(raw);
     }
 

@@ -20,15 +20,14 @@ public class OperationController {
 
     private final ProxyService proxyService;
 
-    // история операций по любому счёту
-    @GetMapping("/accounts/{accountId}/operations")
+    @GetMapping("/accounts/{accountNumber}/operations")
     public ResponseEntity<OperationPageResponse> getOperations(
             @CurrentUser UUID employeeId,
-            @PathVariable UUID accountId,
+            @PathVariable("accountNumber") String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(
-                proxyService.getOperations(accountId, page, size)
+                proxyService.getOperations(accountNumber, page, size)
         );
     }
 }

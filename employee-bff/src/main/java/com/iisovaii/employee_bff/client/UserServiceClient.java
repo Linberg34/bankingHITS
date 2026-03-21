@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+// client/UserServiceClient.java
 @FeignClient(
         name = "user-service",
         url = "${services.user-service-url}",
@@ -18,29 +19,39 @@ import java.util.UUID;
 public interface UserServiceClient {
 
     @GetMapping("/api/users/{userId}")
-    UserResponse getUser(@PathVariable UUID userId);
+    UserResponse getUser(
+            @PathVariable("userId") UUID userId
+    );
 
-    // возвращает List а не Page — UserService отдаёт список
     @GetMapping("/api/users")
     List<UserResponse> getUsers(
-            @RequestParam(required = false) String queryType
+            @RequestParam(value = "queryType", required = false)
+            String queryType
     );
 
     @PostMapping("/api/users/clients")
-    UserResponse createClient(@RequestBody CreateUserInServiceRequest request);
+    UserResponse createClient(
+            @RequestBody CreateUserInServiceRequest request
+    );
 
     @PostMapping("/api/users/employees")
-    UserResponse createEmployee(@RequestBody CreateUserInServiceRequest request);
+    UserResponse createEmployee(
+            @RequestBody CreateUserInServiceRequest request
+    );
 
     @PutMapping("/api/users/{userId}")
     UserResponse updateUser(
-            @PathVariable UUID userId,
+            @PathVariable("userId") UUID userId,
             @RequestBody UpdateUserRequest request
     );
 
     @PostMapping("/api/users/{userId}/ban")
-    UserResponse blockUser(@PathVariable UUID userId);
+    UserResponse blockUser(
+            @PathVariable("userId") UUID userId
+    );
 
     @PostMapping("/api/users/{userId}/unban")
-    UserResponse unblockUser(@PathVariable UUID userId);
+    UserResponse unblockUser(
+            @PathVariable("userId") UUID userId
+    );
 }

@@ -13,23 +13,25 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+// client/CreditServiceClient.java
 @FeignClient(
         name = "credit-service",
         url = "${services.credit-service-url}",
         configuration = FeignConfig.class
 )
 public interface CreditServiceClient {
+
     @GetMapping("/api/credits/client/{clientId}")
     List<CreditSummaryResponse> getCreditsByUserId(@PathVariable("clientId") UUID clientId);
 
-    @GetMapping("/api/credits/{creditId}")
-    CreditDetailResponse getCreditDetailForEmployee(@PathVariable("creditId") UUID creditId);
+    @GetMapping("/api/credits/{id}")
+    CreditDetailResponse getCreditDetailForEmployee(@PathVariable("id") UUID id);
 
-    @GetMapping("/api/credits/{creditId}/payments")
-    List<CreditPaymentResponse> getCreditPayments(@PathVariable("creditId") UUID creditId);
+    @GetMapping("/api/credits/{id}/payments")
+    List<CreditPaymentResponse> getCreditPayments(@PathVariable("id") UUID id);
 
-    @GetMapping("/api/credits/rating/{userId}")
-    CreditRatingResponse getCreditRating(@PathVariable("userId") UUID userId);
+    @GetMapping("/api/credits/rating/{clientId}")
+    CreditRatingResponse getCreditRating(@PathVariable("clientId") UUID clientId);
 
     @GetMapping("/api/tariffs")
     List<TariffResponse> getTariffs();
