@@ -4,10 +4,8 @@ import java.util.UUID;
 
 public record ClientProfileResponse(
         UUID userId,
-        String firstName,
-        String lastName,
+        String name,
         String email,
-        String phone,
         UserStatus status
 ) {}
 

@@ -12,10 +12,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class ClientSummaryDto {
     private UUID userId;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
-    private String phone;
     private EmployeeProfileResponse.UserStatus status;
     private int accountCount;
     private int activeCreditCount;
