@@ -64,7 +64,7 @@ public class CreditController {
     public ResponseEntity<TakeCreditResponse> takeCredit(
             @CurrentUser UUID userId,
             @RequestBody @Valid TakeCreditRequest request) {
-        proxyService.checkAccountOwnership(userId, request.accountId());
+        proxyService.checkAccountOwnership(userId, request.accountNumber());
         TakeCreditResponse response = proxyService.takeCredit(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
@@ -79,7 +79,6 @@ public class CreditController {
             @PathVariable UUID creditId,
             @RequestBody @Valid RepayCreditRequest request) {
         proxyService.checkCreditOwnership(userId, creditId);
-        proxyService.checkAccountOwnership(userId, request.accountId());
         RepayCreditResponse response = proxyService.repayCredit(userId, creditId, request);
         return ResponseEntity.ok(response);
     }

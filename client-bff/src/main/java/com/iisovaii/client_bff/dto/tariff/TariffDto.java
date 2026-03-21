@@ -1,12 +1,14 @@
 package com.iisovaii.client_bff.dto.tariff;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TariffDto(
-        UUID tariffId,
+        @JsonProperty("id") UUID tariffId,
         String name,
-        BigDecimal interestRate,
+        @JsonProperty("annualRate") BigDecimal interestRate,
         int termDays
 ) {}
 

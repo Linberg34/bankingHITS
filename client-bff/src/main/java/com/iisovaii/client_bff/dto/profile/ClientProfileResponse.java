@@ -1,9 +1,11 @@
 package com.iisovaii.client_bff.dto.profile;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.UUID;
 
 public record ClientProfileResponse(
-        UUID userId,
+        @JsonProperty("id") UUID userId,
         String name,
         String email,
         UserStatus status

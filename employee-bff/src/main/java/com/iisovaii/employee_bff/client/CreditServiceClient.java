@@ -19,21 +19,21 @@ import java.util.UUID;
         configuration = FeignConfig.class
 )
 public interface CreditServiceClient {
-    @GetMapping("/credits")
-    List<CreditSummaryResponse> getCreditsByUserId(@RequestParam UUID userId);
+    @GetMapping("/api/credits/client/{clientId}")
+    List<CreditSummaryResponse> getCreditsByUserId(@PathVariable("clientId") UUID clientId);
 
-    @GetMapping("/credits/{creditId}")
-    CreditDetailResponse getCreditDetailForEmployee(@PathVariable UUID creditId);
+    @GetMapping("/api/credits/{creditId}")
+    CreditDetailResponse getCreditDetailForEmployee(@PathVariable("creditId") UUID creditId);
 
-    @GetMapping("/credits/{creditId}/payments")
-    List<CreditPaymentResponse> getCreditPayments(@PathVariable UUID creditId);
+    @GetMapping("/api/credits/{creditId}/payments")
+    List<CreditPaymentResponse> getCreditPayments(@PathVariable("creditId") UUID creditId);
 
-    @GetMapping("/credits/rating/{userId}")
-    CreditRatingResponse getCreditRating(@PathVariable UUID userId);
+    @GetMapping("/api/credits/rating/{userId}")
+    CreditRatingResponse getCreditRating(@PathVariable("userId") UUID userId);
 
-    @GetMapping("/tariffs")
+    @GetMapping("/api/tariffs")
     List<TariffResponse> getTariffs();
 
-    @PostMapping("/tariffs")
+    @PostMapping("/api/tariffs")
     TariffResponse createTariff(@RequestBody CreateTariffRequest request);
 }

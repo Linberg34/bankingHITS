@@ -15,8 +15,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/accounts")
@@ -27,7 +27,7 @@ public class AccountController {
     private final AccountService accountService;
 
     @GetMapping("/by-user/{userId}")
-    public ResponseEntity<List<AccountDTO>> getAccountsByUser(@PathVariable Long userId) {
+    public ResponseEntity<List<AccountDTO>> getAccountsByUser(@PathVariable UUID userId) {
         log.info("Internal API - Getting accounts for user: {}", userId);
         return ResponseEntity.ok(accountService.getAccountsByUserId(userId));
     }
@@ -52,7 +52,7 @@ public class AccountController {
 
     @PostMapping("/current")
     public ResponseEntity<AccountDTO> createAccountCurrent(
-            @RequestBody Long userId,
+            @RequestBody UUID userId,
             @RequestParam(defaultValue = "RUB") String currency) {
         log.info("Internal API - Creating account");
         return ResponseEntity.ok(accountService.createAccountCurrent(userId, currency));
@@ -77,7 +77,7 @@ public class AccountController {
 
     @GetMapping("/list")
     public ResponseEntity<PageDTO<AccountDTO>> getAllAccounts(
-            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) UUID userId,
             @RequestParam(required = false) String status,
             @RequestParam(required = false) BigDecimal minBalance,
             @RequestParam(required = false) BigDecimal maxBalance,

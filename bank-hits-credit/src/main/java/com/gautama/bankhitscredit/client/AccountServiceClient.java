@@ -27,6 +27,6 @@ public interface AccountServiceClient {
     // получить счёт по номеру — проверяем что счёт существует
     @GetMapping("/internal/accounts/number/{accountNumber}")
     AccountDTO getAccountByNumber(
-            @PathVariable String accountNumber
+            @PathVariable("accountNumber") String accountNumber
     );
 }

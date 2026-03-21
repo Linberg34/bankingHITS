@@ -13,18 +13,15 @@ import com.iisovaii.employee_bff.dto.tariff.CreateTariffResponse;
 import com.iisovaii.employee_bff.dto.tariff.TariffDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
 public interface CreditMapper {
     @Mapping(target = "creditId", source = "id")
     @Mapping(target = "interestRate", source = "annualRate")
-    @Mapping(target = "tariffName", source = "tariffName")
     @Mapping(target = "amount", source = "principalAmount")
-    @Mapping(target = "remainingDebt", source = "remainingDebt")
-    @Mapping(target = "status", source = "status")
-    @Mapping(target = "nextPaymentAt", source = "nextPaymentAt")
     CreditSummaryDto toCreditSummaryDto(CreditSummaryResponse response);
 
     List<CreditSummaryDto> toCreditSummaryDtoList(
@@ -32,12 +29,11 @@ public interface CreditMapper {
     );
 
     @Mapping(target = "creditId", source = "id")
+    @Mapping(target = "userId", source = "clientId")
+    @Mapping(target = "accountNumber", source = "accountNumber")
     @Mapping(target = "interestRate", source = "annualRate")
     @Mapping(target = "amount", source = "principalAmount")
-    @Mapping(
-            target = "ownerFullName",
-            expression = "java(response.getFirstName() + \" \" + response.getLastName())"
-    )
+    @Mapping(target = "ownerFullName", ignore = true)
     CreditDetailEmployeeResponse toCreditDetailEmployeeResponse(
             CreditDetailResponse response
     );
@@ -54,12 +50,10 @@ public interface CreditMapper {
     );
 
     @Mapping(target = "tariffId", source = "id")
-    @Mapping(target = "interestRate", source = "annualRate")
     TariffDto toTariffDto(TariffResponse response);
 
     List<TariffDto> toTariffDtoList(List<TariffResponse> responses);
 
     @Mapping(target = "tariffId", source = "id")
-    @Mapping(target = "interestRate", source = "annualRate")
     CreateTariffResponse toCreateTariffResponse(TariffResponse response);
 }

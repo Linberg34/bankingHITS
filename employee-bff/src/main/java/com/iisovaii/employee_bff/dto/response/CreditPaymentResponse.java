@@ -13,7 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditPaymentResponse {
-    private UUID paymentId;
+    private UUID id;
+    private UUID creditId;
     private BigDecimal amount;
     private LocalDateTime dueAt;
     private LocalDateTime paidAt;

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/operations")
@@ -66,7 +67,7 @@ public class OperationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OperationDTO> getOperationById(@PathVariable Long id) {
+    public ResponseEntity<OperationDTO> getOperationById(@PathVariable UUID id) {
         log.info("REST request to get operation by id: {}", id);
         return ResponseEntity.ok(operationService.getOperationById(id));
     }
