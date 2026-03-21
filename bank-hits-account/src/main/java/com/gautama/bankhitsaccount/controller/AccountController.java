@@ -51,9 +51,11 @@ public class AccountController {
     }
 
     @PostMapping("/current")
-    public ResponseEntity<AccountDTO> createAccountCurrent(@RequestBody Long userId) {
+    public ResponseEntity<AccountDTO> createAccountCurrent(
+            @RequestBody Long userId,
+            @RequestParam(defaultValue = "RUB") String currency) {
         log.info("Internal API - Creating account");
-        return ResponseEntity.ok(accountService.createAccountCurrent(userId));
+        return ResponseEntity.ok(accountService.createAccountCurrent(userId, currency));
     }
 
 //    @PutMapping("/{id}/balance")

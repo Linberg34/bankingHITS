@@ -9,7 +9,8 @@ import com.gautama.bankhitsuser.model.User;
 import com.gautama.bankhitsuser.repository.RevokedTokenRepository;
 import com.gautama.bankhitsuser.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,7 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.NoSuchElementException;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Service
 public class AuthService {
     private final UserRepository userRepository;
@@ -27,6 +28,9 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final RevokedTokenRepository revokedTokenRepository;
     private final JwtUtil jwtUtil;
+
+    @Value("${app.auth.default-password:password}")
+    private String defaultPassword;
 
     public TokenDTO register(RegisterDTO request, Role role) {
         if (userRepository.findByEmail(request.getEmail()).isPresent()) {
@@ -36,7 +40,7 @@ public class AuthService {
         User user = new User();
         user.setName(request.getName());
         user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode("password"));
+        user.setPassword(passwordEncoder.encode(defaultPassword));
         user.setRole(role);
 
         userRepository.save(user);
@@ -44,7 +48,7 @@ public class AuthService {
     }
 
     public TokenDTO login(String email) {
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, "password"));
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, defaultPassword));
         User user = userRepository.findByEmail(email).orElseThrow(() -> new NoSuchElementException("Пользователь не найден."));
         return new TokenDTO(jwtUtil.generateToken(user));
     }

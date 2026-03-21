@@ -20,7 +20,7 @@ public interface AccountServiceClient {
     AccountDTO createAccount(@RequestBody AccountDTO accountDTO);
 
     @PostMapping("/internal/accounts/current")
-    AccountDTO createAccountCurrent(@RequestBody Long userId);
+    AccountDTO createAccountCurrent(@RequestBody Long userId, @RequestParam("currency") String currency);
 
     @PutMapping("/internal/internal/accounts/{id}")
     AccountDTO updateAccount(@PathVariable("id") Long id, @RequestBody AccountDTO accountDTO);
@@ -52,7 +52,8 @@ public interface AccountServiceClient {
     OperationResponse withdraw(@RequestBody CreateOperationRequest request);
 //
 //    @PostMapping("/internal/operations/transfer")
-//    OperationResponse transfer(@RequestBody TransferRequest request);
+    @PostMapping("/internal/operations/transfer")
+    OperationResponse transfer(@RequestBody TransferRequest request);
 
     @GetMapping("/internal/operations/account/{accountNumber}/page")
     List<OperationDTO> getAccountOperationsPage(

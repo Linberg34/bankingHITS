@@ -3,6 +3,7 @@ package com.gautama.bankhitsaccount.service;
 import com.gautama.bankhitsaccount.dto.AccountDTO;
 import com.gautama.bankhitsaccount.dto.AccountListRequest;
 import com.gautama.bankhitsaccount.mapper.AccountMapper;
+import com.gautama.bankhitsaccount.model.AccountCurrency;
 import com.gautama.bankhitsaccount.model.Account;
 import com.gautama.bankhitsaccount.repository.AccountRepository;
 import jakarta.annotation.PostConstruct;
@@ -37,6 +38,9 @@ public class AccountService {
     @Value("${bank.master-account.initial-balance:1000000.00}")
     private BigDecimal masterAccountInitialBalance;
 
+    @Value("${bank.default-currency:RUB}")
+    private String defaultCurrency;
+
     @PostConstruct
     @Transactional
     public void ensureMasterAccountExists() {
@@ -48,6 +52,7 @@ public class AccountService {
         masterAccount.setClientId(masterAccountClientId);
         masterAccount.setAccountNumber(masterAccountNumber);
         masterAccount.setBalance(masterAccountInitialBalance);
+        masterAccount.setCurrency(resolveCurrency(defaultCurrency));
         masterAccount.setStatus(ACTIVE_STATUS);
         accountRepository.save(masterAccount);
 
@@ -94,6 +99,9 @@ public class AccountService {
         if (account.getStatus() == null) {
             account.setStatus(ACTIVE_STATUS);
         }
+        if (account.getCurrency() == null) {
+            account.setCurrency(resolveCurrency(accountDTO.getCurrency()));
+        }
 
         Account savedAccount = accountRepository.save(account);
         log.info("Account created successfully with id: {}", savedAccount.getId());
@@ -102,8 +110,14 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDTO createAccountCurrent(Long userId) {
-        AccountDTO accountDTO = new AccountDTO(userId, generateAccountNumber(), BigDecimal.ZERO, "ACTIVE");
+    public AccountDTO createAccountCurrent(Long userId, String currency) {
+        AccountDTO accountDTO = new AccountDTO(
+                userId,
+                generateAccountNumber(),
+                BigDecimal.ZERO,
+                resolveCurrency(currency).name(),
+                ACTIVE_STATUS
+        );
         if (accountRepository.existsByAccountNumber(accountDTO.getAccountNumber())) {
             throw new RuntimeException("Account number already exists: " + accountDTO.getAccountNumber());
         }
@@ -116,6 +130,9 @@ public class AccountService {
         }
         if (account.getStatus() == null) {
             account.setStatus(ACTIVE_STATUS);
+        }
+        if (account.getCurrency() == null) {
+            account.setCurrency(resolveCurrency(accountDTO.getCurrency()));
         }
 
         Account savedAccount = accountRepository.save(account);
@@ -166,6 +183,18 @@ public class AccountService {
 
     public String getMasterAccountNumber() {
         return masterAccountNumber;
+    }
+
+    public AccountCurrency resolveCurrency(String currency) {
+        if (currency == null || currency.isBlank()) {
+            return AccountCurrency.valueOf(defaultCurrency.toUpperCase());
+        }
+
+        try {
+            return AccountCurrency.valueOf(currency.trim().toUpperCase());
+        } catch (IllegalArgumentException exception) {
+            throw new IllegalArgumentException("Unsupported currency: " + currency + ". Supported: RUB, USD, EUR");
+        }
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.gautama.bankhitsaccount.controller;
 import com.gautama.bankhitsaccount.dto.CreateOperationRequest;
 import com.gautama.bankhitsaccount.dto.OperationDTO;
 import com.gautama.bankhitsaccount.dto.OperationResponse;
+import com.gautama.bankhitsaccount.dto.TransferRequest;
 import com.gautama.bankhitsaccount.service.OperationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +34,11 @@ public class OperationController {
         return ResponseEntity.ok(operationService.withdraw(request));
     }
 
-//    @PostMapping("/transfer")
-//    public ResponseEntity<OperationResponse> transfer(@RequestBody TransferRequest request) {
-//        log.info("REST request to transfer: {}", request);
-//        return ResponseEntity.ok(operationService.transfer(request));
-//    }
+    @PostMapping("/transfer")
+    public ResponseEntity<OperationResponse> transfer(@RequestBody TransferRequest request) {
+        log.info("REST request to transfer: {}", request);
+        return ResponseEntity.ok(operationService.transfer(request));
+    }
 
     @GetMapping("/account/{accountNumber}/page")
     public ResponseEntity<List<OperationDTO>> getAccountOperationsPage(

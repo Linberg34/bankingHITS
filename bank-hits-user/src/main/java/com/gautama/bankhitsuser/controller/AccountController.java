@@ -72,6 +72,7 @@ public class AccountController {
                 .clientId(request.getClientId())
                 .accountNumber(request.getAccountNumber())
                 .balance(request.getBalance() != null ? request.getBalance() : BigDecimal.ZERO)
+                .currency(request.getCurrency() != null ? request.getCurrency() : "RUB")
                 .status("ACTIVE")
                 .build();
 
@@ -83,7 +84,9 @@ public class AccountController {
      * Создать новый счет для текущего пользователя
      */
     @PostMapping("/current")
-    public ResponseEntity<AccountDTO> createAccountCurrent(HttpServletRequest request) {
+    public ResponseEntity<AccountDTO> createAccountCurrent(
+            HttpServletRequest request,
+            @RequestParam(defaultValue = "RUB") String currency) {
 
         String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
@@ -92,7 +95,7 @@ public class AccountController {
         String token = authHeader.substring(7);
         User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
 
-        AccountDTO createdAccount = accountServiceClient.createAccountCurrent(user.getId());
+        AccountDTO createdAccount = accountServiceClient.createAccountCurrent(user.getId(), currency);
         return ResponseEntity.ok(createdAccount);
     }
 
@@ -264,42 +267,28 @@ public class AccountController {
 //    /**
 //     * Перевести деньги между счетами
 //     */
-//    @PostMapping("/transfer")
-//    public ResponseEntity<OperationResponse> transfer(
-//            @RequestBody TransferRequest request,
-//            @RequestHeader("X-User-Id") Long userId) {
-//        log.info("REST request to transfer {} from account {} to account {}",
-//                request.getAmount(), request.getFromAccountId(), request.getToAccountId());
-//
-//        // Проверяем принадлежность счета отправителя
-//        AccountDTO fromAccount = coreClient.getAccountById(request.getFromAccountId());
-//        if (!fromAccount.getUserId().equals(userId)) {
-//            return ResponseEntity.status(403).body(
-//                    OperationResponse.builder()
-//                            .message("You don't have permission to transfer from this account")
-//                            .build()
-//            );
-//        }
-//
-//        // Проверяем достаточно ли средств
-//        if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
-//            return ResponseEntity.badRequest().body(
-//                    OperationResponse.builder()
-//                            .message("Insufficient funds")
-//                            .build()
-//            );
-//        }
-//
-//        TransferRequest transferRequest = TransferRequest.builder()
-//                .fromAccountId(request.getFromAccountId())
-//                .toAccountId(request.getToAccountId())
-//                .amount(request.getAmount())
-//                .description(request.getDescription())
-//                .build();
-//
-//        OperationResponse response = coreClient.transfer(transferRequest);
-//        return ResponseEntity.ok(response);
-//    }
+    @PostMapping("/transfer")
+    public ResponseEntity<OperationResponse> transfer(
+            HttpServletRequest request,
+            @RequestBody TransferRequest transferRequest) {
+
+        String authHeader = request.getHeader("Authorization");
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            throw new BadCredentialsException("Неверный токен.");
+        }
+        String token = authHeader.substring(7);
+        User user = userService.loadUserByUsername(jwtUtil.extractUsername(token));
+
+        AccountDTO fromAccount = accountServiceClient.getAccountByNumber(transferRequest.getFromAccountNumber());
+        AccountDTO toAccount = accountServiceClient.getAccountByNumber(transferRequest.getToAccountNumber());
+
+        if (!user.getId().equals(fromAccount.getClientId()) || !user.getId().equals(toAccount.getClientId())) {
+            throw new BadCredentialsException("Можно переводить только между своими счетами.");
+        }
+
+        OperationResponse response = accountServiceClient.transfer(transferRequest);
+        return ResponseEntity.ok(response);
+    }
 //
 //    // ============= Операции (история) =============
 //

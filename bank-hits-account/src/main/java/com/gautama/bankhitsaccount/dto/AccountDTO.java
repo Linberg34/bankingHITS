@@ -15,5 +15,6 @@ public class AccountDTO {
     private Long clientId;
     private String accountNumber;
     private BigDecimal balance;
+    private String currency;
     private String status;
 }

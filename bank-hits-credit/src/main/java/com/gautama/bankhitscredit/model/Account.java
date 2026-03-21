@@ -18,5 +18,7 @@ public class Account {
     @Column(precision = 19, scale = 2)
     private BigDecimal balance;
 
+    private String currency;
+
     private String status;
 }

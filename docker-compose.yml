@@ -25,6 +25,13 @@ services:
       SPRING_DATASOURCE_PASSWORD: user_pass
       CREDIT_SERVICE_URL: http://service-credit:8080
       CLIENTS_ACCOUNT_URL: http://service-account:8080
+      APP_SEED_ENABLED: "true"
+      APP_AUTH_DEFAULT_PASSWORD: password
+      APP_SEED_EMPLOYEE_NAME: Default Employee
+      APP_SEED_EMPLOYEE_EMAIL: employee@bank.local
+      APP_SEED_CLIENT_NAME: Default Client
+      APP_SEED_CLIENT_EMAIL: client@bank.local
+      APP_SEED_CLIENT_ACCOUNT_CURRENCY: RUB
     depends_on:
       db-user:
         condition: service_healthy
@@ -58,6 +65,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db-account:5432/account_db
       SPRING_DATASOURCE_USERNAME: account_user
       SPRING_DATASOURCE_PASSWORD: account_pass
+      EXCHANGE_RATE_API_DAILY_URL: https://www.cbr.ru/scripts/XML_daily_eng.asp
     depends_on:
       db-account:
         condition: service_healthy
