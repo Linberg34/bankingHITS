@@ -13,10 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserResponse {
     private UUID userId;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
-    private String phone;
     private EmployeeProfileResponse.UserStatus status;
     private LocalDateTime registeredAt;
     private int accountCount;        // приходит из UserService

@@ -4,21 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix2">
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/DevConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/DevSecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/DevCurrentUserArgumentResolver.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/resources/application-docker.properties" afterDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="docker fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/BankHitsUserApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/BankHitsUserApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SeedDataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SeedDataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AccountController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/CreditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/OperationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/ProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/SettingsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/TariffController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationProducer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/kafka/OperationResultMessage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/CreditServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/CreditServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/CurrentUserArgumentResolver.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/CurrentUserArgumentResolver.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/JwtAuthFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/ProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeProfileController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/CreditMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/CreditMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/employee-bff/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -42,6 +47,9 @@
     <projectState path="$PROJECT_DIR$/employee-bff">
       <ProjectState />
     </projectState>
+    <projectState path="$PROJECT_DIR$/sso-service">
+      <ProjectState />
+    </projectState>
   </component>
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
@@ -55,14 +63,12 @@
         <task path="$PROJECT_DIR$/bank-hits-account">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/employee-bff">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="employee-bff" type="f1a62948:ProjectNode" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -120,6 +126,7 @@
     "Gradle.bank-hits-user [bootJar].executor": "Run",
     "Gradle.bank-hits-user [build].executor": "Run",
     "Gradle.bank-hits-user [clean].executor": "Run",
+    "Gradle.employee-bff [clean].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -169,7 +176,7 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Docker.docker-compose.yml.service-employee-bff: Compose Deployment">
+  <component name="RunManager" selected="Gradle.employee-bff [clean]">
     <configuration name="bank-hits-account [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
@@ -182,28 +189,6 @@
         <option name="taskNames">
           <list>
             <option value="clean" />
-          </list>
-        </option>
-        <option name="vmOptions" />
-      </ExternalSystemSettings>
-      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
-      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
-      <DebugAllEnabled>false</DebugAllEnabled>
-      <RunAsTest>false</RunAsTest>
-      <method v="2" />
-    </configuration>
-    <configuration name="bank-hits-credit [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
-      <ExternalSystemSettings>
-        <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-credit" />
-        <option name="externalSystemIdString" value="GRADLE" />
-        <option name="scriptParameters" />
-        <option name="taskDescriptions">
-          <list />
-        </option>
-        <option name="taskNames">
-          <list>
-            <option value="build" />
           </list>
         </option>
         <option name="vmOptions" />
@@ -258,6 +243,28 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
+    <configuration name="employee-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/employee-bff" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
     <configuration name="BankHitsAccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="bank-hits-account.main" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.gautama.bankhitsaccount.BankHitsAccountApplication" />
@@ -293,6 +300,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SsoServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="sso-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.iisovaii.sso_service.SsoServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration default="true" type="docker-deploy" factoryName="docker-compose.yml" temporary="true">
       <deployment type="docker-compose.yml" />
       <method v="2" />
@@ -312,11 +326,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.employee-bff [clean]" />
         <item itemvalue="Docker.docker-compose.yml.service-employee-bff: Compose Deployment" />
         <item itemvalue="Gradle.bank-hits-account [clean]" />
         <item itemvalue="Gradle.bank-hits-user [clean]" />
         <item itemvalue="Gradle.bank-hits-credit [clean]" />
-        <item itemvalue="Gradle.bank-hits-credit [build]" />
       </list>
     </recent_temporary>
   </component>
@@ -409,7 +423,15 @@
       <option name="project" value="LOCAL" />
       <updated>1772383892746</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="fix employee bff">
+      <option name="closed" value="true" />
+      <created>1774110897851</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1774110897851</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -435,6 +457,8 @@
     <MESSAGE value="fix accounts" />
     <MESSAGE value="fix" />
     <MESSAGE value="fix2" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix2" />
+    <MESSAGE value="fix employee bff" />
+    <MESSAGE value="docker fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="docker fix" />
   </component>
 </project>

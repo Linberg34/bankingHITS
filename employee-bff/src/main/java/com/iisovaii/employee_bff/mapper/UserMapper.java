@@ -11,32 +11,29 @@ import com.iisovaii.employee_bff.dto.response.UserResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import java.util.List;
-
 @Mapper(componentModel = "spring")
 public interface UserMapper {
-
-    // для ClientSummaryDto accountCount и activeCreditCount
-    // приходят отдельно — их маппим явно
-    @Mapping(target = "accountCount", source = "accountCount")
-    @Mapping(target = "activeCreditCount", source = "activeCreditCount")
+    @Mapping(target = "accountCount", ignore = true)
+    @Mapping(target = "activeCreditCount", ignore = true)
     ClientSummaryDto toClientSummaryDto(UserResponse response);
 
-    List<ClientSummaryDto> toClientSummaryDtoList(List<UserResponse> responses);
-
+    // userId -> userId автоматически
     ClientDetailResponse toClientDetailResponse(UserResponse response);
 
-    // employeeId маппим из userId — имена разные
+    // userId -> employeeId — разные имена, нужен явный маппинг
     @Mapping(target = "employeeId", source = "userId")
     EmployeeProfileResponse toEmployeeProfileResponse(UserResponse response);
 
+    // userId -> userId автоматически
     CreateClientResponse toCreateClientResponse(UserResponse response);
 
-    // employeeId маппим из userId
+    // userId -> employeeId
     @Mapping(target = "employeeId", source = "userId")
     CreateEmployeeResponse toCreateEmployeeResponse(UserResponse response);
 
+    // userId -> userId автоматически
     UpdateUserResponse toUpdateUserResponse(UserResponse response);
 
+    // userId -> userId автоматически
     UserStatusResponse toUserStatusResponse(UserResponse response);
 }

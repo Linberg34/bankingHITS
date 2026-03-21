@@ -14,7 +14,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/bff/employee")
 @RequiredArgsConstructor
-public class ProfileController {
+public class EmployeeProfileController {
 
     private final ProxyService proxyService;
 

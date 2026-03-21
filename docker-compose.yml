@@ -1,5 +1,6 @@
 services:
-#  # ─── KAFKA ────────────────────────────────────────────────
+
+  # ─── KAFKA ────────────────────────────────────────────────
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
     environment:
@@ -21,7 +22,6 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
-      # важное для exactly-once/idempotent продюсеров
       KAFKA_MIN_INSYNC_REPLICAS: 1
     networks: [ appnet ]
 
@@ -33,8 +33,6 @@ services:
       POSTGRES_USER: user_user
       POSTGRES_PASSWORD: user_pass
     networks: [ appnet ]
-    volumes:
-      - .:/docker-entrypoint-initdb.d
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U user_user -d user_db" ]
       interval: 5s
@@ -168,17 +166,20 @@ services:
       context: ./client-bff
       dockerfile: Dockerfile
     environment:
-      SERVER_PORT: 8084
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db-client-bff:5432/client_backend_db
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-client-bff:5432/client_bff_db
       SPRING_DATASOURCE_USERNAME: client_bff_user
       SPRING_DATASOURCE_PASSWORD: client_bff_pass
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
       SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
       SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
       SERVICES_USER_SERVICE_URL: http://service-user:8080
-      SSO_TOKEN_URL: http://service-sso:8080/auth/token
+      SSO_BASE_URL: http://service-sso:8080
       SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.json
+      SERVER_PORT: 8084
     depends_on:
+      db-client-bff:
+        condition: service_healthy
       service-account:
         condition: service_started
       service-credit:
@@ -211,8 +212,18 @@ services:
     build:
       context: ./employee-bff
       dockerfile: Dockerfile
-    ports:
-      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db-employee-bff:5432/employee_bff_db
+      SPRING_DATASOURCE_USERNAME: employee_bff_user
+      SPRING_DATASOURCE_PASSWORD: employee_bff_pass
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      SERVICES_USER_SERVICE_URL: http://service-user:8080
+      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
+      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
+      SSO_BASE_URL: http://service-sso:8080
+      SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.html
+      SERVER_PORT: 8085
     depends_on:
       db-employee-bff:
         condition: service_healthy
@@ -224,20 +235,9 @@ services:
         condition: service_started
       kafka:
         condition: service_started
-    environment:
-      # передаём профиль через переменную окружения
-      SPRING_PROFILES_ACTIVE: docker
-      SPRING_DATASOURCE_URL: jdbc:postgresql://db-employee-bff:5432/employee_backend_db
-      SPRING_DATASOURCE_USERNAME: employee_bff_user
-      SPRING_DATASOURCE_PASSWORD: employee_bff_pass
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      SSERVICES_USER_SERVICE_URL: http://service-user:8080
-      SERVICES_ACCOUNT_SERVICE_URL: http://service-account:8080
-      SERVICES_CREDIT_SERVICE_URL: http://service-credit:8080
-      SSO_TOKEN_URL: http://service-sso:8080/auth/token
-      SSO_JWKS_URL: http://service-sso:8080/auth/.well-known/jwks.json
-      SERVER_PORT: 8085
     networks: [ appnet ]
+    ports:
+      - "8085:8085"
 
 networks:
   appnet:

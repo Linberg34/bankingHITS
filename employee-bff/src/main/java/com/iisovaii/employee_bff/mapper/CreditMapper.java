@@ -18,11 +18,22 @@ import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface CreditMapper {
-
+    @Mapping(target = "creditId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
+    @Mapping(target = "tariffName", source = "tariffName")
+    @Mapping(target = "amount", source = "principalAmount")
+    @Mapping(target = "remainingDebt", source = "remainingDebt")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "nextPaymentAt", source = "nextPaymentAt")
     CreditSummaryDto toCreditSummaryDto(CreditSummaryResponse response);
 
-    List<CreditSummaryDto> toCreditSummaryDtoList(List<CreditSummaryResponse> responses);
+    List<CreditSummaryDto> toCreditSummaryDtoList(
+            List<CreditSummaryResponse> responses
+    );
 
+    @Mapping(target = "creditId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
+    @Mapping(target = "amount", source = "principalAmount")
     @Mapping(
             target = "ownerFullName",
             expression = "java(response.getFirstName() + \" \" + response.getLastName())"
@@ -31,15 +42,24 @@ public interface CreditMapper {
             CreditDetailResponse response
     );
 
+    @Mapping(target = "paymentId", source = "id")
     CreditPaymentDto toCreditPaymentDto(CreditPaymentResponse response);
 
-    List<CreditPaymentDto> toCreditPaymentDtoList(List<CreditPaymentResponse> responses);
+    List<CreditPaymentDto> toCreditPaymentDtoList(
+            List<CreditPaymentResponse> responses
+    );
 
-    CreditRatingResponse toCreditRatingResponse(CreditRatingResponse response);
+    CreditRatingResponse toCreditRatingResponse(
+            CreditRatingResponse response
+    );
 
+    @Mapping(target = "tariffId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
     TariffDto toTariffDto(TariffResponse response);
 
     List<TariffDto> toTariffDtoList(List<TariffResponse> responses);
 
+    @Mapping(target = "tariffId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
     CreateTariffResponse toCreateTariffResponse(TariffResponse response);
 }
