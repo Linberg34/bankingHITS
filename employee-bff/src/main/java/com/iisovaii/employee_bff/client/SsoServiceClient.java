@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
         configuration = FeignConfig.class
 )
 public interface SsoServiceClient {
-
     // обмен authorization code на токены
     @PostMapping("/auth/token")
     TokenResponse exchangeCode(

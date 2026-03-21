@@ -1,10 +1,7 @@
 package com.iisovaii.employee_bff.security;
 
-import com.iisovaii.employee_bff.exception.UnauthorizedException;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -14,9 +11,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 import java.util.UUID;
 
 @Component
-@Profile({"!dev", "!docker"})
-public class CurrentUserArgumentResolver
+@Profile({"dev", "docker"})
+public class DevCurrentUserArgumentResolver
         implements HandlerMethodArgumentResolver {
+
+    // фиксированный UUID для тестирования
+    private static final UUID DEV_USER_ID =
+            UUID.fromString("00000000-0000-0000-0000-000000000001");
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -31,15 +32,6 @@ public class CurrentUserArgumentResolver
             NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) {
 
-        Authentication auth =
-                SecurityContextHolder.getContext().getAuthentication();
-
-        if (auth == null || !auth.isAuthenticated()) {
-            throw new UnauthorizedException(
-                    "Пользователь не аутентифицирован"
-            );
-        }
-
-        return (UUID) auth.getPrincipal();
+        return DEV_USER_ID;
     }
 }

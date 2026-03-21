@@ -10,6 +10,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,9 +27,12 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor
 @Slf4j
+@Profile({"!dev", "!docker"})
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtValidator jwtValidator;
+    @Value("${app.cookie-name:access_token}")
+    private String cookieName;
 
     @Override
     protected void doFilterInternal(
@@ -40,10 +45,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (token != null) {
             try {
                 Claims claims = jwtValidator.validate(token);
-
                 UUID userId = UUID.fromString(claims.getSubject());
 
-                // явно кастуем каждый элемент в String
                 Object rolesObj = claims.get("roles");
                 List<SimpleGrantedAuthority> authorities;
 
@@ -77,17 +80,19 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private String extractToken(HttpServletRequest request) {
-        if (request.getCookies() != null) {
-            for (Cookie cookie : request.getCookies()) {
-                if ("access_token".equals(cookie.getName())) {
-                    return cookie.getValue();
-                }
-            }
-        }
-
+        // токен приходит в заголовке Authorization: Bearer <token>
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);
+        }
+
+        // fallback на cookie если вдруг используется
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (cookieName.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
         }
 
         return null;
@@ -96,6 +101,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getRequestURI();
+        // auth эндпоинты не требуют токена
         return path.startsWith("/bff/employee/auth/")
                 || path.startsWith("/ws/");
     }

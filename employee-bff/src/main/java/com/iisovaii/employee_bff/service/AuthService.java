@@ -20,70 +20,10 @@ import java.util.UUID;
 @Slf4j
 public class AuthService {
 
-    private final SsoServiceClient ssoServiceClient;
-
-    @Value("${sso.authorization-url}")
-    private String authorizationUrl;
-
-    @Value("${sso.client-id}")
-    private String clientId;
-
-    @Value("${sso.redirect-uri}")
-    private String redirectUri;
-
-    @Value("${app.frontend-url}")
-    private String frontendUrl;
-
-    @Value("${app.cookie-name}")
-    private String cookieName;
+    @Value("${sso.base-url}")
+    private String ssoBaseUrl;
 
     public LoginUrlResponse buildLoginUrl() {
-        String url = UriComponentsBuilder
-                .fromUri(URI.create(authorizationUrl))
-                .queryParam("response_type", "code")
-                .queryParam("client_id", clientId)
-                .queryParam("redirect_uri", redirectUri)
-                .queryParam("scope", "openid profile roles")
-                .queryParam("state", generateState())
-                .build()
-                .toUriString();
-
-        return new LoginUrlResponse(url);
-    }
-
-    public void exchangeCodeAndSetCookie(
-            String code,
-            HttpServletResponse response) {
-
-        TokenResponse tokenResponse = ssoServiceClient.exchangeCode(
-                "authorization_code",
-                code,
-                redirectUri,
-                clientId
-        );
-
-        // используем геттеры а не record-стиль
-        Cookie cookie = new Cookie(cookieName, tokenResponse.getAccessToken());
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge((int) tokenResponse.getExpiresIn());
-        // cookie.setSecure(true); // раскомментировать в проде
-
-        response.addCookie(cookie);
-    }
-
-    public void logout(
-            HttpServletRequest request,
-            HttpServletResponse response) {
-
-        Cookie cookie = new Cookie(cookieName, "");
-        cookie.setHttpOnly(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(0);
-        response.addCookie(cookie);
-    }
-
-    private String generateState() {
-        return UUID.randomUUID().toString().replace("-", "");
+        return new LoginUrlResponse(ssoBaseUrl + "/auth/login");
     }
 }

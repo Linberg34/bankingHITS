@@ -19,7 +19,6 @@ import java.util.UUID;
         configuration = FeignConfig.class
 )
 public interface CreditServiceClient {
-
     @GetMapping("/credits")
     List<CreditSummaryResponse> getCreditsByUserId(@RequestParam UUID userId);
 
