@@ -27,6 +27,10 @@ import java.util.UUID;
 @Slf4j
 @Transactional(readOnly = true)
 public class OperationService {
+    private static final String ACTIVE_STATUS = "ACTIVE";
+    private static final String OPERATION_DEPOSIT = "DEPOSIT";
+    private static final String OPERATION_WITHDRAWAL = "WITHDRAWAL";
+    private static final String OPERATION_CREDIT_ISSUE = "CREDIT_ISSUE";
 
     private final OperationRepository operationRepository;
     private final AccountRepository accountRepository;
@@ -37,10 +41,14 @@ public class OperationService {
     public OperationResponse deposit(CreateOperationRequest request) {
         log.info("Processing deposit: accountId={}, amount={}", request.getAccountNumber(), request.getAmount());
 
-        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
+        if (isCreditDisbursement(request)) {
+            return issueCreditFromMasterAccount(request);
+        }
+
+        Account account = accountRepository.findByAccountNumberForUpdate(request.getAccountNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        if (!"ACTIVE".equals(account.getStatus())) {
+        if (!ACTIVE_STATUS.equals(account.getStatus())) {
             throw new RuntimeException("Account is not active");
         }
 
@@ -50,7 +58,7 @@ public class OperationService {
 
         // Создаем операцию
         Operation operation = operationMapper.toEntity(request, account.getAccountNumber());
-        operation.setOperationType("DEPOSIT");
+        operation.setOperationType(OPERATION_DEPOSIT);
         operation.setBalanceBefore(account.getBalance());
         operation.setBalanceAfter(account.getBalance().add(request.getAmount()));
         operation.setStatus("SUCCESS");
@@ -79,10 +87,10 @@ public class OperationService {
     public OperationResponse withdraw(CreateOperationRequest request) {
         log.info("Processing withdrawal: accountId={}, amount={}", request.getAccountNumber(), request.getAmount());
 
-        Account account = accountRepository.findByAccountNumber(request.getAccountNumber())
+        Account account = accountRepository.findByAccountNumberForUpdate(request.getAccountNumber())
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
 
-        if (!"ACTIVE".equals(account.getStatus())) {
+        if (!ACTIVE_STATUS.equals(account.getStatus())) {
             throw new RuntimeException("Account is not active");
         }
 
@@ -96,7 +104,7 @@ public class OperationService {
 
         // Создаем операцию
         Operation operation = operationMapper.toEntity(request, account.getAccountNumber());
-        operation.setOperationType("WITHDRAWAL");
+        operation.setOperationType(OPERATION_WITHDRAWAL);
         operation.setBalanceBefore(account.getBalance());
         operation.setBalanceAfter(account.getBalance().subtract(request.getAmount()));
         operation.setStatus("SUCCESS");
@@ -248,5 +256,78 @@ public class OperationService {
 
     private String generateTransactionId() {
         return "TXN-" + UUID.randomUUID().toString().replace("-", "").substring(0, 16).toUpperCase();
+    }
+
+    private boolean isCreditDisbursement(CreateOperationRequest request) {
+        if (request.getOperationType() != null && OPERATION_CREDIT_ISSUE.equalsIgnoreCase(request.getOperationType())) {
+            return true;
+        }
+
+        if (request.getDescription() == null) {
+            return false;
+        }
+
+        String normalizedDescription = request.getDescription().toLowerCase();
+        return normalizedDescription.contains("кредитных средств")
+                || normalizedDescription.contains("credit");
+    }
+
+    private OperationResponse issueCreditFromMasterAccount(CreateOperationRequest request) {
+        Account masterAccount = accountService.getMasterAccountForUpdate();
+        Account clientAccount = accountRepository.findByAccountNumberForUpdate(request.getAccountNumber())
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found"));
+
+        if (!ACTIVE_STATUS.equals(masterAccount.getStatus())) {
+            throw new RuntimeException("Master account is not active");
+        }
+        if (!ACTIVE_STATUS.equals(clientAccount.getStatus())) {
+            throw new RuntimeException("Account is not active");
+        }
+        if (masterAccount.getAccountNumber().equals(clientAccount.getAccountNumber())) {
+            throw new RuntimeException("Credit cannot be issued to master account");
+        }
+        if (request.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Credit amount must be positive");
+        }
+        if (masterAccount.getBalance().compareTo(request.getAmount()) < 0) {
+            throw new RuntimeException("Insufficient funds on master account. Available: " + masterAccount.getBalance());
+        }
+
+        BigDecimal masterBalanceBefore = masterAccount.getBalance();
+        BigDecimal clientBalanceBefore = clientAccount.getBalance();
+
+        masterAccount.setBalance(masterBalanceBefore.subtract(request.getAmount()));
+        clientAccount.setBalance(clientBalanceBefore.add(request.getAmount()));
+
+        Operation masterOperation = operationMapper.toEntity(request, masterAccount.getAccountNumber());
+        masterOperation.setOperationType(OPERATION_WITHDRAWAL);
+        masterOperation.setBalanceBefore(masterBalanceBefore);
+        masterOperation.setBalanceAfter(masterAccount.getBalance());
+        masterOperation.setStatus("SUCCESS");
+        masterOperation.setDescription(buildMasterAccountDescription(request));
+
+        Operation clientOperation = operationMapper.toEntity(request, clientAccount.getAccountNumber());
+        clientOperation.setOperationType(OPERATION_CREDIT_ISSUE);
+        clientOperation.setBalanceBefore(clientBalanceBefore);
+        clientOperation.setBalanceAfter(clientAccount.getBalance());
+        clientOperation.setStatus("SUCCESS");
+
+        accountRepository.save(masterAccount);
+        accountRepository.save(clientAccount);
+        operationRepository.save(masterOperation);
+        Operation savedClientOperation = operationRepository.save(clientOperation);
+
+        log.info("Credit issued from master account {} to {} amount {}", masterAccount.getAccountNumber(), clientAccount.getAccountNumber(), request.getAmount());
+
+        return OperationResponse.builder()
+                .operation(operationMapper.toDTO(savedClientOperation))
+                .account(accountService.getAccountById(clientAccount.getId()))
+                .message("Credit issued successfully from master account")
+                .build();
+    }
+
+    private String buildMasterAccountDescription(CreateOperationRequest request) {
+        String baseDescription = request.getDescription() == null ? "Credit disbursement" : request.getDescription();
+        return "Master account funding: " + baseDescription + ", beneficiary=" + request.getAccountNumber();
     }
 }

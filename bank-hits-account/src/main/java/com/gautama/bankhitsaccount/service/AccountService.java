@@ -5,8 +5,10 @@ import com.gautama.bankhitsaccount.dto.AccountListRequest;
 import com.gautama.bankhitsaccount.mapper.AccountMapper;
 import com.gautama.bankhitsaccount.model.Account;
 import com.gautama.bankhitsaccount.repository.AccountRepository;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,36 @@ import java.util.stream.Collectors;
 @Slf4j
 @Transactional(readOnly = true)
 public class AccountService {
+    private static final String ACTIVE_STATUS = "ACTIVE";
 
     private final AccountRepository accountRepository;
     private final AccountMapper accountMapper;
+
+    @Value("${bank.master-account.number:00000000000000000001}")
+    private String masterAccountNumber;
+
+    @Value("${bank.master-account.client-id:0}")
+    private Long masterAccountClientId;
+
+    @Value("${bank.master-account.initial-balance:1000000.00}")
+    private BigDecimal masterAccountInitialBalance;
+
+    @PostConstruct
+    @Transactional
+    public void ensureMasterAccountExists() {
+        if (accountRepository.existsByAccountNumber(masterAccountNumber)) {
+            return;
+        }
+
+        Account masterAccount = new Account();
+        masterAccount.setClientId(masterAccountClientId);
+        masterAccount.setAccountNumber(masterAccountNumber);
+        masterAccount.setBalance(masterAccountInitialBalance);
+        masterAccount.setStatus(ACTIVE_STATUS);
+        accountRepository.save(masterAccount);
+
+        log.info("Master account created with number {}", masterAccountNumber);
+    }
 
     public List<AccountDTO> getAccountsByUserId(Long userId) {
         log.info("Fetching accounts for user: {}", userId);
@@ -63,7 +92,7 @@ public class AccountService {
             account.setBalance(BigDecimal.ZERO);
         }
         if (account.getStatus() == null) {
-            account.setStatus("ACTIVE");
+            account.setStatus(ACTIVE_STATUS);
         }
 
         Account savedAccount = accountRepository.save(account);
@@ -86,7 +115,7 @@ public class AccountService {
             account.setBalance(BigDecimal.ZERO);
         }
         if (account.getStatus() == null) {
-            account.setStatus("ACTIVE");
+            account.setStatus(ACTIVE_STATUS);
         }
 
         Account savedAccount = accountRepository.save(account);
@@ -130,6 +159,16 @@ public class AccountService {
     }
 
     @Transactional
+    public Account getMasterAccountForUpdate() {
+        return accountRepository.findByAccountNumberForUpdate(masterAccountNumber)
+                .orElseThrow(() -> new ResourceNotFoundException("Master account not found: " + masterAccountNumber));
+    }
+
+    public String getMasterAccountNumber() {
+        return masterAccountNumber;
+    }
+
+    @Transactional
     public void deleteAccount(String accountNumber) {
         log.info("Deleting account with accountNumber: {}", accountNumber);
 
@@ -146,10 +185,11 @@ public class AccountService {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
 
-        // Формат: 40817XXXXXXXXXXXX (российский счет)
+        // Держим длину в пределах signed long для совместимости с соседними сервисами,
+        // которые местами все еще пытаются читать номер счета как число.
         sb.append("40817");
 
-        for (int i = 0; i < 15; i++) {
+        for (int i = 0; i < 14; i++) {
             sb.append(random.nextInt(10));
         }
 
