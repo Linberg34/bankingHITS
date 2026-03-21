@@ -16,7 +16,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class CreditTariff {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -29,6 +28,8 @@ public class CreditTariff {
 
     @OneToMany(mappedBy = "tariff", fetch = FetchType.LAZY)
     private List<Credit> credits;
+
+    private int termDays;
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

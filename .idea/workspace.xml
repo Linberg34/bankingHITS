@@ -4,21 +4,36 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="try to start bff">
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="change credit service">
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/AccountDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditPaymentResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditRatingResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/OperationDTO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/OperationResponse.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditPayment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/enums/CreditStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/enums/PaymentStatus.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/mapper/CreditMapper.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditPaymentRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/RatingService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/employee-bff/Dockerfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/AccountServiceClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreateTariffRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreateTariffRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/CreditResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TariffResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TariffResponse.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditPaymentScheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditPaymentScheduler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,51 +77,6 @@
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-account" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-account" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-account" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-credit" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-credit" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-credit" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-user" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-user" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="bank-hits-user" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="employee-bff" type="f1a62948:ProjectNode" />
               </path>
             </expand>
@@ -119,6 +89,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
+        <option value="Enum" />
+        <option value="Interface" />
         <option value="Class" />
       </list>
     </option>
@@ -158,56 +130,57 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Docker.docker-compose.yml.db-client-bff: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml.kafka: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml.service-client-bff: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml.zookeeper: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Docker.docker-compose.yml: Compose Deployment.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build bank-hits-credit.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Build client-bff.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.Download Sources.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-account [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-credit [dependencies].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [bootJar].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [build].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.bank-hits-user [clean].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.client-bff [clean].executor&quot;: &quot;Run&quot;,
-    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
-    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
-    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
-    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SONARLINT_PRECOMMIT_ANALYSIS&quot;: &quot;true&quot;,
-    &quot;Spring Boot.BankHitsCreditApplication.executor&quot;: &quot;Run&quot;,
-    &quot;Spring Boot.ClientBffApplication.executor&quot;: &quot;Run&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;feature/client-bff&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/code/bankingHITS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settingsdialog.project.gradle&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Docker.docker-compose.yml.db-client-bff: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.kafka: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.service-client-bff: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml.zookeeper: Compose Deployment.executor": "Run",
+    "Docker.docker-compose.yml: Compose Deployment.executor": "Run",
+    "Gradle.Build bank-hits-credit.executor": "Run",
+    "Gradle.Build client-bff.executor": "Run",
+    "Gradle.Download Sources.executor": "Run",
+    "Gradle.bank-hits-account [clean].executor": "Run",
+    "Gradle.bank-hits-credit [bootJar].executor": "Run",
+    "Gradle.bank-hits-credit [build].executor": "Run",
+    "Gradle.bank-hits-credit [clean].executor": "Run",
+    "Gradle.bank-hits-credit [dependencies].executor": "Run",
+    "Gradle.bank-hits-user [bootJar].executor": "Run",
+    "Gradle.bank-hits-user [build].executor": "Run",
+    "Gradle.bank-hits-user [clean].executor": "Run",
+    "Gradle.client-bff [clean].executor": "Run",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SONARLINT_PRECOMMIT_ANALYSIS": "true",
+    "Spring Boot.BankHitsCreditApplication.executor": "Run",
+    "Spring Boot.ClientBffApplication.executor": "Run",
+    "git-widget-placeholder": "feature/client-bff",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "F:/code/bankingHITS/employee-bff",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "reference.settingsdialog.project.gradle",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="F:\code\bankingHITS\employee-bff" />
       <recent name="F:\code\bankingHITS\bank-hits-user\src\main\java\com\gautama\bankhitsuser\dto" />
       <recent name="F:\code\bankingHITS\bank-hits-credit" />
     </key>
@@ -401,7 +374,7 @@
       <workItem from="1773654558354" duration="1342000" />
       <workItem from="1773773257935" duration="2104000" />
       <workItem from="1773839106564" duration="2433000" />
-      <workItem from="1774039340110" duration="6023000" />
+      <workItem from="1774039340110" duration="12331000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -523,7 +496,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774058778098</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="try to start bff">
+      <option name="closed" value="true" />
+      <created>1774092123543</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1774092123543</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -556,6 +537,7 @@
     <MESSAGE value="change UserService" />
     <MESSAGE value="fix bff for UserService" />
     <MESSAGE value="try to start bff" />
-    <option name="LAST_COMMIT_MESSAGE" value="try to start bff" />
+    <MESSAGE value="change credit service" />
+    <option name="LAST_COMMIT_MESSAGE" value="change credit service" />
   </component>
 </project>

@@ -1,5 +1,6 @@
 package com.gautama.bankhitscredit.entity;
 
+import com.gautama.bankhitscredit.enums.CreditStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,11 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "credits")
-@Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -20,7 +25,7 @@ public class Credit {
     private UUID clientId;
 
     @Column(nullable = false)
-    private UUID accountId;
+    private String accountNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tariff_id", nullable = false)
@@ -44,7 +49,6 @@ public class Credit {
     @Column(nullable = false)
     private CreditStatus status;
 
-    public enum CreditStatus {
-        ACTIVE, CLOSED, OVERDUE
-    }
+    @Column(nullable = false)
+    private LocalDateTime nextPaymentAt;
 }

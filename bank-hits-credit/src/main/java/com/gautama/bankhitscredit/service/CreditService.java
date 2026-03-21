@@ -1,19 +1,26 @@
 package com.gautama.bankhitscredit.service;
 
 
-import com.gautama.bankhitscredit.client.CoreServiceClient;
+import com.gautama.bankhitscredit.client.AccountServiceClient;
 import com.gautama.bankhitscredit.dto.*;
 import com.gautama.bankhitscredit.entity.Credit;
+import com.gautama.bankhitscredit.entity.CreditPayment;
 import com.gautama.bankhitscredit.entity.CreditTariff;
+import com.gautama.bankhitscredit.enums.CreditStatus;
+import com.gautama.bankhitscredit.enums.PaymentStatus;
+import com.gautama.bankhitscredit.mapper.CreditMapper;
+import com.gautama.bankhitscredit.repository.CreditPaymentRepository;
 import com.gautama.bankhitscredit.repository.CreditRepository;
 import com.gautama.bankhitscredit.repository.CreditTariffRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -21,111 +28,247 @@ import java.util.UUID;
 public class CreditService {
 
     private final CreditRepository creditRepository;
+    private final CreditPaymentRepository paymentRepository;
     private final CreditTariffRepository tariffRepository;
-    private final CoreServiceClient coreClient;
+    private final CreditMapper creditMapper;
+    private final AccountServiceClient accountServiceClient;
 
-    @Transactional
-    public TariffResponse createTariff(CreateTariffRequest req) {
-        if (tariffRepository.existsByName(req.getName())) {
-            throw new IllegalArgumentException("Тариф с таким названием уже существует");
-        }
-        CreditTariff tariff = CreditTariff.builder()
-                .name(req.getName())
-                .annualRate(req.getAnnualRate())
-                .build();
-        return TariffResponse.from(tariffRepository.save(tariff));
+    @Value("${bank.master-account-number}")
+    private String masterAccountNumber;
+
+    // =================== КРЕДИТЫ ===================
+
+    @Transactional(readOnly = true)
+    public List<CreditResponse> getAllCredits() {
+        return creditMapper.toCreditResponseList(
+                creditRepository.findAll()
+        );
     }
 
-    public List<TariffResponse> getAllTariffs() {
-        return tariffRepository.findAll().stream()
-                .map(TariffResponse::from)
-                .toList();
+    @Transactional(readOnly = true)
+    public List<CreditResponse> getClientCredits(UUID clientId) {
+        return creditMapper.toCreditResponseList(
+                creditRepository.findByClientId(clientId)
+        );
     }
 
-    @Transactional
-    public CreditResponse takeCredit(TakeCreditRequest req) {
-        CreditTariff tariff = tariffRepository.findById(req.getTariffId())
-                .orElseThrow(() -> new IllegalArgumentException("Тариф не найден"));
-
-        Credit credit = Credit.builder()
-                .clientId(req.getClientId())
-                .accountId(req.getAccountId())
-                .tariff(tariff)
-                .principalAmount(req.getAmount())
-                .remainingDebt(req.getAmount())
-                .issuedAt(LocalDateTime.now())
-                .status(Credit.CreditStatus.ACTIVE)
-                .build();
-
-        return CreditResponse.from(creditRepository.save(credit));
+    @Transactional(readOnly = true)
+    public CreditResponse getCredit(UUID id) {
+        return creditMapper.toCreditResponse(findById(id));
     }
 
-    public List<CreditResponse> getCreditsByClient(UUID clientId) {
-        return creditRepository.findByClientId(clientId).stream()
-                .map(CreditResponse::from)
-                .toList();
-    }
+    public CreditResponse takeCredit(TakeCreditRequest request) {
+        CreditTariff tariff = tariffRepository
+                .findById(request.getTariffId())
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Тариф не найден: " + request.getTariffId()
+                ));
 
-    public CreditResponse getCreditById(UUID id) {
-        return creditRepository.findById(id)
-                .map(CreditResponse::from)
-                .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
-    }
+        // проверяем что счёт клиента существует и активен
+        AccountDTO clientAccount = accountServiceClient
+                .getAccountByNumber(request.getAccountNumber());
 
-    @Transactional
-    public CreditResponse repayCredit(UUID creditId) {
-        Credit credit = creditRepository.findById(creditId)
-                .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
-
-        if (credit.getStatus() != Credit.CreditStatus.ACTIVE) {
-            throw new IllegalStateException("Кредит уже закрыт или просрочен");
-        }
-
-        boolean success = coreClient.tryWithdraw(credit.getAccountId(), credit.getRemainingDebt());
-        if (!success) {
-            throw new IllegalStateException("Недостаточно средств для погашения кредита");
-        }
-
-        credit.setRemainingDebt(BigDecimal.ZERO);
-        credit.setStatus(Credit.CreditStatus.CLOSED);
-        credit.setClosedAt(LocalDateTime.now());
-
-        return CreditResponse.from(creditRepository.save(credit));
-    }
-
-    @Transactional
-    public CreditResponse repayPartial(UUID creditId, PartialRepayRequest req) {
-        Credit credit = creditRepository.findById(creditId)
-                .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
-
-        if (credit.getStatus() != Credit.CreditStatus.ACTIVE) {
-            throw new IllegalStateException("Кредит уже закрыт или просрочен");
-        }
-
-        if (req.getAmount().compareTo(credit.getRemainingDebt()) > 0) {
-            throw new IllegalArgumentException(
-                    "Сумма " + req.getAmount() + " превышает остаток долга " + credit.getRemainingDebt()
+        if (!"ACTIVE".equals(clientAccount.getStatus())) {
+            throw new IllegalStateException(
+                    "Счёт клиента закрыт или заблокирован"
             );
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountId(), req.getAmount());
-        if (!success) {
-            throw new IllegalStateException("Недостаточно средств на счёте");
+        // проверяем баланс мастер-счёта
+        AccountDTO masterAccount = accountServiceClient
+                .getAccountByNumber(masterAccountNumber);
+
+        if (masterAccount.getBalance()
+                .compareTo(request.getAmount()) < 0) {
+            throw new IllegalStateException(
+                    "Недостаточно средств на мастер-счёте банка " +
+                            "для выдачи кредита"
+            );
         }
 
-        credit.setRemainingDebt(credit.getRemainingDebt().subtract(req.getAmount()));
+        // шаг 1 — списываем с мастер-счёта банка
+        accountServiceClient.withdraw(
+                new CreateOperationRequest(
+                        masterAccountNumber,
+                        "WITHDRAWAL",
+                        request.getAmount(),
+                        "Выдача кредита клиенту, тариф: " + tariff.getName()
+                )
+        );
 
-        if (credit.getRemainingDebt().compareTo(BigDecimal.ZERO) == 0) {
-            credit.setStatus(Credit.CreditStatus.CLOSED);
+        // шаг 2 — зачисляем на счёт клиента
+        accountServiceClient.deposit(
+                new CreateOperationRequest(
+                        request.getAccountNumber(),
+                        "DEPOSIT",
+                        request.getAmount(),
+                        "Выдача кредита по тарифу " + tariff.getName()
+                )
+        );
+
+        Credit credit = Credit.builder()
+                .clientId(request.getClientId())
+                .accountNumber(request.getAccountNumber())
+                .tariff(tariff)
+                .principalAmount(request.getAmount())
+                .remainingDebt(request.getAmount())
+                .issuedAt(LocalDateTime.now())
+                .status(CreditStatus.ACTIVE)
+                .nextPaymentAt(LocalDateTime.now().plusMinutes(1))
+                .build();
+
+        return creditMapper.toCreditResponse(
+                creditRepository.save(credit)
+        );
+    }
+
+    public CreditResponse repayFull(UUID creditId) {
+        Credit credit = findById(creditId);
+
+        if (credit.getStatus() == CreditStatus.CLOSED) {
+            throw new IllegalStateException("Кредит уже закрыт");
+        }
+
+        // шаг 1 — списываем со счёта клиента
+        accountServiceClient.withdraw(
+                new CreateOperationRequest(
+                        credit.getAccountNumber(),
+                        "WITHDRAWAL",
+                        credit.getRemainingDebt(),
+                        "Полное погашение кредита " + creditId
+                )
+        );
+
+        // шаг 2 — возвращаем на мастер-счёт банка
+        accountServiceClient.deposit(
+                new CreateOperationRequest(
+                        masterAccountNumber,
+                        "DEPOSIT",
+                        credit.getRemainingDebt(),
+                        "Возврат по кредиту " + creditId
+                )
+        );
+
+        savePayment(
+                credit, credit.getRemainingDebt(), PaymentStatus.PAID
+        );
+
+        credit.setRemainingDebt(BigDecimal.ZERO);
+        credit.setStatus(CreditStatus.CLOSED);
+        credit.setClosedAt(LocalDateTime.now());
+
+        return creditMapper.toCreditResponse(
+                creditRepository.save(credit)
+        );
+    }
+
+    public CreditResponse repayPartial(
+            UUID creditId, PartialRepayRequest request) {
+
+        Credit credit = findById(creditId);
+
+        if (credit.getStatus() == CreditStatus.CLOSED) {
+            throw new IllegalStateException("Кредит уже закрыт");
+        }
+
+        BigDecimal amount = request.getAmount()
+                .min(credit.getRemainingDebt());
+
+        // шаг 1 — списываем со счёта клиента
+        accountServiceClient.withdraw(
+                new CreateOperationRequest(
+                        credit.getAccountNumber(),
+                        "WITHDRAWAL",
+                        amount,
+                        "Частичное погашение кредита " + creditId
+                )
+        );
+
+        // шаг 2 — возвращаем на мастер-счёт банка
+        accountServiceClient.deposit(
+                new CreateOperationRequest(
+                        masterAccountNumber,
+                        "DEPOSIT",
+                        amount,
+                        "Частичный возврат по кредиту " + creditId
+                )
+        );
+
+        savePayment(credit, amount, PaymentStatus.PAID);
+
+        credit.setRemainingDebt(
+                credit.getRemainingDebt().subtract(amount)
+        );
+
+        if (credit.getRemainingDebt()
+                .compareTo(BigDecimal.ZERO) <= 0) {
+            credit.setStatus(CreditStatus.CLOSED);
             credit.setClosedAt(LocalDateTime.now());
         }
 
-        return CreditResponse.from(creditRepository.save(credit));
+        return creditMapper.toCreditResponse(
+                creditRepository.save(credit)
+        );
     }
 
-    public List<CreditResponse> getAllCredits() {
-        return creditRepository.findAll().stream()
-                .map(CreditResponse::from)
-                .toList();
+    @Transactional(readOnly = true)
+    public List<CreditPaymentResponse> getPayments(UUID creditId) {
+        findById(creditId); // проверяем что кредит существует
+        return creditMapper.toPaymentResponseList(
+                paymentRepository.findByCreditIdOrderByDueAtDesc(creditId)
+        );
+    }
+
+    // =================== ТАРИФЫ ===================
+
+    @Transactional(readOnly = true)
+    public List<TariffResponse> getAllTariffs() {
+        return creditMapper.toTariffResponseList(
+                tariffRepository.findAll()
+        );
+    }
+
+    public TariffResponse createTariff(CreateTariffRequest request) {
+        if (tariffRepository.findByName(request.getName()).isPresent()) {
+            throw new IllegalStateException(
+                    "Тариф с именем " + request.getName() + " уже существует"
+            );
+        }
+
+        CreditTariff tariff = CreditTariff.builder()
+                .name(request.getName())
+                .annualRate(request.getAnnualRate())
+                .termDays(request.getTermDays())
+                .build();
+
+        return creditMapper.toTariffResponse(
+                tariffRepository.save(tariff)
+        );
+    }
+
+    // =================== ВСПОМОГАТЕЛЬНЫЕ ===================
+
+    private Credit findById(UUID id) {
+        return creditRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Кредит не найден: " + id
+                ));
+    }
+
+    void savePayment(
+            Credit credit,
+            BigDecimal amount,
+            PaymentStatus status) {
+
+        CreditPayment payment = CreditPayment.builder()
+                .credit(credit)
+                .amount(amount)
+                .dueAt(LocalDateTime.now())
+                .paidAt(status == PaymentStatus.PAID
+                        ? LocalDateTime.now() : null)
+                .status(status)
+                .build();
+
+        paymentRepository.save(payment);
     }
 }
