@@ -1,6 +1,7 @@
 package com.iisovaii.sso_service.dto;
 
-import com.iisovaii.sso_service.domain.SsoUser;
+import com.iisovaii.sso_service.domain.Role;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,5 +19,9 @@ public class RegisterRequest {
     @NotBlank
     private String password;
 
-    private List<SsoUser.Role> roles;
+    @Schema(
+            description = "Роли пользователя",
+            allowableValues = {"CLIENT", "EMPLOYEE"}
+    )
+    private List<Role> roles;
 }

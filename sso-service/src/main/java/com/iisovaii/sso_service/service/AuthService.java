@@ -1,5 +1,6 @@
 package com.iisovaii.sso_service.service;
 
+import com.iisovaii.sso_service.domain.Role;
 import com.iisovaii.sso_service.domain.SsoUser;
 import com.iisovaii.sso_service.dto.TokenResponse;
 import com.iisovaii.sso_service.repository.SsoUserRepository;
@@ -60,7 +61,7 @@ public class AuthService {
     public void register(
             String username,
             String password,
-            List<SsoUser.Role> roles) {
+            List<Role> roles) {
 
         if (userRepository.findByUsername(username).isPresent()) {
             throw new ResponseStatusException(
@@ -72,7 +73,7 @@ public class AuthService {
         SsoUser user = SsoUser.builder()
                 .username(username)
                 .passwordHash(passwordEncoder.encode(password))
-                .roles(roles != null ? roles : List.of(SsoUser.Role.CLIENT))
+                .roles(roles != null ? roles : List.of(Role.CLIENT))
                 .status(SsoUser.UserStatus.ACTIVE)
                 .build();
 

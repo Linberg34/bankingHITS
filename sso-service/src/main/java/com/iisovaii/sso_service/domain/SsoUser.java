@@ -38,11 +38,8 @@ public class SsoUser {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    @Builder.Default
     private UserStatus status = UserStatus.ACTIVE;
-
-    public enum Role {
-        CLIENT, EMPLOYEE
-    }
 
     public enum UserStatus {
         ACTIVE, BLOCKED

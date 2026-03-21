@@ -4,47 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix">
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/information_schema.FNRwLQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/pg_catalog.0S1ZNQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/public.abK9xQ.meta" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules/client-bff.main.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_03_2026_22_35_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_21_03_2026_22_35__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_21_03_2026_22_29_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_21_03_2026_22_29__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_03_2026_22_35_[Changes]/shelved.patch" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_21_03_2026_22_35__Changes_.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/.gitattributes" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/Dockerfile" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/settings.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/SsoServiceApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/RsaKeyConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/controller/AuthController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/controller/JwksController.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/domain/SsoUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/LoginRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/RegisterRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/TokenResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/repository/SsoUserRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/AuthService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/TokenService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/main/resources/application.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/sso-service/src/test/java/com/iisovaii/sso_service/SsoServiceApplicationTests.java" afterDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="add sso">
+      <change afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/domain/Role.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/domain/SsoUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/domain/SsoUser.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/RegisterRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/dto/RegisterRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/TokenService.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/TokenService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -86,12 +53,26 @@
         <task path="$PROJECT_DIR$/employee-bff">
           <activation />
         </task>
+        <task path="$PROJECT_DIR$/sso-service">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
             <expand>
               <path>
                 <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
                 <item name="sso-service" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="sso-service" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="sso-service" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
               </path>
             </expand>
             <select />
@@ -104,6 +85,7 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Class" />
+        <option value="Enum" />
       </list>
     </option>
   </component>
@@ -153,6 +135,7 @@
     "Gradle.bank-hits-user [build].executor": "Run",
     "Gradle.bank-hits-user [clean].executor": "Run",
     "Gradle.employee-bff [clean].executor": "Run",
+    "Gradle.sso-service [clean].executor": "Run",
     "RequestMappingsPanelOrder0": "0",
     "RequestMappingsPanelOrder1": "1",
     "RequestMappingsPanelWidth0": "75",
@@ -226,10 +209,10 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="bank-hits-user [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="employee-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-user" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/employee-bff" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -248,10 +231,10 @@
       <RunAsTest>false</RunAsTest>
       <method v="2" />
     </configuration>
-    <configuration name="employee-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+    <configuration name="sso-service [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
       <ExternalSystemSettings>
         <option name="executionName" />
-        <option name="externalProjectPath" value="$PROJECT_DIR$/employee-bff" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/sso-service" />
         <option name="externalSystemIdString" value="GRADLE" />
         <option name="scriptParameters" />
         <option name="taskDescriptions">
@@ -345,10 +328,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Docker.docker-compose.yml.service-sso: Compose Deployment" />
+        <item itemvalue="Gradle.sso-service [clean]" />
         <item itemvalue="Gradle.employee-bff [clean]" />
         <item itemvalue="Docker.docker-compose.yml.service-employee-bff: Compose Deployment" />
         <item itemvalue="Gradle.bank-hits-account [clean]" />
-        <item itemvalue="Gradle.bank-hits-user [clean]" />
       </list>
     </recent_temporary>
   </component>
@@ -457,7 +440,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774113231703</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="add sso">
+      <option name="closed" value="true" />
+      <created>1774115326582</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1774115326582</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,6 +476,7 @@
     <MESSAGE value="fix employee bff" />
     <MESSAGE value="docker fix" />
     <MESSAGE value="fix" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix" />
+    <MESSAGE value="add sso" />
+    <option name="LAST_COMMIT_MESSAGE" value="add sso" />
   </component>
 </project>

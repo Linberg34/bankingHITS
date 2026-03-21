@@ -1,5 +1,6 @@
 package com.iisovaii.sso_service.service;
 
+import com.iisovaii.sso_service.domain.Role;
 import com.iisovaii.sso_service.domain.SsoUser;
 import com.nimbusds.jose.jwk.RSAKey;
 import io.jsonwebtoken.Jwts;
@@ -38,7 +39,7 @@ public class TokenService {
 
             // конвертируем енамы в строки для JWT claims
             List<String> roleNames = user.getRoles().stream()
-                    .map(SsoUser.Role::name)
+                    .map(Role::name)
                     .toList();
 
             return Jwts.builder()
