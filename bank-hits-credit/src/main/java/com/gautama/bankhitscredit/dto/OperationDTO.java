@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class OperationDTO {
     private Long id;
     private String accountNumber;
+    private String currency;
     private String operationType;
     private BigDecimal amount;
     private BigDecimal balanceBefore;

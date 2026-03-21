@@ -23,6 +23,9 @@ public class Operation {
     @Column(name = "operation_type", nullable = false, length = 20)
     private String operationType; // DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT
 
+    @Column(length = 3)
+    private String currency;
+
     @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal amount;
 

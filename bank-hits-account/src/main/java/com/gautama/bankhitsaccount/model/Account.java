@@ -21,5 +21,9 @@ public class Account {
     @Column(precision = 19, scale = 2)
     private BigDecimal balance;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 3)
+    private AccountCurrency currency;
+
     private String status;
 }
