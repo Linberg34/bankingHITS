@@ -64,13 +64,6 @@ services:
       SPRING_DATASOURCE_PASSWORD: user_pass
       CREDIT_SERVICE_URL: http://service-credit:8080
       CLIENTS_ACCOUNT_URL: http://service-account:8080
-      APP_SEED_ENABLED: "true"
-      APP_AUTH_DEFAULT_PASSWORD: password
-      APP_SEED_EMPLOYEE_NAME: Default Employee
-      APP_SEED_EMPLOYEE_EMAIL: employee@bank.local
-      APP_SEED_CLIENT_NAME: Default Client
-      APP_SEED_CLIENT_EMAIL: client@bank.local
-      APP_SEED_CLIENT_ACCOUNT_CURRENCY: RUB
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
     depends_on:
       db-user:
@@ -183,10 +176,19 @@ services:
       SPRING_DATASOURCE_USERNAME: sso_user
       SPRING_DATASOURCE_PASSWORD: sso_pass
       SSO_ISSUER: http://service-sso:8086
+      SERVICES_USER_SERVICE_URL: http://service-user:8080
+      APP_SEED_ENABLED: "true"
+      APP_AUTH_DEFAULT_PASSWORD: password
+      APP_SEED_EMPLOYEE_NAME: Default Employee
+      APP_SEED_EMPLOYEE_EMAIL: employee@bank.local
+      APP_SEED_CLIENT_NAME: Default Client
+      APP_SEED_CLIENT_EMAIL: client@bank.local
       SERVER_PORT: 8086
     depends_on:
       db-sso:
         condition: service_healthy
+      service-user:
+        condition: service_started
     networks: [ appnet ]
     ports:
       - "8086:8086"

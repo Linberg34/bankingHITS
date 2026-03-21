@@ -1,5 +1,7 @@
 package com.iisovaii.employee_bff.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.iisovaii.employee_bff.dto.error.ErrorResponse;
 import com.iisovaii.employee_bff.exception.JwtExpiredException;
 import com.iisovaii.employee_bff.exception.JwtInvalidException;
 import io.jsonwebtoken.Claims;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +22,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,6 +35,7 @@ import java.util.stream.Collectors;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtValidator jwtValidator;
+    private final ObjectMapper objectMapper;
     @Value("${app.cookie-name:access_token}")
     private String cookieName;
 
@@ -45,18 +52,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 Claims claims = jwtValidator.validate(token);
                 UUID userId = UUID.fromString(claims.getSubject());
 
-                Object rolesObj = claims.get("roles");
-                List<SimpleGrantedAuthority> authorities;
-
-                if (rolesObj instanceof List<?> rolesList) {
-                    authorities = rolesList.stream()
-                            .map(role -> new SimpleGrantedAuthority(
-                                    role.toString())
-                            )
-                            .collect(Collectors.toList());
-                } else {
-                    authorities = List.of();
-                }
+                List<SimpleGrantedAuthority> authorities = extractRoles(claims)
+                        .stream()
+                        .map(SimpleGrantedAuthority::new)
+                        .collect(Collectors.toList());
 
                 UsernamePasswordAuthenticationToken auth =
                         new UsernamePasswordAuthenticationToken(
@@ -69,12 +68,62 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .getContext()
                         .setAuthentication(auth);
 
-            } catch (JwtExpiredException | JwtInvalidException e) {
-                log.warn("JWT rejected: {}", e.getMessage());
+            } catch (JwtExpiredException e) {
+                SecurityContextHolder.clearContext();
+                writeUnauthorized(response, "TOKEN_EXPIRED", e.getMessage());
+                return;
+            } catch (JwtInvalidException e) {
+                SecurityContextHolder.clearContext();
+                writeUnauthorized(response, "TOKEN_INVALID", e.getMessage());
+                return;
             }
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private List<String> extractRoles(Claims claims) {
+        Object raw = claims.get("roles");
+        switch (raw) {
+            case null -> {
+                return List.of();
+            }
+            case String role -> {
+                if (role.isBlank()) {
+                    return List.of();
+                }
+                return List.of(role);
+            }
+            case Collection<?> roles -> {
+                List<String> values = new ArrayList<>(roles.size());
+                for (Object item : roles) {
+                    if (item == null) {
+                        continue;
+                    }
+
+                    String value = item.toString();
+                    if (!value.isBlank()) {
+                        values.add(value);
+                    }
+                }
+                return values;
+            }
+            default -> {
+                return List.of();
+            }
+        }
+    }
+
+    private void writeUnauthorized(
+            HttpServletResponse response,
+            String code,
+            String message) throws IOException {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        objectMapper.writeValue(
+                response.getWriter(),
+                new ErrorResponse(code, message, LocalDateTime.now())
+        );
     }
 
     private String extractToken(HttpServletRequest request) {

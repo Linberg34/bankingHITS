@@ -36,6 +36,7 @@ public class AuthController {
     public ResponseEntity<Void> register(
             @RequestBody @Valid RegisterRequest request) {
         authService.register(
+                request.getName(),
                 request.getUsername(),
                 request.getPassword(),
                 request.getRoles()

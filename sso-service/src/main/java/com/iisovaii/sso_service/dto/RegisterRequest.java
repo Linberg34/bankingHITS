@@ -13,6 +13,8 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterRequest {
+    private String name;
+
     @NotBlank
     private String username;
 

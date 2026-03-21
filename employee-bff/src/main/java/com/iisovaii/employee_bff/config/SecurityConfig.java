@@ -4,8 +4,7 @@ import com.iisovaii.employee_bff.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,8 +40,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/bff/employee/auth/login-url",
-                                "/bff/employee/auth/logout",
+                                "/bff/employee/auth/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/ws/**"
@@ -50,6 +48,12 @@ public class SecurityConfig {
                         .requestMatchers("/bff/employee/**")
                         .hasAuthority("EMPLOYEE")
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, ex) ->
+                                response.sendError(HttpStatus.UNAUTHORIZED.value()))
+                        .accessDeniedHandler((request, response, ex) ->
+                                response.sendError(HttpStatus.FORBIDDEN.value()))
                 )
                 .addFilterBefore(
                         jwtAuthFilter,

@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -24,6 +25,7 @@ public class AuthService {
     private final TokenService tokenService;
     private final PasswordEncoder passwordEncoder;
     private final JWKSet jwkSet;
+    private final UserProvisioningService userProvisioningService;
 
     public TokenResponse login(
             String username, String password) {
@@ -58,7 +60,9 @@ public class AuthService {
     }
 
     // service/AuthService.java — метод register
+    @Transactional
     public void register(
+            String name,
             String username,
             String password,
             List<Role> roles) {
@@ -70,17 +74,54 @@ public class AuthService {
             );
         }
 
+        List<Role> effectiveRoles = normalizeRoles(roles);
         SsoUser user = SsoUser.builder()
                 .username(username)
                 .passwordHash(passwordEncoder.encode(password))
-                .roles(roles != null ? roles : List.of(Role.CLIENT))
+                .roles(effectiveRoles)
                 .status(SsoUser.UserStatus.ACTIVE)
                 .build();
 
         userRepository.save(user);
+        userProvisioningService.ensureUserProfile(
+                resolveDisplayName(name, username),
+                username,
+                effectiveRoles
+        );
+    }
+
+    public void ensureRegistered(
+            String name,
+            String username,
+            String password,
+            List<Role> roles) {
+        if (userRepository.findByUsername(username).isPresent()) {
+            userProvisioningService.ensureUserProfile(
+                    resolveDisplayName(name, username),
+                    username,
+                    normalizeRoles(roles)
+            );
+            return;
+        }
+
+        register(name, username, password, roles);
     }
 
     public Map<String, Object> getJwks() {
         return jwkSet.toPublicJWKSet().toJSONObject();
+    }
+
+    private List<Role> normalizeRoles(List<Role> roles) {
+        if (roles == null || roles.isEmpty()) {
+            return List.of(Role.CLIENT);
+        }
+        return roles;
+    }
+
+    private String resolveDisplayName(String name, String username) {
+        if (name != null && !name.isBlank()) {
+            return name;
+        }
+        return username;
     }
 }

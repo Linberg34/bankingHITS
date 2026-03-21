@@ -23,6 +23,11 @@ public interface UserServiceClient {
             @PathVariable("userId") UUID userId
     );
 
+    @GetMapping("/api/users/by-email")
+    UserResponse getUserByEmail(
+            @RequestParam("email") String email
+    );
+
     @GetMapping("/api/users")
     List<UserResponse> getUsers(
             @RequestParam(value = "queryType", required = false)

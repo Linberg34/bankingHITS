@@ -35,6 +35,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getUserById(userId));
     }
 
+    @GetMapping("/by-email")
+    public ResponseEntity<UserDTO> getUserByEmail(
+            @RequestParam String email) {
+        return ResponseEntity.ok(userService.getUserByEmail(email));
+    }
+
     // создать клиента — вызывает BFF при регистрации клиента
     @PostMapping("/clients")
     public ResponseEntity<UserDTO> createClient(

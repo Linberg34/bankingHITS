@@ -2,9 +2,9 @@ package com.gautama.bankhitscredit.repository;
 
 import com.gautama.bankhitscredit.entity.Credit;
 import com.gautama.bankhitscredit.enums.CreditStatus;
-import feign.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;

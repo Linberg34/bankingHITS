@@ -85,41 +85,34 @@ public class ProxyService {
     }
 
     public CreateClientResponse createClient(CreateClientRequest request) {
-        // шаг 1 — создаём credentials в SSO
         ssoServiceClient.register(
                 new SsoRegisterRequest(
+                        request.getName(),
                         request.getEmail(),
                         request.getPassword(),
                         List.of("CLIENT")
                 )
         );
 
-        // шаг 2 — создаём профиль в UserService без пароля
-        UserResponse raw = userServiceClient.createClient(
-                new CreateUserInServiceRequest(
-                        request.getName(),
-                        request.getEmail()
-                )
+        UserResponse raw = userServiceClient.getUserByEmail(
+                request.getEmail()
         );
         return userMapper.toCreateClientResponse(raw);
     }
 
     public CreateEmployeeResponse createEmployee(
             CreateEmployeeRequest request) {
-        // аналогично клиенту — сначала SSO, потом UserService
         ssoServiceClient.register(
                 new SsoRegisterRequest(
+                        request.getName(),
                         request.getEmail(),
                         request.getPassword(),
                         List.of("EMPLOYEE")
                 )
         );
 
-        UserResponse raw = userServiceClient.createEmployee(
-                new CreateUserInServiceRequest(
-                        request.getName(),
-                        request.getEmail()
-                )
+        UserResponse raw = userServiceClient.getUserByEmail(
+                request.getEmail()
         );
         return userMapper.toCreateEmployeeResponse(raw);
     }
