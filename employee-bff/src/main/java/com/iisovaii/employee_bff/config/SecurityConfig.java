@@ -34,16 +34,17 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // публичные эндпоинты
-                        .requestMatchers(
-                                "/bff/employee/auth/login-url",
-                                "/bff/employee/auth/callback",
-                                "/ws/**"
-                        ).permitAll()
-                        // только сотрудники
-                        .requestMatchers("/bff/employee/**")
-                        .hasAuthority("EMPLOYEE")
-                        .anyRequest().authenticated()
+//                        // публичные эндпоинты
+//                        .requestMatchers(
+//                                "/bff/employee/auth/login-url",
+//                                "/bff/employee/auth/callback",
+//                                "/ws/**"
+//                        ).permitAll()
+//                        // только сотрудники
+//                        .requestMatchers("/bff/employee/**")
+//                        .hasAuthority("EMPLOYEE")
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(
                         jwtAuthFilter,

@@ -30,14 +30,15 @@ public class SecurityConfig {
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/bff/client/auth/login-url",
-                                "/bff/client/auth/callback",
-                                "/ws/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**"
-                        ).permitAll()
-                        .anyRequest().authenticated()
+//                        .requestMatchers(
+//                                "/bff/client/auth/login-url",
+//                                "/bff/client/auth/callback",
+//                                "/ws/**",
+//                                "/swagger-ui/**",
+//                                "/v3/api-docs/**"
+//                        ).permitAll()
+//                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

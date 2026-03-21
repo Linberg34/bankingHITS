@@ -5,21 +5,22 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "credits")
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
 public class Credit {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     // ID клиента из сервиса пользователей
     @Column(nullable = false)
-    private Long clientId;
+    private UUID clientId;
 
     @Column(nullable = false)
-    private String accountNumber;
+    private UUID accountId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tariff_id", nullable = false)

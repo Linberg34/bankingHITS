@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
@@ -52,28 +53,28 @@ public class CreditController {
     @Operation(summary = "Кредиты клиента", description = "Возвращает все кредиты конкретного клиента.")
     @GetMapping("/credits/client/{clientId}")
     public List<CreditResponse> getClientCredits(
-            @Parameter(description = "ID клиента") @PathVariable Long clientId) {
+            @Parameter(description = "ID клиента") @PathVariable UUID clientId) {
         return creditService.getCreditsByClient(clientId);
     }
 
     @Operation(summary = "Детали кредита", description = "Возвращает детальную информацию по кредиту.")
     @GetMapping("/credits/{id}")
     public CreditResponse getCredit(
-            @Parameter(description = "ID кредита") @PathVariable Long id) {
+            @Parameter(description = "ID кредита") @PathVariable UUID id) {
         return creditService.getCreditById(id);
     }
 
     @Operation(summary = "Погасить кредит", description = "Досрочно погашает кредит, списывая весь остаток долга со счёта клиента.")
     @PostMapping("/credits/{id}/repay")
     public CreditResponse repayCredit(
-            @Parameter(description = "ID кредита") @PathVariable Long id) {
+            @Parameter(description = "ID кредита") @PathVariable UUID id) {
         return creditService.repayCredit(id);
     }
 
     @Operation(summary = "Частичное погашение кредита", description = "Списывает указанную сумму со счёта клиента в счёт долга.")
     @PostMapping("/credits/{id}/repay/partial")
     public CreditResponse repayPartial(
-            @Parameter(description = "ID кредита") @PathVariable Long id,
+            @Parameter(description = "ID кредита") @PathVariable UUID id,
             @Valid @RequestBody PartialRepayRequest req) {
         return creditService.repayPartial(id, req);
     }

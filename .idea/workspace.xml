@@ -4,15 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="change UserService">
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/SsoRegisterRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateUserInServiceRequest.java" afterDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="try to start bff">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/enums/Role.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/UserServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/UserServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/UserServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/UserServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/client/CoreServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/dto/TakeCreditRequest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/Credit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/entity/CreditTariff.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/model/Account.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/repository/CreditTariffRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/service/CreditService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/controller/AuthController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AuthController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -395,7 +401,7 @@
       <workItem from="1773654558354" duration="1342000" />
       <workItem from="1773773257935" duration="2104000" />
       <workItem from="1773839106564" duration="2433000" />
-      <workItem from="1774039340110" duration="4256000" />
+      <workItem from="1774039340110" duration="6023000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -509,7 +515,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774058008504</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="fix bff for UserService">
+      <option name="closed" value="true" />
+      <created>1774058778098</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1774058778098</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -540,6 +554,8 @@
     <MESSAGE value="fix" />
     <MESSAGE value="add EmployeeBff - need fixes" />
     <MESSAGE value="change UserService" />
-    <option name="LAST_COMMIT_MESSAGE" value="change UserService" />
+    <MESSAGE value="fix bff for UserService" />
+    <MESSAGE value="try to start bff" />
+    <option name="LAST_COMMIT_MESSAGE" value="try to start bff" />
   </component>
 </project>

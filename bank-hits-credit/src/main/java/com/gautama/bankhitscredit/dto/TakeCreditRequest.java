@@ -3,17 +3,18 @@ package com.gautama.bankhitscredit.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 public class TakeCreditRequest {
     @NotNull
-    private Long clientId;
+    private UUID clientId;
 
     @NotNull
-    private String accountNumber;
+    private UUID accountId;
 
     @NotNull
-    private Long tariffId;
+    private UUID tariffId;
 
     @NotNull
     @DecimalMin(value = "1.00", message = "Сумма кредита должна быть больше 0")

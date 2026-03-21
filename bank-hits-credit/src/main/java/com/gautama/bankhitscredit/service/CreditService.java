@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +49,7 @@ public class CreditService {
 
         Credit credit = Credit.builder()
                 .clientId(req.getClientId())
-                .accountNumber(req.getAccountNumber())
+                .accountId(req.getAccountId())
                 .tariff(tariff)
                 .principalAmount(req.getAmount())
                 .remainingDebt(req.getAmount())
@@ -59,20 +60,20 @@ public class CreditService {
         return CreditResponse.from(creditRepository.save(credit));
     }
 
-    public List<CreditResponse> getCreditsByClient(Long clientId) {
+    public List<CreditResponse> getCreditsByClient(UUID clientId) {
         return creditRepository.findByClientId(clientId).stream()
                 .map(CreditResponse::from)
                 .toList();
     }
 
-    public CreditResponse getCreditById(Long id) {
+    public CreditResponse getCreditById(UUID id) {
         return creditRepository.findById(id)
                 .map(CreditResponse::from)
                 .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
     }
 
     @Transactional
-    public CreditResponse repayCredit(Long creditId) {
+    public CreditResponse repayCredit(UUID creditId) {
         Credit credit = creditRepository.findById(creditId)
                 .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
 
@@ -80,7 +81,7 @@ public class CreditService {
             throw new IllegalStateException("Кредит уже закрыт или просрочен");
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountNumber(), credit.getRemainingDebt());
+        boolean success = coreClient.tryWithdraw(credit.getAccountId(), credit.getRemainingDebt());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств для погашения кредита");
         }
@@ -93,7 +94,7 @@ public class CreditService {
     }
 
     @Transactional
-    public CreditResponse repayPartial(Long creditId, PartialRepayRequest req) {
+    public CreditResponse repayPartial(UUID creditId, PartialRepayRequest req) {
         Credit credit = creditRepository.findById(creditId)
                 .orElseThrow(() -> new IllegalArgumentException("Кредит не найден"));
 
@@ -107,7 +108,7 @@ public class CreditService {
             );
         }
 
-        boolean success = coreClient.tryWithdraw(credit.getAccountNumber(), req.getAmount());
+        boolean success = coreClient.tryWithdraw(credit.getAccountId(), req.getAmount());
         if (!success) {
             throw new IllegalStateException("Недостаточно средств на счёте");
         }
