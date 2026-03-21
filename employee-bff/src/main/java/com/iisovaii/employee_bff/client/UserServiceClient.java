@@ -1,14 +1,13 @@
 package com.iisovaii.employee_bff.client;
 
 import com.iisovaii.employee_bff.config.FeignConfig;
-import com.iisovaii.employee_bff.dto.client.CreateClientRequest;
-import com.iisovaii.employee_bff.dto.employee.CreateEmployeeRequest;
+import com.iisovaii.employee_bff.dto.client.CreateUserInServiceRequest;
 import com.iisovaii.employee_bff.dto.employee.UpdateUserRequest;
-import com.iisovaii.employee_bff.dto.response.PageResponse;
 import com.iisovaii.employee_bff.dto.response.UserResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @FeignClient(
@@ -18,30 +17,30 @@ import java.util.UUID;
 )
 public interface UserServiceClient {
 
-    @GetMapping("/users/{userId}")
+    @GetMapping("/api/users/{userId}")
     UserResponse getUser(@PathVariable UUID userId);
 
-    @GetMapping("/users")
-    PageResponse<UserResponse> getClients(
-            @RequestParam int page,
-            @RequestParam int size
+    // возвращает List а не Page — UserService отдаёт список
+    @GetMapping("/api/users")
+    List<UserResponse> getUsers(
+            @RequestParam(required = false) String queryType
     );
 
-    @PostMapping("/users")
-    UserResponse createClient(@RequestBody CreateClientRequest request);
+    @PostMapping("/api/users/clients")
+    UserResponse createClient(@RequestBody CreateUserInServiceRequest request);
 
-    @PostMapping("/users/employees")
-    UserResponse createEmployee(@RequestBody CreateEmployeeRequest request);
+    @PostMapping("/api/users/employees")
+    UserResponse createEmployee(@RequestBody CreateUserInServiceRequest request);
 
-    @PutMapping("/users/{userId}")
+    @PutMapping("/api/users/{userId}")
     UserResponse updateUser(
             @PathVariable UUID userId,
             @RequestBody UpdateUserRequest request
     );
 
-    @PostMapping("/users/{userId}/block")
+    @PostMapping("/api/users/{userId}/ban")
     UserResponse blockUser(@PathVariable UUID userId);
 
-    @PostMapping("/users/{userId}/unblock")
+    @PostMapping("/api/users/{userId}/unban")
     UserResponse unblockUser(@PathVariable UUID userId);
 }

@@ -4,51 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="add EmployeeBff - need fixes">
-      <change afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/CreateUserRequest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/UpdateUserRequest.java" afterDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="change UserService">
+      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/SsoRegisterRequest.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateUserInServiceRequest.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/client/AccountServiceClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/client/CreditServiceClient.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/JwtUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/config/SwaggerConfig.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/AccountController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/AuthController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/CreditController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/TariffController.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/controller/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/AccountDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/CreateOperationRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/CreateTariffRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/CreditResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/LoginDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/OperationDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/OperationResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/PageDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/PartialRepayRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/RegisterDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/TakeCreditInternalRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/TakeCreditRequest.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/TariffResponse.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/TokenDTO.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/UserDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/UserDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/UserFullDTO.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/dto/UserFullDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/filter/JwtAuthenticationFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/filter/JwtAuthenticationFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/model/RevokedToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/model/RevokedToken.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/model/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/repository/RevokedTokenRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/repository/RevokedTokenRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/repository/UserRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/AuthService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/CreditService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/CreditService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/service/UserService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/profile/ClientProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/profile/ClientProfileResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/ClientDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/ClientDetailResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/ClientSummaryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/ClientSummaryDto.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateClientRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateClientRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateClientResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/client/CreateClientResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-user/src/main/java/com/gautama/bankhitsuser/enums/Role.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/UserServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/client/UserServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/SsoServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/UserServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/UserServiceClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -431,7 +395,7 @@
       <workItem from="1773654558354" duration="1342000" />
       <workItem from="1773773257935" duration="2104000" />
       <workItem from="1773839106564" duration="2433000" />
-      <workItem from="1774039340110" duration="3330000" />
+      <workItem from="1774039340110" duration="4256000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -537,7 +501,15 @@
       <option name="project" value="LOCAL" />
       <updated>1773703026285</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="change UserService">
+      <option name="closed" value="true" />
+      <created>1774058008504</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1774058008504</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -567,6 +539,7 @@
     <MESSAGE value="Added a description for Swagger" />
     <MESSAGE value="fix" />
     <MESSAGE value="add EmployeeBff - need fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="add EmployeeBff - need fixes" />
+    <MESSAGE value="change UserService" />
+    <option name="LAST_COMMIT_MESSAGE" value="change UserService" />
   </component>
 </project>

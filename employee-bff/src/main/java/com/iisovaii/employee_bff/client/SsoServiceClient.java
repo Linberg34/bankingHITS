@@ -1,9 +1,11 @@
 package com.iisovaii.employee_bff.client;
 
 import com.iisovaii.employee_bff.config.FeignConfig;
+import com.iisovaii.employee_bff.dto.SsoRegisterRequest;
 import com.iisovaii.employee_bff.dto.response.TokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(
@@ -21,4 +23,8 @@ public interface SsoServiceClient {
             @RequestParam("redirect_uri") String redirectUri,
             @RequestParam("client_id") String clientId
     );
+
+    // регистрация пользователя в SSO — вызывается при создании клиента/сотрудника
+    @PostMapping("/auth/register")
+    void register(@RequestBody SsoRegisterRequest request);
 }

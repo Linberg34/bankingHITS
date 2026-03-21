@@ -11,10 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CreateEmployeeRequest {
     @NotBlank
-    private String firstName;
-
-    @NotBlank
-    private String lastName;
+    private String name;
 
     @NotBlank
     @Email
@@ -22,4 +19,5 @@ public class CreateEmployeeRequest {
 
     @NotBlank
     private String password;
+
 }

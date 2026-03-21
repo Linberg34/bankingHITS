@@ -2,7 +2,9 @@ package com.iisovaii.employee_bff.service;
 
 import com.iisovaii.employee_bff.client.AccountServiceClient;
 import com.iisovaii.employee_bff.client.CreditServiceClient;
+import com.iisovaii.employee_bff.client.SsoServiceClient;
 import com.iisovaii.employee_bff.client.UserServiceClient;
+import com.iisovaii.employee_bff.dto.SsoRegisterRequest;
 import com.iisovaii.employee_bff.dto.account.*;
 import com.iisovaii.employee_bff.dto.client.*;
 import com.iisovaii.employee_bff.dto.credit.*;
@@ -29,6 +31,7 @@ public class ProxyService {
     private final AccountMapper accountMapper;
     private final CreditMapper creditMapper;
     private final UserMapper userMapper;
+    private final SsoServiceClient ssoServiceClient;
 
     public EmployeeProfileResponse getEmployeeProfile(UUID employeeId) {
         UserResponse raw = userServiceClient.getUser(employeeId);
@@ -55,37 +58,70 @@ public class ProxyService {
     }
 
     public ClientPageResponse getClients(int page, int size) {
-        PageResponse<UserResponse> raw =
-                userServiceClient.getClients(page, size);
+        // UserService возвращает List, не Page
+        // делаем ручную пагинацию на стороне BFF
+        List<UserResponse> all = userServiceClient.getUsers(null);
 
-        List<ClientSummaryDto> content = raw.getContent().stream()
+        int fromIndex = page * size;
+        int toIndex = Math.min(fromIndex + size, all.size());
+
+        List<ClientSummaryDto> content = all.stream()
+                .skip(fromIndex)
+                .limit(size)
                 .map(userMapper::toClientSummaryDto)
                 .toList();
 
         return new ClientPageResponse(
                 content,
-                raw.getPage(),
-                raw.getSize(),
-                raw.getTotalElements()
+                page,
+                size,
+                all.size()
         );
     }
 
     public ClientDetailResponse getClientDetail(UUID clientId) {
-        return userMapper.toClientDetailResponse(
-                userServiceClient.getUser(clientId)
-        );
+        UserResponse raw = userServiceClient.getUser(clientId);
+        return userMapper.toClientDetailResponse(raw);
     }
 
     public CreateClientResponse createClient(CreateClientRequest request) {
-        return userMapper.toCreateClientResponse(
-                userServiceClient.createClient(request)
+        // шаг 1 — создаём credentials в SSO
+        ssoServiceClient.register(
+                new SsoRegisterRequest(
+                        request.getEmail(),
+                        request.getPassword(),
+                        List.of("CLIENT")
+                )
         );
+
+        // шаг 2 — создаём профиль в UserService без пароля
+        UserResponse raw = userServiceClient.createClient(
+                new CreateUserInServiceRequest(
+                        request.getName(),
+                        request.getEmail()
+                )
+        );
+        return userMapper.toCreateClientResponse(raw);
     }
 
-    public CreateEmployeeResponse createEmployee(CreateEmployeeRequest request) {
-        return userMapper.toCreateEmployeeResponse(
-                userServiceClient.createEmployee(request)
+    public CreateEmployeeResponse createEmployee(
+            CreateEmployeeRequest request) {
+        // аналогично клиенту — сначала SSO, потом UserService
+        ssoServiceClient.register(
+                new SsoRegisterRequest(
+                        request.getEmail(),
+                        request.getPassword(),
+                        List.of("EMPLOYEE")
+                )
         );
+
+        UserResponse raw = userServiceClient.createEmployee(
+                new CreateUserInServiceRequest(
+                        request.getName(),
+                        request.getEmail()
+                )
+        );
+        return userMapper.toCreateEmployeeResponse(raw);
     }
 
     public UpdateUserResponse updateUser(UUID userId, UpdateUserRequest request) {
