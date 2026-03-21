@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="change credit service">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -131,7 +129,7 @@
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "Spring Boot.BankHitsCreditApplication.executor": "Run",
     "Spring Boot.ClientBffApplication.executor": "Run",
-    "git-widget-placeholder": "feature/client-bff",
+    "git-widget-placeholder": "Merging feature/client-bff",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "F:/code/bankingHITS/employee-bff",
@@ -346,7 +344,7 @@
       <workItem from="1773654558354" duration="1342000" />
       <workItem from="1773773257935" duration="2104000" />
       <workItem from="1773839106564" duration="2433000" />
-      <workItem from="1774039340110" duration="14512000" />
+      <workItem from="1774039340110" duration="14822000" />
     </task>
     <task id="LOCAL-00001" summary="Initial version of a working credit microservice. Docker files have been modified.">
       <option name="closed" value="true" />
@@ -484,7 +482,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774099901801</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="fix">
+      <option name="closed" value="true" />
+      <created>1774106142957</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1774106142957</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -512,12 +518,12 @@
     <MESSAGE value="The BFF client is almost working, but I still need to edit the files." />
     <MESSAGE value="some fixes" />
     <MESSAGE value="Added a description for Swagger" />
-    <MESSAGE value="fix" />
     <MESSAGE value="add EmployeeBff - need fixes" />
     <MESSAGE value="change UserService" />
     <MESSAGE value="fix bff for UserService" />
     <MESSAGE value="try to start bff" />
     <MESSAGE value="change credit service" />
-    <option name="LAST_COMMIT_MESSAGE" value="change credit service" />
+    <MESSAGE value="fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix" />
   </component>
 </project>
