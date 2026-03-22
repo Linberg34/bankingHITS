@@ -12,6 +12,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ public class UserProvisioningService {
     private long retryDelayMs;
 
     public void ensureUserProfile(
+            UUID id,
             String name,
             String email,
             List<Role> roles) {
@@ -39,6 +41,7 @@ public class UserProvisioningService {
                 .build();
 
         UserProfileCreateRequest request = new UserProfileCreateRequest(
+                id,
                 name,
                 email
         );

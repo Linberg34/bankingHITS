@@ -71,6 +71,7 @@ public class UserService {
         }
 
         User user = new User();
+        user.setId(request.getId());
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setStatus(Status.ACTIVE);

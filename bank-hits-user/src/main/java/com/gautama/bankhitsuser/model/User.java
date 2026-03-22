@@ -16,13 +16,19 @@ import java.util.UUID;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     private String name;
     private String email;
     private Status status = Status.ACTIVE;
     private LocalDateTime registeredAt = LocalDate.now().atStartOfDay();
+
+    @PrePersist
+    public void ensureId() {
+        if (id == null) {
+            id = UUID.randomUUID();
+        }
+    }
 
 //    public boolean isAccountNonLocked() {
 //        return status != Status.BANNED;

@@ -82,8 +82,9 @@ public class AuthService {
                 .status(SsoUser.UserStatus.ACTIVE)
                 .build();
 
-        userRepository.save(user);
+        SsoUser savedUser = userRepository.save(user);
         userProvisioningService.ensureUserProfile(
+                savedUser.getId(),
                 resolveDisplayName(name, username),
                 username,
                 effectiveRoles
@@ -95,8 +96,10 @@ public class AuthService {
             String username,
             String password,
             List<Role> roles) {
-        if (userRepository.findByUsername(username).isPresent()) {
+        var existingUser = userRepository.findByUsername(username);
+        if (existingUser.isPresent()) {
             userProvisioningService.ensureUserProfile(
+                    existingUser.get().getId(),
                     resolveDisplayName(name, username),
                     username,
                     normalizeRoles(roles)
