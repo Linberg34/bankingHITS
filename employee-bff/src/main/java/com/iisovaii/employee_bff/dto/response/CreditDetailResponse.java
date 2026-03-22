@@ -25,5 +25,4 @@ public class CreditDetailResponse {
     private LocalDateTime closedAt;
     private LocalDateTime nextPaymentAt;
     private String status;
-    private List<CreditPaymentResponse> payments;
 }
