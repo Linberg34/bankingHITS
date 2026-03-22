@@ -4,6 +4,7 @@ import { ThemeModeService } from '../../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../../shared/ui/header';
 import { SettingsApiService } from '../../../../../shared/entities/settings';
 import { ClientSessionUseCasesService } from '../../application/use-cases/client-session-use-cases.service';
+import { ClientDataUseCasesService } from '../../application/use-cases/client-data-use-cases.service';
 
 @Component({
   selector: 'app-client-shell',
@@ -17,6 +18,7 @@ export class ClientShellComponent implements OnInit {
   private readonly sessionUseCases = inject(ClientSessionUseCasesService);
   private readonly themeModeService = inject(ThemeModeService);
   private readonly settingsApi = inject(SettingsApiService);
+  private readonly data = inject(ClientDataUseCasesService);
 
   protected pageTitle = (this.route.snapshot.data['title'] as string) ?? 'Клиент';
   protected headerTitle = 'Интернет-Банк - ' + this.pageTitle;
@@ -48,6 +50,10 @@ export class ClientShellComponent implements OnInit {
   protected onThemeToggle(): void {
     const newMode = this.themeModeService.mode === 'light' ? 'dark' : 'light';
     this.themeModeService.setMode(newMode);
-    this.settingsApi.updateSettings({ theme: newMode === 'dark' ? 'DARK' : 'LIGHT' }).subscribe();
+    const hiddenAccountIds = Array.from(this.data.hiddenAccountIdsSnapshot);
+    this.settingsApi.updateSettings({
+      theme: newMode === 'dark' ? 'DARK' : 'LIGHT',
+      hiddenAccountIds,
+    }).subscribe();
   }
 }

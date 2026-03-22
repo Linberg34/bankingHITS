@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
 import { SettingsApiService } from 'shared/entities/settings';
+import { ThemeModeService } from 'shared/frontend-core';
 import { ClientBankingRequestService } from '../../infrastructure/request/client-banking-request.service';
 import type { Account, Credit, CreditRating, CreditTariff, Transaction } from '../../core/models/client.types';
 
@@ -8,6 +9,7 @@ import type { Account, Credit, CreditRating, CreditTariff, Transaction } from '.
 export class ClientDataUseCasesService {
   private readonly request = inject(ClientBankingRequestService);
   private readonly settingsApi = inject(SettingsApiService);
+  private readonly themeMode = inject(ThemeModeService);
 
   private readonly accountsCache$ = new BehaviorSubject<Account[]>([]);
   private readonly creditsCache$ = new BehaviorSubject<Credit[]>([]);
@@ -16,6 +18,10 @@ export class ClientDataUseCasesService {
 
   get accountsSnapshot(): Account[] {
     return this.accountsCache$.value;
+  }
+
+  get hiddenAccountIdsSnapshot(): Set<string> {
+    return this.hiddenAccountIds$.value;
   }
 
   loadAccounts(): Observable<Account[]> {
@@ -146,8 +152,9 @@ export class ClientDataUseCasesService {
       current.add(accountKey);
     }
     this.hiddenAccountIds$.next(current);
-    return this.settingsApi.updateSettings({ hiddenAccountIds: Array.from(current) }).pipe(
-      map(() => void 0)
-    );
+    return this.settingsApi.updateSettings({
+      theme: this.themeMode.mode === 'dark' ? 'DARK' : 'LIGHT',
+      hiddenAccountIds: Array.from(current),
+    }).pipe(map(() => void 0));
   }
 }

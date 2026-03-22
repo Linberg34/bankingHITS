@@ -27,19 +27,16 @@ public class SettingsService {
 
     @Transactional
     public SettingsDto updateSettings(UUID userId, SettingsDto request) {
-        Theme theme = request.theme() != null
-                ? Theme.valueOf(request.theme().name())
-                : Theme.LIGHT;
-
-        List<UUID> hidden = request.hiddenAccountIds() != null
-                ? new ArrayList<>(request.hiddenAccountIds())
-                : new ArrayList<>();
-
         UserSettings settings = userSettingsRepository.findById(userId)
-                .orElseGet(() -> new UserSettings(userId, theme, hidden));
+                .orElseGet(() -> new UserSettings(userId, Theme.LIGHT, new ArrayList<>()));
 
-        settings.setTheme(theme);
-        settings.setHiddenAccountIds(hidden);
+        // Обновляем только те поля, которые явно переданы в запросе
+        if (request.theme() != null) {
+            settings.setTheme(Theme.valueOf(request.theme().name()));
+        }
+        if (request.hiddenAccountIds() != null) {
+            settings.setHiddenAccountIds(new ArrayList<>(request.hiddenAccountIds()));
+        }
 
         UserSettings saved = userSettingsRepository.save(settings);
         return toDto(saved);

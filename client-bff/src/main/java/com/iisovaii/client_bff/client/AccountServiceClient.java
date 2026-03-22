@@ -6,6 +6,8 @@ import com.iisovaii.client_bff.dto.account.CloseAccountResponse;
 import com.iisovaii.client_bff.dto.account.AccountDto;
 import com.iisovaii.client_bff.dto.account.OpenAccountRequest;
 import com.iisovaii.client_bff.dto.account.OpenAccountResponse;
+import com.iisovaii.client_bff.dto.common.PageDto;
+import com.iisovaii.client_bff.dto.operation.OperationDto;
 import com.iisovaii.client_bff.dto.operation.OperationPageResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,7 +42,7 @@ public interface AccountServiceClient {
     void closeAccount(@PathVariable("accountNumber") String accountNumber);
 
     @GetMapping("/internal/operations/account/{accountNumber}/page")
-    List<com.iisovaii.client_bff.dto.operation.OperationDto> getOperations(
+    PageDto<OperationDto> getOperations(
             @PathVariable("accountNumber") String accountNumber,
             @RequestParam("page") int page,
             @RequestParam("size") int size

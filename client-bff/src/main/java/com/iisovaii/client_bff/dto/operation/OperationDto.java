@@ -1,6 +1,5 @@
 package com.iisovaii.client_bff.dto.operation;
 
-import com.iisovaii.client_bff.dto.common.Currency;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -9,11 +8,11 @@ import java.util.UUID;
 
 public record OperationDto(
         @JsonProperty("id") UUID operationId,
-        @JsonProperty("operationType") OperationType type,
+        @JsonProperty("operationType") String type,
         BigDecimal amount,
-        Currency currency,
+        String currency,
         String accountNumber,
-        OperationStatus status,
+        String status,
         String description,
         LocalDateTime createdAt
 ) {}
