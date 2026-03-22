@@ -4,6 +4,7 @@ import com.iisovaii.client_bff.dto.operation.*;
 import com.iisovaii.client_bff.kafka.OperationProducer;
 import com.iisovaii.client_bff.security.CurrentUser;
 import com.iisovaii.client_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -16,69 +17,66 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/bff/client")
 @RequiredArgsConstructor
-@Tag(name = "Operations", description = "История операций и денежные операции по счетам")
+@Tag(name = "Operations", description = "Операции по счетам")
 public class OperationController {
 
     private final ProxyService proxyService;
     private final OperationProducer operationProducer;
 
     @GetMapping("/accounts/{accountNumber}/operations")
-    @Operation(
-            summary = "История операций по счету",
-            description = "Возвращает страницу операций по указанному счету текущего клиента."
-    )
+    @Operation(summary = "История операций по счету")
     public ResponseEntity<OperationPageResponse> getOperations(
-            @CurrentUser UUID userId,
-            @PathVariable String accountNumber,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
+            @PathVariable("accountNumber") String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
-        // проверяем что счёт принадлежит этому пользователю
         proxyService.checkAccountOwnership(userId, accountNumber);
-        return ResponseEntity.ok(proxyService.getOperations(accountNumber, page, size));
+        return ResponseEntity.ok(
+                proxyService.getOperations(accountNumber, page, size)
+        );
     }
 
     @PostMapping("/operations/deposit")
-    @Operation(
-            summary = "Пополнить счет",
-            description = "Создаёт команду на пополнение счета через Kafka и возвращает operationId."
-    )
+    @Operation(summary = "Пополнить счет")
     public ResponseEntity<OperationAcceptedResponse> deposit(
-            @CurrentUser UUID userId,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
             @RequestBody @Valid DepositRequest request) {
         proxyService.checkAccountOwnership(userId, request.accountNumber());
         UUID operationId = UUID.randomUUID();
         operationProducer.sendDeposit(operationId, request, userId);
         return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+                .body(new OperationAcceptedResponse(
+                        operationId, OperationStatus.PENDING)
+                );
     }
 
     @PostMapping("/operations/withdraw")
-    @Operation(
-            summary = "Снять деньги со счета",
-            description = "Создаёт команду на снятие средств через Kafka и возвращает operationId."
-    )
+    @Operation(summary = "Снять деньги со счета")
     public ResponseEntity<OperationAcceptedResponse> withdraw(
-            @CurrentUser UUID userId,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
             @RequestBody @Valid WithdrawRequest request) {
         proxyService.checkAccountOwnership(userId, request.accountNumber());
         UUID operationId = UUID.randomUUID();
         operationProducer.sendWithdraw(operationId, request, userId);
         return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+                .body(new OperationAcceptedResponse(
+                        operationId, OperationStatus.PENDING)
+                );
     }
 
     @PostMapping("/operations/transfer")
-    @Operation(
-            summary = "Перевод между счетами",
-            description = "Создаёт команду на перевод средств (между своими или на чужой счет) через Kafka и возвращает operationId."
-    )
+    @Operation(summary = "Перевод между счетами")
     public ResponseEntity<OperationAcceptedResponse> transfer(
-            @CurrentUser UUID userId,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
             @RequestBody @Valid TransferRequest request) {
-        proxyService.checkAccountOwnership(userId, request.fromAccountNumber());
+        proxyService.checkAccountOwnership(
+                userId, request.fromAccountNumber()
+        );
         UUID operationId = UUID.randomUUID();
         operationProducer.sendTransfer(operationId, request, userId);
         return ResponseEntity.accepted()
-                .body(new OperationAcceptedResponse(operationId, OperationStatus.PENDING));
+                .body(new OperationAcceptedResponse(
+                        operationId, OperationStatus.PENDING)
+                );
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-// controller/TariffController.java
 @RestController
 @RequestMapping("/bff/client/tariffs")
 @RequiredArgsConstructor
@@ -20,10 +19,7 @@ public class TariffController {
     private final ProxyService proxyService;
 
     @GetMapping
-    @Operation(
-            summary = "Список кредитных тарифов",
-            description = "Возвращает доступные кредитные тарифы для клиентов банка."
-    )
+    @Operation(summary = "Список кредитных тарифов")
     public ResponseEntity<List<TariffDto>> getTariffs() {
         return ResponseEntity.ok(proxyService.getTariffs());
     }

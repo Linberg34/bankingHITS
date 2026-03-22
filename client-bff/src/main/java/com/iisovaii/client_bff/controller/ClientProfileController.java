@@ -4,6 +4,7 @@ import com.iisovaii.client_bff.dto.profile.ClientProfileResponse;
 import com.iisovaii.client_bff.security.CurrentUser;
 import com.iisovaii.client_bff.service.ProxyService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +17,15 @@ import java.util.UUID;
 @RestController("clientProfileController")
 @RequestMapping("/bff/client")
 @RequiredArgsConstructor
-@Tag(name = "Profile", description = "Профиль клиента (ФИО, контакты, статус)")
-public class ProfileController {
+@Tag(name = "Profile", description = "Профиль клиента")
+public class ClientProfileController {
 
     private final ProxyService proxyService;
 
     @GetMapping("/profile")
-    @Operation(
-            summary = "Получить профиль клиента",
-            description = "Возвращает профиль текущего клиента (ФИО, email, телефон, статус)."
-    )
+    @Operation(summary = "Получить профиль клиента")
     public ResponseEntity<ClientProfileResponse> getProfile(
-            @CurrentUser UUID userId) {
+            @Parameter(hidden = true) @CurrentUser UUID userId) {
         return ResponseEntity.ok(proxyService.getClientProfile(userId));
     }
 }

@@ -10,9 +10,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
-                title = "Employee BFF API",
+                title = "Client BFF API",
                 version = "v1",
-                description = "API для приложения сотрудника банка"
+                description = "API для приложения клиента банка"
         ),
         security = @SecurityRequirement(name = "Bearer Authentication")
 )
