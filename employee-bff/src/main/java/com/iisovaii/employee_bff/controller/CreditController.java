@@ -27,8 +27,8 @@ public class CreditController {
     // кредиты конкретного клиента
     @GetMapping("/clients/{clientId}/credits")
     public ResponseEntity<CreditListResponse> getClientCredits(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientCredits(clientId)
         );
@@ -37,8 +37,8 @@ public class CreditController {
     // детали кредита
     @GetMapping("/credits/{creditId}")
     public ResponseEntity<CreditDetailEmployeeResponse> getCreditDetail(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID creditId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("creditId") UUID creditId) {
         return ResponseEntity.ok(
                 proxyService.getCreditDetail(creditId)
         );
@@ -47,8 +47,8 @@ public class CreditController {
     // платежи по кредиту
     @GetMapping("/credits/{creditId}/payments")
     public ResponseEntity<List<CreditPaymentDto>> getPayments(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID creditId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("creditId") UUID creditId) {
         return ResponseEntity.ok(
                 proxyService.getCreditPayments(creditId)
         );
@@ -57,8 +57,8 @@ public class CreditController {
     // кредитный рейтинг клиента
     @GetMapping("/clients/{clientId}/credits/rating")
     public ResponseEntity<CreditRatingResponse> getCreditRating(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getCreditRating(clientId)
         );

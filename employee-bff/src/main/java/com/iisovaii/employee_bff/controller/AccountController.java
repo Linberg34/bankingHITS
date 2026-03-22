@@ -36,8 +36,8 @@ public class AccountController {
     // счета конкретного клиента
     @GetMapping("/clients/{clientId}/accounts")
     public ResponseEntity<AccountListResponse> getClientAccounts(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientAccounts(clientId)
         );

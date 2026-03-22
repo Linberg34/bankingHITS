@@ -39,8 +39,8 @@ public class EmployeeController {
 
     @PutMapping("/{targetEmployeeId}")
     public ResponseEntity<UpdateUserResponse> updateEmployee(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID targetEmployeeId,
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("targetEmployeeId") UUID targetEmployeeId,
             @RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.ok(
                 proxyService.updateUser(targetEmployeeId, request)
@@ -49,8 +49,8 @@ public class EmployeeController {
 
     @PostMapping("/{targetEmployeeId}/block")
     public ResponseEntity<UserStatusResponse> blockEmployee(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID targetEmployeeId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("targetEmployeeId") UUID targetEmployeeId) {
         return ResponseEntity.ok(
                 proxyService.blockUser(targetEmployeeId)
         );
@@ -58,8 +58,8 @@ public class EmployeeController {
 
     @PostMapping("/{targetEmployeeId}/unblock")
     public ResponseEntity<UserStatusResponse> unblockEmployee(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID targetEmployeeId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("targetEmployeeId") UUID targetEmployeeId) {
         return ResponseEntity.ok(
                 proxyService.unblockUser(targetEmployeeId)
         );
