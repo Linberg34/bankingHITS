@@ -6,9 +6,9 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TariffDto(
-        @JsonProperty("id") UUID tariffId,
+        UUID tariffId,
         String name,
-        @JsonProperty("annualRate") BigDecimal interestRate,
+        BigDecimal interestRate,
         int termDays
 ) {}
 

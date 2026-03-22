@@ -6,8 +6,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+// dto/account/AccountDto.java
 public record AccountDto(
-        @JsonProperty("clientId") UUID userId,
+        UUID clientId,          // ← называем как в AccountService
         String accountNumber,
         Currency currency,
         BigDecimal balance,
