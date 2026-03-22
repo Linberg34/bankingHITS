@@ -113,7 +113,7 @@ public class AccountService {
     @Transactional
     public AccountDTO createAccountCurrent(UUID userId, String currency) {
         AccountDTO accountDTO = new AccountDTO(
-                UUID.randomUUID(),
+                null,
                 userId,
                 generateAccountNumber(),
                 BigDecimal.ZERO,

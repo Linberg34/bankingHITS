@@ -9,6 +9,7 @@ export interface User {
 
 export interface Account {
   id: string;
+  uuid?: string;
   clientId: string;
   accountNumber: string;
   balance: number;
@@ -16,6 +17,16 @@ export interface Account {
   status: 'active' | 'closed';
   createdAt: string;
   closedAt?: string;
+}
+
+export interface CreditRating {
+  score: number;
+  ratingLabel: string;
+  overduePaymentsCount: number;
+  totalCredits: number;
+  activeCredits: number;
+  closedCredits: number;
+  calculatedAt: string;
 }
 
 export interface Transaction {

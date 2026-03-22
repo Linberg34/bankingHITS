@@ -4,6 +4,7 @@ import { type AccountWithOwnerDto, type OperationDto } from 'shared/entities/acc
 import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface AccountPageRecord {
+  accountId?: string;
   client: string;
   accountNumber: string;
   balance: string;
@@ -39,7 +40,8 @@ export class AccountsPageService {
 
   private mapAccount(account: AccountWithOwnerDto): AccountPageRecord {
     return {
-      client: account.clientName ?? `ID ${account.clientId}`,
+      accountId: account.accountId,
+      client: account.ownerFullName ?? account.clientName ?? `ID ${account.ownerId ?? account.clientId}`,
       accountNumber: account.accountNumber,
       balance: this.formatAmount(account.balance),
       balanceValue: account.balance,
@@ -60,7 +62,7 @@ export class AccountsPageService {
   private mapOperationType(type: string): string {
     const map: Record<string, string> = {
       DEPOSIT: 'Пополнение',
-      WITHDRAWAL: 'Снятие',
+      WITHDRAW: 'Снятие',
       TRANSFER_IN: 'Перевод (приход)',
       TRANSFER_OUT: 'Перевод (расход)',
       CREDIT_ISSUE: 'Выдача кредита',
@@ -79,7 +81,7 @@ export class AccountsPageService {
 
   private formatOperationAmount(amount: number, type: string): string {
     const base = this.formatAmount(Math.abs(amount));
-    if (type === 'WITHDRAWAL' || type === 'TRANSFER_OUT' || type === 'CREDIT_PAYMENT') {
+    if (type === 'WITHDRAW' || type === 'TRANSFER_OUT' || type === 'CREDIT_PAYMENT') {
       return `-${base}`;
     }
     return `+${base}`;

@@ -1,6 +1,6 @@
 package com.iisovaii.client_bff.config;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import com.iisovaii.client_bff.kafka.OperationResultMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

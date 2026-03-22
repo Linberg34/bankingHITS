@@ -1,13 +1,16 @@
 ﻿<app-client-shell>
   <div class="accounts-page">
     <div class="accounts-page__actions">
+      <shared-button variant="outline" (click)="showHidden.set(!showHidden())">
+        {{ showHidden() ? 'Скрыть скрытые счета' : 'Показать скрытые счета' }}
+      </shared-button>
       <shared-button (click)="openNewAccountDialog()">Открыть новый счет</shared-button>
     </div>
 
     <shared-dialog [open]="openNewAccount()" (openChange)="openNewAccount.set($event)">
       <shared-dialog-header>
         <shared-dialog-title>Открыть новый счет</shared-dialog-title>
-        <shared-dialog-description>Новый счет будет открыт в рублях (RUB)</shared-dialog-description>
+        <shared-dialog-description>Выберите валюту для нового счета</shared-dialog-description>
       </shared-dialog-header>
       <div class="accounts-page__dialog-body">
         @if (actionState().status === 'error' && actionState().message; as err) {
@@ -15,7 +18,11 @@
         }
         <div class="accounts-page__field">
           <shared-label>Валюта</shared-label>
-          <shared-select [options]="currencyOptions" [value]="'RUB'" />
+          <shared-select
+            [options]="currencyOptions"
+            [value]="selectedCurrency()"
+            (valueChange)="selectedCurrency.set($any($event))"
+          />
         </div>
       </div>
       <shared-dialog-footer>
@@ -33,19 +40,22 @@
       </shared-card-header>
       <shared-card-content>
         <div class="accounts-list">
-          @for (account of (activeAccounts$ | async) ?? []; track account.id) {
-            <shared-card class="accounts-list-item">
+          @for (account of (visibleAccounts$ | async) ?? []; track account.id) {
+            <shared-card class="accounts-list-item" [class.accounts-list-item--hidden]="isAccountHidden(account)">
               <shared-card-content class="accounts-list-item__content">
                 <div class="accounts-list-item__main">
                   <div>
                     <p class="accounts-list-item__number">{{ account.accountNumber }}</p>
-                    <p class="accounts-list-item__balance-muted">Баланс: {{ formatMoney(account.balance) }}</p>
+                    <p class="accounts-list-item__balance-muted">{{ account.currency }} · Баланс: {{ formatMoney(account.balance, account.currency) }}</p>
                   </div>
                   <div class="accounts-list-item__actions">
                     <shared-button variant="outline" size="sm" (click)="openDepositDialog(account)">Пополнить</shared-button>
                     <shared-button variant="outline" size="sm" (click)="openWithdrawDialog(account)">Снять</shared-button>
                     <shared-button variant="outline" size="sm" (click)="openTransferDialog(account)">Перевести</shared-button>
                     <shared-button variant="outline" size="sm" (click)="openHistoryDialog(account)">История</shared-button>
+                    <shared-button variant="outline" size="sm" (click)="toggleHidden(account)">
+                      {{ isAccountHidden(account) ? 'Показать' : 'Скрыть' }}
+                    </shared-button>
                     <shared-button variant="outline" size="sm" (click)="requestCloseAccount(account)">Закрыть счет</shared-button>
                   </div>
                 </div>
@@ -66,7 +76,7 @@
           <p class="accounts-page__error">{{ err }}</p>
         }
         <div class="accounts-page__field">
-          <shared-label>Сумма (?)</shared-label>
+          <shared-label>Сумма</shared-label>
           <shared-input type="number" placeholder="0" [value]="amount()" (valueChange)="amount.set($event)" />
         </div>
       </div>
@@ -86,7 +96,7 @@
           <p class="accounts-page__error">{{ err }}</p>
         }
         <div class="accounts-page__field">
-          <shared-label>Сумма (?)</shared-label>
+          <shared-label>Сумма</shared-label>
           <shared-input type="number" placeholder="0" [value]="amount()" (valueChange)="amount.set($event)" />
         </div>
       </div>
@@ -164,4 +174,3 @@
     />
   </div>
 </app-client-shell>
-

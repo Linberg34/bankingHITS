@@ -27,13 +27,13 @@ public class CreditController {
 
     @GetMapping("/credits/{id}")
     public ResponseEntity<CreditResponse> getCredit(
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         return ResponseEntity.ok(creditService.getCredit(id));
     }
 
     @GetMapping("/credits/client/{clientId}")
     public ResponseEntity<List<CreditResponse>> getClientCredits(
-            @PathVariable UUID clientId) {
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 creditService.getClientCredits(clientId)
         );
@@ -49,13 +49,13 @@ public class CreditController {
 
     @PostMapping("/credits/{id}/repay")
     public ResponseEntity<CreditResponse> repayCredit(
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         return ResponseEntity.ok(creditService.repayFull(id));
     }
 
     @PostMapping("/credits/{id}/repay/partial")
     public ResponseEntity<CreditResponse> repayPartial(
-            @PathVariable UUID id,
+            @PathVariable("id") UUID id,
             @RequestBody @Valid PartialRepayRequest request) {
         return ResponseEntity.ok(
                 creditService.repayPartial(id, request)
@@ -64,13 +64,13 @@ public class CreditController {
 
     @GetMapping("/credits/{id}/payments")
     public ResponseEntity<List<CreditPaymentResponse>> getPayments(
-            @PathVariable UUID id) {
+            @PathVariable("id") UUID id) {
         return ResponseEntity.ok(creditService.getPayments(id));
     }
 
     @GetMapping("/credits/rating/{clientId}")
     public ResponseEntity<CreditRatingResponse> getRating(
-            @PathVariable UUID clientId) {
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 ratingService.calculateRating(clientId)
         );

@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record AccountDto(
+        UUID id,
         @JsonProperty("clientId") UUID userId,
         String accountNumber,
         Currency currency,

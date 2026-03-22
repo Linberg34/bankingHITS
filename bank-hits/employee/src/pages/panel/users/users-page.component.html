@@ -93,6 +93,11 @@
       </label>
 
       <label>
+        Пароль
+        <input [(ngModel)]="newUser.password" name="password" type="password" required />
+      </label>
+
+      <label>
         Роль
         <select [(ngModel)]="newUser.role" name="role">
           <option value="Клиент">Клиент</option>

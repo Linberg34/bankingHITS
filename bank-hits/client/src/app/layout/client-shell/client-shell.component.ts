@@ -31,7 +31,7 @@ export class ClientShellComponent implements OnInit {
     this.settingsApi.getSettings().subscribe({
       next: (settings) => {
         if (settings.theme) {
-          this.themeModeService.setMode(settings.theme);
+          this.themeModeService.setMode(settings.theme === 'DARK' ? 'dark' : 'light');
         }
       },
     });
@@ -48,6 +48,6 @@ export class ClientShellComponent implements OnInit {
   protected onThemeToggle(): void {
     const newMode = this.themeModeService.mode === 'light' ? 'dark' : 'light';
     this.themeModeService.setMode(newMode);
-    this.settingsApi.updateSettings({ theme: newMode }).subscribe();
+    this.settingsApi.updateSettings({ theme: newMode === 'dark' ? 'DARK' : 'LIGHT' }).subscribe();
   }
 }

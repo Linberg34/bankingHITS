@@ -3,7 +3,7 @@ import { Observable, map } from 'rxjs';
 import { AccountsApiService, type AccountDto, type OperationDto } from 'shared/entities/accounts';
 import { CreditsApiService, type CreditSummaryDto, type TakeCreditResponse } from 'shared/entities/credits';
 import { TariffsApiService, type TariffDto } from 'shared/entities/tariffs';
-import type { Account, Credit, CreditTariff, Transaction } from '../../core/models/client.types';
+import type { Account, Credit, CreditRating, CreditTariff, Transaction } from '../../core/models/client.types';
 
 @Injectable({ providedIn: 'root' })
 export class ClientBankingRequestService {
@@ -55,12 +55,26 @@ export class ClientBankingRequestService {
     return this.creditsApi.takeCredit({ accountNumber, tariffId, amount }).pipe(map(mapTakeCreditResponseToCredit));
   }
 
-  repayCreditFull(creditId: string): Observable<void> {
-    return this.creditsApi.repayCredit(creditId, { amount: 0, full: true }).pipe(map(() => void 0));
+  repayCreditFull(creditId: string, fullAmount: number): Observable<void> {
+    return this.creditsApi.repayCredit(creditId, { amount: fullAmount }).pipe(map(() => void 0));
   }
 
   repayCreditPartial(creditId: string, amount: number): Observable<void> {
-    return this.creditsApi.repayCredit(creditId, { amount, full: false }).pipe(map(() => void 0));
+    return this.creditsApi.repayCredit(creditId, { amount }).pipe(map(() => void 0));
+  }
+
+  getCreditRating(): Observable<CreditRating> {
+    return this.creditsApi.getCreditRating().pipe(
+      map((dto) => ({
+        score: dto.score,
+        ratingLabel: dto.ratingLabel,
+        overduePaymentsCount: dto.overduePaymentsCount,
+        totalCredits: dto.totalCredits,
+        activeCredits: dto.activeCredits,
+        closedCredits: dto.closedCredits,
+        calculatedAt: dto.calculatedAt,
+      }))
+    );
   }
 }
 
@@ -68,6 +82,7 @@ function mapAccountDtoToAccount(dto: AccountDto): Account {
   const status = dto.status === 'ACTIVE' ? 'active' : 'closed';
   return {
     id: dto.accountNumber,
+    uuid: dto.id,
     clientId: dto.clientId,
     accountNumber: dto.accountNumber,
     balance: dto.balance,
@@ -90,7 +105,7 @@ function mapOperationDtoToTransaction(op: OperationDto): Transaction {
 
 function mapOperationType(value: string): Transaction['type'] {
   if (value === 'DEPOSIT') return 'deposit';
-  if (value === 'WITHDRAWAL') return 'withdrawal';
+  if (value === 'WITHDRAW') return 'withdrawal';
   if (value === 'TRANSFER_IN' || value === 'TRANSFER_OUT') return 'transfer';
   if (value === 'CREDIT_ISSUE') return 'credit_issue';
   if (value === 'CREDIT_PAYMENT') return 'credit_payment';

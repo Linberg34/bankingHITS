@@ -21,7 +21,7 @@ public class SettingsService {
     @Transactional(readOnly = true)
     public SettingsDto getSettings(UUID userId) {
         UserSettings settings = userSettingsRepository.findById(userId)
-                .orElseGet(() -> new UserSettings(userId, Theme.LIGHT, List.of()));
+                .orElseGet(() -> new UserSettings(userId, Theme.LIGHT, new ArrayList<>()));
         return toDto(settings);
     }
 
@@ -33,7 +33,7 @@ public class SettingsService {
 
         List<UUID> hidden = request.hiddenAccountIds() != null
                 ? new ArrayList<>(request.hiddenAccountIds())
-                : List.of();
+                : new ArrayList<>();
 
         UserSettings settings = userSettingsRepository.findById(userId)
                 .orElseGet(() -> new UserSettings(userId, theme, hidden));

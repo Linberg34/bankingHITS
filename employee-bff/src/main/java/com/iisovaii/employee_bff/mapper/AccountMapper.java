@@ -24,7 +24,8 @@ public interface AccountMapper {
             List<AccountServiceResponse> responses
     );
 
-    @Mapping(target = "accountId", ignore = true)
+    @Mapping(target = "accountId", source = "id")
+    @Mapping(target = "accountNumber", source = "accountNumber")
     @Mapping(target = "ownerId", source = "clientId")
     @Mapping(target = "ownerFullName", ignore = true)
     @Mapping(target = "createdAt", ignore = true)

@@ -6,7 +6,9 @@
     "build:client": "nx run client:build",
     "serve:client": "nx run client:serve",
     "build:employee": "nx run employee:build",
-    "serve:employee": "nx run employee:serve"
+    "serve:employee": "nx run employee:serve",
+    "build:sso": "nx run sso:build",
+    "serve:sso": "nx run sso:serve"
   },
   "private": true,
   "dependencies": {

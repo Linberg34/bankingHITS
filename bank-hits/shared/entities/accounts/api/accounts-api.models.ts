@@ -2,7 +2,7 @@ export type AccountCurrency = 'RUB' | 'USD' | 'EUR';
 export type AccountStatus = 'ACTIVE' | 'CLOSED';
 export type OperationType =
   | 'DEPOSIT'
-  | 'WITHDRAWAL'
+  | 'WITHDRAW'
   | 'TRANSFER_IN'
   | 'TRANSFER_OUT'
   | 'CREDIT_ISSUE'
@@ -11,6 +11,7 @@ export type OperationStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
 
 /** Счёт, возвращаемый client-bff */
 export interface AccountDto {
+  id?: string;
   clientId: string;
   accountNumber: string;
   currency: AccountCurrency;
@@ -94,18 +95,25 @@ export interface AccountListQuery {
 
 /** Employee BFF: все счета с владельцами */
 export interface AccountWithOwnerDto {
-  clientId: string;
+  accountId?: string;
   accountNumber: string;
+  ownerId?: string;
+  ownerFullName?: string;
+  /** @deprecated use ownerId */
+  clientId?: string;
+  /** @deprecated use ownerFullName */
+  clientName?: string;
   currency: AccountCurrency;
   balance: number;
   status: AccountStatus;
-  clientName?: string;
 }
 
 export interface AllAccountsPageResponse {
-  accounts: AccountWithOwnerDto[];
+  /** Employee BFF возвращает поле content (не accounts) */
+  content: AccountWithOwnerDto[];
+  accounts?: AccountWithOwnerDto[];
   totalElements: number;
-  totalPages: number;
+  totalPages?: number;
   page: number;
   size: number;
 }

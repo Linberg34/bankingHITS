@@ -2,8 +2,8 @@
 import { Component, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
-import { NotificationService } from '../../../../../shared/frontend-core';
-import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
+import { NotificationService } from 'shared/frontend-core';
+import { BasicModalComponent } from 'shared/ui/basic-modal';
 import { UsersPageRecord, UsersPageRole, UsersPageService } from './model';
 
 interface BlockTarget {
@@ -32,7 +32,7 @@ export class UsersPageComponent {
 
   newUser = {
     name: '',
-    username: '',
+    email: '',
     password: '',
     role: 'Клиент' as UsersPageRole,
   };
@@ -46,9 +46,9 @@ export class UsersPageComponent {
 
   addUser(): void {
     const trimmedName = this.newUser.name.trim();
-    const trimmedUsername = this.newUser.username.trim().toLowerCase();
+    const trimmedEmail = this.newUser.email.trim().toLowerCase();
     const trimmedPassword = this.newUser.password.trim();
-    if (!trimmedName || !trimmedUsername || !trimmedPassword || this.actionInProgress()) {
+    if (!trimmedName || !trimmedEmail || !trimmedPassword || this.actionInProgress()) {
       return;
     }
 
@@ -57,7 +57,7 @@ export class UsersPageComponent {
     this.errorText.set('');
 
     this.usersPageService
-      .createUser(trimmedName, trimmedUsername, trimmedPassword, targetRole)
+      .createUser(trimmedName, trimmedEmail, trimmedPassword, targetRole)
       .pipe(finalize(() => this.actionInProgress.set(false)))
       .subscribe({
         next: () => {
@@ -108,9 +108,10 @@ export class UsersPageComponent {
     action$
       .pipe(finalize(() => this.actionInProgress.set(false)))
       .subscribe({
-        next: (updatedUser) => {
-          this.replaceUser(updatedUser);
-          this.closeBlockModal();        },
+        next: () => {
+          this.closeBlockModal();
+          this.reloadClientUsers();
+        },
         error: () => {
           const message = 'Не удалось выполнить операцию. Попробуйте позже.';
           this.errorText.set(message);
@@ -136,7 +137,7 @@ export class UsersPageComponent {
   private resetAddUserForm(): void {
     this.newUser = {
       name: '',
-      username: '',
+      email: '',
       password: '',
       role: 'Клиент',
     };
@@ -148,14 +149,6 @@ export class UsersPageComponent {
     this.reloadEmployeeUsers();
   }
 
-  private replaceUser(updatedUser: UsersPageRecord): void {
-    this.clientUsers.update((users) =>
-      users.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-    );
-    this.employeeUsers.update((users) =>
-      users.map((user) => (user.id === updatedUser.id ? updatedUser : user))
-    );
-  }
 
   private resolveLoadError(error: unknown, section: 'клиентов' | 'сотрудников'): string {
     if (error instanceof HttpErrorResponse && (error.status === 401 || error.status === 403)) {

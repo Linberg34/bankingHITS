@@ -42,11 +42,11 @@ export interface CreditDetailResponse {
   payments: CreditPaymentDto[];
 }
 
-/** Кредитный рейтинг */
+/** Кредитный рейтинг (поля точно по BFF CreditRatingResponse) */
 export interface CreditRatingResponse {
   score: number;
-  label: string;
-  overduePayments: number;
+  ratingLabel: string;
+  overduePaymentsCount: number;
   totalCredits: number;
   activeCredits: number;
   closedCredits: number;
@@ -72,15 +72,13 @@ export interface TakeCreditResponse {
   issuedAt: string;
 }
 
-/** POST /bff/client/credits/{id}/repay */
+/** POST /bff/client/credits/{id}/repay — BFF принимает только amount */
 export interface RepayCreditRequest {
   amount: number;
-  full: boolean;
 }
 
 export interface RepayCreditResponse {
   creditId: string;
   remainingDebt: number;
   status: CreditStatus;
-  message: string;
 }

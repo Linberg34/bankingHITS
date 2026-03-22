@@ -1,28 +1,28 @@
 ﻿import { AsyncPipe } from '@angular/common';
 import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { Subscription, catchError, of, switchMap } from 'rxjs';
-import { OperationsWsService } from '../../../../shared/api';
-import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
-import { ButtonComponent } from '../../../../shared/ui/button';
+import { Subscription, catchError, combineLatest, map, of, switchMap } from 'rxjs';
+import { OperationsWsService, type WsBalanceEvent } from 'shared/api';
+import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from 'shared/frontend-core';
+import { ButtonComponent } from 'shared/ui/button';
 import {
   CardComponent,
   CardContentComponent,
   CardDescriptionComponent,
   CardHeaderComponent,
   CardTitleComponent,
-} from '../../../../shared/ui/card';
-import { ConfirmDialogComponent } from '../../../../shared/ui/confirm-dialog';
+} from 'shared/ui/card';
+import { ConfirmDialogComponent } from 'shared/ui/confirm-dialog';
 import {
   DialogComponent,
   DialogDescriptionComponent,
   DialogFooterComponent,
   DialogHeaderComponent,
   DialogTitleComponent,
-} from '../../../../shared/ui/dialog';
-import { InputComponent } from '../../../../shared/ui/input';
-import { LabelComponent } from '../../../../shared/ui/label';
-import { SelectComponent, type SelectOption } from '../../../../shared/ui/select';
+} from 'shared/ui/dialog';
+import { InputComponent } from 'shared/ui/input';
+import { LabelComponent } from 'shared/ui/label';
+import { SelectComponent, type SelectOption } from 'shared/ui/select';
 import {
   TableBodyComponent,
   TableCellComponent,
@@ -30,7 +30,7 @@ import {
   TableHeadComponent,
   TableHeaderComponent,
   TableRowComponent,
-} from '../../../../shared/ui/table';
+} from 'shared/ui/table';
 import { ClientDataUseCasesService } from '../../app/application/use-cases/client-data-use-cases.service';
 import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import type { Account, Transaction } from '../../app/core/models/client.types';
@@ -86,16 +86,29 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   protected openTransfer = signal(false);
   protected openHistory = signal(false);
   protected openCloseConfirm = signal(false);
+  protected showHidden = signal(false);
 
   protected selectedAccountId = signal('');
   protected selectedAccountNumber = signal('');
   protected selectedAccountToClose = signal<Account | null>(null);
+  protected selectedCurrency = signal<'RUB' | 'USD' | 'EUR'>('RUB');
 
   protected amount = signal('');
   protected transferToAccountNumber = signal('');
   protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
 
-  protected activeAccounts$ = this.data.getActiveAccounts();
+  protected visibleAccounts$ = combineLatest([
+    this.data.getActiveAccounts(),
+    this.data.getHiddenAccountIds(),
+    toObservable(this.showHidden),
+  ]).pipe(
+    map(([accounts, hiddenIds, showHidden]) =>
+      showHidden
+        ? accounts
+        : accounts.filter((a) => !hiddenIds.has(a.uuid ?? a.accountNumber))
+    )
+  );
+
   protected accountTransactions$ = toObservable(this.selectedAccountNumber).pipe(
     switchMap((accountNumber) =>
       accountNumber
@@ -110,20 +123,39 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     return id || number ? this.data.getAccountById(id || number) : undefined;
   });
 
-  protected currencyOptions: SelectOption[] = [{ value: 'RUB', label: 'Российский рубль (?)' }];
+  protected currencyOptions: SelectOption[] = [
+    { value: 'RUB', label: 'Российский рубль (RUB)' },
+    { value: 'USD', label: 'Доллар США (USD)' },
+    { value: 'EUR', label: 'Евро (EUR)' },
+  ];
 
   ngOnInit(): void {
+    this.data.loadHiddenAccounts().subscribe();
     this.data.loadAccounts().subscribe({
+      next: (accounts) => {
+        const uuids = accounts.map((a) => a.uuid).filter((id): id is string => !!id);
+        this.connectWs(uuids);
+      },
       error: () => this.notifications.error('Failed to load accounts.'),
     });
+  }
 
-    this.wsSub = this.wsService.connect('http://localhost:8084/bff/client/ws').subscribe({
+  private connectWs(accountIds: string[]): void {
+    this.wsSub?.unsubscribe();
+    this.wsSub = this.wsService.connect('http://localhost:8084/ws', accountIds).subscribe({
       next: (event) => {
-        if (event.status === 'SUCCESS') {
-          this.notifications.success(`Операция выполнена. Новый баланс: ${event.newBalance}`);
+        if (event.type === 'BALANCE_UPDATED') {
+          const balanceEvent = event as WsBalanceEvent;
+          this.notifications.success(
+            `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
+          );
           this.data.loadAccounts().subscribe();
-        } else if (event.status === 'FAILED') {
-          this.notifications.error(`Операция не выполнена.`);
+        } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
+          this.data.loadAccounts().subscribe();
+          const openAccountNumber = this.selectedAccountNumber();
+          if (openAccountNumber) {
+            this.data.loadOperations(openAccountNumber).subscribe();
+          }
         }
       },
     });
@@ -134,8 +166,9 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.wsService.disconnect();
   }
 
-  protected formatMoney(n: number): string {
-    return `${n.toLocaleString('ru-RU')} ?`;
+  protected formatMoney(n: number, currency?: string): string {
+    const symbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '₽';
+    return `${n.toLocaleString('ru-RU')} ${symbol}`;
   }
 
   protected getTransactionLabel(type: string): string {
@@ -146,7 +179,18 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     return new Date(value).toLocaleDateString('ru-RU');
   }
 
+  protected isAccountHidden(account: Account): boolean {
+    return this.data.isAccountHidden(account);
+  }
+
+  protected toggleHidden(account: Account): void {
+    this.data.toggleAccountHidden(account).subscribe({
+      error: () => this.notifications.error('Не удалось обновить настройки.'),
+    });
+  }
+
   protected openNewAccountDialog(): void {
+    this.selectedCurrency.set('RUB');
     this.openNewAccount.set(true);
     this.actionState.set(IDLE_ACTION_STATE);
   }
@@ -158,9 +202,10 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
 
   protected handleOpenAccount(): void {
     this.actionState.set({ status: 'loading' });
-    this.data.openAccount().subscribe({
+    this.data.openAccount(this.selectedCurrency()).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Account opened.' });        this.closeNewAccount();
+        this.actionState.set({ status: 'success', message: 'Account opened.' });
+        this.closeNewAccount();
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);
@@ -192,7 +237,8 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.actionState.set({ status: 'loading' });
     this.data.deposit(accountId, sum).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Balance updated.' });        this.amount.set('');
+        this.actionState.set({ status: 'success', message: 'Balance updated.' });
+        this.amount.set('');
         this.closeDeposit();
       },
       error: (error: unknown) => {
@@ -225,7 +271,8 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.actionState.set({ status: 'loading' });
     this.data.withdraw(accountId, sum).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });        this.amount.set('');
+        this.actionState.set({ status: 'success', message: 'Withdrawal completed.' });
+        this.amount.set('');
         this.closeWithdraw();
       },
       error: (error: unknown) => {
@@ -298,7 +345,8 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.actionState.set({ status: 'loading' });
     this.data.closeAccount(account.accountNumber).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Account closed.' });        this.openCloseConfirm.set(false);
+        this.actionState.set({ status: 'success', message: 'Account closed.' });
+        this.openCloseConfirm.set(false);
         this.selectedAccountToClose.set(null);
       },
       error: (error: unknown) => {
@@ -313,5 +361,3 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     return type === 'deposit' || type === 'credit_issue' || type === 'transfer';
   }
 }
-
-

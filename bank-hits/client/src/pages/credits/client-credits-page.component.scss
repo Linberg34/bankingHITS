@@ -45,6 +45,58 @@
   }
 }
 
+.rating-card {
+  &__body {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  &__score-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-width: 80px;
+  }
+
+  &__score {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  &__stats {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+
+  &__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    &--danger &-label,
+    &--danger &-value {
+      color: var(--color-destructive, #c00);
+    }
+  }
+
+  &__stat-label {
+    font-size: 0.75rem;
+    color: var(--color-muted, #8b86a6);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+  }
+}
+
 .credits-list {
   display: flex;
   flex-direction: column;

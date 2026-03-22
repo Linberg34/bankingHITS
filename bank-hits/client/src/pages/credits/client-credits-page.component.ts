@@ -1,30 +1,30 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { combineLatest, map } from 'rxjs';
-import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
-import { BadgeComponent } from '../../../../shared/ui/badge';
-import { ButtonComponent } from '../../../../shared/ui/button';
+import { combineLatest, map, noop } from 'rxjs';
+import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from 'shared/frontend-core';
+import { BadgeComponent } from 'shared/ui/badge';
+import { ButtonComponent } from 'shared/ui/button';
 import {
   CardComponent,
   CardContentComponent,
   CardDescriptionComponent,
   CardHeaderComponent,
   CardTitleComponent,
-} from '../../../../shared/ui/card';
+} from 'shared/ui/card';
 import {
   DialogComponent,
   DialogDescriptionComponent,
   DialogFooterComponent,
   DialogHeaderComponent,
   DialogTitleComponent,
-} from '../../../../shared/ui/dialog';
-import { InputComponent } from '../../../../shared/ui/input';
-import { LabelComponent } from '../../../../shared/ui/label';
-import { SelectComponent } from '../../../../shared/ui/select';
+} from 'shared/ui/dialog';
+import { InputComponent } from 'shared/ui/input';
+import { LabelComponent } from 'shared/ui/label';
+import { SelectComponent } from 'shared/ui/select';
 import { ClientDataUseCasesService } from '../../app/application/use-cases/client-data-use-cases.service';
 import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
-import type { Credit } from '../../app/core/models/client.types';
+import type { Credit, CreditRating } from '../../app/core/models/client.types';
 
 @Component({
   selector: 'app-client-credits-page',
@@ -64,6 +64,8 @@ export class ClientCreditsPageComponent implements OnInit {
   protected selectedCreditId = signal('');
   protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
 
+  protected creditRating = signal<CreditRating | null>(null);
+
   protected clientCredits$ = this.data.getCredits();
 
   protected tariffOptions$ = this.data.getCreditTariffs().pipe(
@@ -99,10 +101,14 @@ export class ClientCreditsPageComponent implements OnInit {
     this.data.loadCredits().subscribe({
       error: () => this.notifications.error('Failed to load credits.'),
     });
+    this.data.getCreditRating().subscribe({
+      next: (rating) => this.creditRating.set(rating),
+      error: noop,
+    });
   }
 
   protected formatMoney(n: number): string {
-    return `${n.toLocaleString('ru-RU')} ?`;
+    return `${n.toLocaleString('ru-RU')} ₽`;
   }
 
   protected formatDate(value: string): string {
@@ -133,6 +139,12 @@ export class ClientCreditsPageComponent implements OnInit {
       overdue: 'Просрочен',
     };
     return mapValue[status] ?? status;
+  }
+
+  protected getRatingVariant(score: number): 'default' | 'secondary' | 'destructive' {
+    if (score >= 80) return 'default';
+    if (score >= 50) return 'secondary';
+    return 'destructive';
   }
 
   protected openNewCreditDialog(): void {
@@ -201,6 +213,10 @@ export class ClientCreditsPageComponent implements OnInit {
         this.closePayCredit();
         this.paymentAmount.set('');
         this.selectedCreditId.set('');
+        this.data.getCreditRating().subscribe({
+          next: (rating) => this.creditRating.set(rating),
+          error: noop,
+        });
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);

@@ -1,61 +1,107 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import {
-  AccountsApiService,
-  type AccountWithOwnerDto,
-  type OperationDto,
-} from 'shared/entities/accounts';
-import { AuthApiService } from 'shared/entities/auth';
-import { CreditsApiService, type CreditSummaryDto } from 'shared/entities/credits';
+import { API_BASE_URL } from 'shared/api';
 import { TariffsApiService, type TariffDto, type CreateTariffResponse } from 'shared/entities/tariffs';
-import {
-  UsersApiService,
-  type UserDto,
-  type UserId,
-  type UsersQueryType,
-} from 'shared/entities/users';
+import { AccountsApiService, type AccountWithOwnerDto, type OperationDto } from 'shared/entities/accounts';
+import { AuthApiService } from 'shared/entities/auth';
+
+export interface ClientSummaryDto {
+  userId: string;
+  name: string;
+  email: string;
+  status: 'ACTIVE' | 'BLOCKED';
+  accountCount: number;
+  activeCreditCount: number;
+}
+
+export interface ClientPageResponse {
+  content: ClientSummaryDto[];
+  page: number;
+  size: number;
+  totalElements: number;
+}
+
+export interface EmployeeCreditSummaryDto {
+  creditId: string;
+  accountNumber: string;
+  tariffName: string;
+  amount: number;
+  remainingDebt: number;
+  interestRate: number;
+  status: string;
+  nextPaymentAt: string | null;
+  issuedAt: string;
+}
+
+export interface EmployeeCreditListResponse {
+  credits: EmployeeCreditSummaryDto[];
+}
+
+export interface UserStatusResponse {
+  userId: string;
+  status: 'ACTIVE' | 'BLOCKED';
+}
 
 @Injectable({ providedIn: 'root' })
 export class EmployeeAdminRequestService {
+  private readonly http = inject(HttpClient);
   private readonly accountsApi = inject(AccountsApiService);
-  private readonly authApi = inject(AuthApiService);
-  private readonly creditsApi = inject(CreditsApiService);
   private readonly tariffsApi = inject(TariffsApiService);
-  private readonly usersApi = inject(UsersApiService);
+  private readonly authApi = inject(AuthApiService);
+  private readonly baseUrl = inject(API_BASE_URL);
+
+  private get base(): string {
+    return (this.baseUrl as string).replace(/\/+$/, '');
+  }
 
   clearAuth(): void {
     this.authApi.clearAuth();
   }
 
-  getUsers(queryType: UsersQueryType): Observable<UserDto[]> {
-    return this.usersApi.getUsers(queryType);
+  // ─── Clients ───────────────────────────────────────────────────────────────
+
+  getClients(page = 0, size = 50): Observable<ClientSummaryDto[]> {
+    return this.http
+      .get<ClientPageResponse>(`${this.base}/clients`, { params: { page, size } })
+      .pipe(map((resp) => resp.content));
   }
 
-  banUser(userId: UserId): Observable<UserDto> {
-    return this.usersApi.banUser(userId);
+  blockClient(clientId: string): Observable<UserStatusResponse> {
+    return this.http.post<UserStatusResponse>(`${this.base}/clients/${clientId}/block`, null);
   }
 
-  unbanUser(userId: UserId): Observable<UserDto> {
-    return this.usersApi.unbanUser(userId);
+  unblockClient(clientId: string): Observable<UserStatusResponse> {
+    return this.http.post<UserStatusResponse>(`${this.base}/clients/${clientId}/unblock`, null);
   }
 
-  createUser(name: string, username: string, password: string, isEmployee: boolean): Observable<void> {
-    return this.usersApi
-      .createUser({ name, username, password, role: isEmployee ? 'EMPLOYEE' : 'CLIENT' })
-      .pipe(map(() => void 0));
+  createClient(name: string, email: string, password: string): Observable<void> {
+    return this.http.post<void>(`${this.base}/clients`, { name, email, password });
   }
+
+  createEmployee(name: string, email: string, password: string): Observable<void> {
+    return this.http.post<void>(`${this.base}/employees`, { name, email, password });
+  }
+
+  // ─── Credits ───────────────────────────────────────────────────────────────
+
+  getClientCredits(clientId: string): Observable<EmployeeCreditSummaryDto[]> {
+    return this.http
+      .get<EmployeeCreditListResponse>(`${this.base}/clients/${clientId}/credits`)
+      .pipe(map((resp) => resp.credits));
+  }
+
+  // ─── Accounts ──────────────────────────────────────────────────────────────
 
   getAllAccounts(): Observable<AccountWithOwnerDto[]> {
-    return this.accountsApi.getAllAccounts().pipe(map((resp) => resp.accounts));
+    return this.accountsApi.getAllAccounts().pipe(map((resp) => resp.content ?? resp.accounts ?? []));
   }
 
   getAccountOperations(accountNumber: string): Observable<OperationDto[]> {
     return this.accountsApi.getOperations(accountNumber).pipe(map((resp) => resp.content));
   }
 
-  getCredits(): Observable<CreditSummaryDto[]> {
-    return this.creditsApi.getMyCredits().pipe(map((resp) => resp.credits));
-  }
+  // ─── Tariffs ───────────────────────────────────────────────────────────────
 
   getTariffs(): Observable<TariffDto[]> {
     return this.tariffsApi.getTariffs();
