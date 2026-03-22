@@ -20,29 +20,28 @@ public class Credit {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    // ID клиента из сервиса пользователей
     @Column(nullable = false)
     private UUID clientId;
 
     @Column(nullable = false)
     private String accountNumber;
 
+    @Column(nullable = false)
+    private String currency;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tariff_id", nullable = false)
     private CreditTariff tariff;
 
-    // Изначальная сумма кредита
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal principalAmount;
 
-    // Оставшийся долг (тело + накопленные проценты)
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal remainingDebt;
 
     @Column(nullable = false)
     private LocalDateTime issuedAt;
 
-    // null если не закрыт
     private LocalDateTime closedAt;
 
     @Enumerated(EnumType.STRING)

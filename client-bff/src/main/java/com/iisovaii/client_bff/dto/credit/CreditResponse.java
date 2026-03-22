@@ -8,6 +8,7 @@ public record CreditResponse(
         UUID id,
         UUID clientId,
         String accountNumber,
+        String currency,
         String tariffName,
         BigDecimal annualRate,
         int termDays,

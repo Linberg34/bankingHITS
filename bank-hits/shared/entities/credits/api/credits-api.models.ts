@@ -4,6 +4,7 @@ export type PaymentStatus = 'SCHEDULED' | 'PAID' | 'OVERDUE';
 /** Кредит в списке (client-bff CreditSummaryDto) */
 export interface CreditSummaryDto {
   creditId: string;
+  currency: string;
   accountNumber: string;
   amount: number;          // principalAmount
   remainingDebt: number;

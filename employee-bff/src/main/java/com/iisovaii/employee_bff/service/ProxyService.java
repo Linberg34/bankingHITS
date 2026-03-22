@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;  // явно указываем этот импорт
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +77,6 @@ public class ProxyService {
                 .map(accountMapper::toOperationDto)
                 .toList();
 
-        // AccountService не возвращает total — делаем best effort
         return new OperationPageResponse(
                 content,
                 page,
@@ -176,6 +175,7 @@ public class ProxyService {
                 .map(credit -> {
                     CreditSummaryDto dto = new CreditSummaryDto();
                     dto.setCreditId(credit.getId());
+                    dto.setCurrency(credit.getCurrency());
                     dto.setAmount(credit.getPrincipalAmount());
                     dto.setRemainingDebt(credit.getRemainingDebt());
                     dto.setInterestRate(credit.getAnnualRate());

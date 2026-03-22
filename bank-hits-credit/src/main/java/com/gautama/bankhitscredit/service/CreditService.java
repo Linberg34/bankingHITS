@@ -8,6 +8,7 @@ import com.gautama.bankhitscredit.entity.CreditPayment;
 import com.gautama.bankhitscredit.entity.CreditTariff;
 import com.gautama.bankhitscredit.enums.CreditStatus;
 import com.gautama.bankhitscredit.enums.PaymentStatus;
+import com.gautama.bankhitscredit.kafka.CreditOperationProducer;
 import com.gautama.bankhitscredit.mapper.CreditMapper;
 import com.gautama.bankhitscredit.repository.CreditPaymentRepository;
 import com.gautama.bankhitscredit.repository.CreditRepository;
@@ -32,11 +33,10 @@ public class CreditService {
     private final CreditTariffRepository tariffRepository;
     private final CreditMapper creditMapper;
     private final AccountServiceClient accountServiceClient;
+    private final CreditOperationProducer operationProducer;
 
     @Value("${bank.master-account-number}")
     private String masterAccountNumber;
-
-    // =================== КРЕДИТЫ ===================
 
     @Transactional(readOnly = true)
     public List<CreditResponse> getAllCredits() {
@@ -64,7 +64,6 @@ public class CreditService {
                         "Тариф не найден: " + request.getTariffId()
                 ));
 
-        // проверяем что счёт клиента существует и активен
         AccountDTO clientAccount = accountServiceClient
                 .getAccountByNumber(request.getAccountNumber());
 
@@ -74,7 +73,6 @@ public class CreditService {
             );
         }
 
-        // проверяем баланс мастер-счёта
         AccountDTO masterAccount = accountServiceClient
                 .getAccountByNumber(masterAccountNumber);
 
@@ -86,29 +84,13 @@ public class CreditService {
             );
         }
 
-        // шаг 1 — списываем с мастер-счёта банка
-        accountServiceClient.withdraw(
-                new CreateOperationRequest(
-                        masterAccountNumber,
-                        "WITHDRAWAL",
-                        request.getAmount(),
-                        "Выдача кредита клиенту, тариф: " + tariff.getName()
-                )
-        );
-
-        // шаг 2 — зачисляем на счёт клиента
-        accountServiceClient.deposit(
-                new CreateOperationRequest(
-                        request.getAccountNumber(),
-                        "DEPOSIT",
-                        request.getAmount(),
-                        "Выдача кредита по тарифу " + tariff.getName()
-                )
-        );
+        operationProducer.sendWithdraw(masterAccountNumber, request.getAmount(), request.getClientId());
+        operationProducer.sendDeposit(request.getAccountNumber(), request.getAmount(), request.getClientId());
 
         Credit credit = Credit.builder()
                 .clientId(request.getClientId())
                 .accountNumber(request.getAccountNumber())
+                .currency(clientAccount.getCurrency())
                 .tariff(tariff)
                 .principalAmount(request.getAmount())
                 .remainingDebt(request.getAmount())
@@ -129,25 +111,8 @@ public class CreditService {
             throw new IllegalStateException("Кредит уже закрыт");
         }
 
-        // шаг 1 — списываем со счёта клиента
-        accountServiceClient.withdraw(
-                new CreateOperationRequest(
-                        credit.getAccountNumber(),
-                        "WITHDRAWAL",
-                        credit.getRemainingDebt(),
-                        "Полное погашение кредита " + creditId
-                )
-        );
-
-        // шаг 2 — возвращаем на мастер-счёт банка
-        accountServiceClient.deposit(
-                new CreateOperationRequest(
-                        masterAccountNumber,
-                        "DEPOSIT",
-                        credit.getRemainingDebt(),
-                        "Возврат по кредиту " + creditId
-                )
-        );
+        operationProducer.sendWithdraw(credit.getAccountNumber(), credit.getRemainingDebt(), credit.getClientId());
+        operationProducer.sendDeposit(masterAccountNumber, credit.getRemainingDebt(), credit.getClientId());
 
         savePayment(
                 credit, credit.getRemainingDebt(), PaymentStatus.PAID
@@ -174,25 +139,8 @@ public class CreditService {
         BigDecimal amount = request.getAmount()
                 .min(credit.getRemainingDebt());
 
-        // шаг 1 — списываем со счёта клиента
-        accountServiceClient.withdraw(
-                new CreateOperationRequest(
-                        credit.getAccountNumber(),
-                        "WITHDRAWAL",
-                        amount,
-                        "Частичное погашение кредита " + creditId
-                )
-        );
-
-        // шаг 2 — возвращаем на мастер-счёт банка
-        accountServiceClient.deposit(
-                new CreateOperationRequest(
-                        masterAccountNumber,
-                        "DEPOSIT",
-                        amount,
-                        "Частичный возврат по кредиту " + creditId
-                )
-        );
+        operationProducer.sendWithdraw(credit.getAccountNumber(), amount, credit.getClientId());
+        operationProducer.sendDeposit(masterAccountNumber, amount, credit.getClientId());
 
         savePayment(credit, amount, PaymentStatus.PAID);
 
@@ -213,13 +161,11 @@ public class CreditService {
 
     @Transactional(readOnly = true)
     public List<CreditPaymentResponse> getPayments(UUID creditId) {
-        findById(creditId); // проверяем что кредит существует
+        findById(creditId);
         return creditMapper.toPaymentResponseList(
                 paymentRepository.findByCreditIdOrderByDueAtDesc(creditId)
         );
     }
-
-    // =================== ТАРИФЫ ===================
 
     @Transactional(readOnly = true)
     public List<TariffResponse> getAllTariffs() {
@@ -245,8 +191,6 @@ public class CreditService {
                 tariffRepository.save(tariff)
         );
     }
-
-    // =================== ВСПОМОГАТЕЛЬНЫЕ ===================
 
     private Credit findById(UUID id) {
         return creditRepository.findById(id)

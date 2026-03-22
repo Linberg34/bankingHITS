@@ -9,7 +9,6 @@ import com.iisovaii.client_bff.dto.account.OpenAccountRequest;
 import com.iisovaii.client_bff.dto.account.OpenAccountResponse;
 import com.iisovaii.client_bff.dto.account.AccountStatus;
 import com.iisovaii.client_bff.dto.credit.*;
-import com.iisovaii.client_bff.dto.operation.OperationDto;
 import com.iisovaii.client_bff.dto.operation.OperationPageResponse;
 import com.iisovaii.client_bff.dto.profile.ClientProfileResponse;
 import com.iisovaii.client_bff.dto.tariff.TariffDto;
@@ -58,9 +57,13 @@ public class ProxyService {
 
     public OperationPageResponse getOperations(
             String accountNumber, int page, int size) {
-        List<OperationDto> content =
-                accountServiceClient.getOperations(accountNumber, page, size);
-        return new OperationPageResponse(content, page, size, content.size());
+        var pageDto = accountServiceClient.getOperations(accountNumber, page, size);
+        return new OperationPageResponse(
+                pageDto.content(),
+                pageDto.pageNumber(),
+                pageDto.pageSize(),
+                pageDto.totalElements()
+        );
     }
 
     public CreditListResponse getCredits(UUID userId) {
@@ -68,9 +71,11 @@ public class ProxyService {
         List<CreditSummaryDto> credits = raw.stream()
                 .map(c -> new CreditSummaryDto(
                         c.id(),
-                        c.principalAmount(),   // amount <- principalAmount
+                        c.accountNumber(),
+                        c.currency(),
+                        c.principalAmount(),
                         c.remainingDebt(),
-                        c.annualRate(),        // interestRate <- annualRate
+                        c.annualRate(),
                         c.tariffName(),
                         c.status(),
                         c.nextPaymentAt()
@@ -189,7 +194,7 @@ public class ProxyService {
                 .map(t -> new TariffDto(
                         t.id(),
                         t.name(),
-                        t.annualRate(),   // annualRate -> interestRate
+                        t.annualRate(),
                         t.termDays()
                 ))
                 .toList();

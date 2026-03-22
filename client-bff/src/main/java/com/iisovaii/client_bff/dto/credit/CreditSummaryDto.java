@@ -6,6 +6,8 @@ import java.util.UUID;
 
 public record CreditSummaryDto(
         UUID creditId,
+        String accountNumber,
+        String currency,
         BigDecimal amount,
         BigDecimal remainingDebt,
         BigDecimal interestRate,
