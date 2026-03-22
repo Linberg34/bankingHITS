@@ -21,7 +21,7 @@ export interface Account {
 export interface Transaction {
   id: string;
   accountId: string;
-  type: 'deposit' | 'withdrawal' | 'credit_issue' | 'credit_payment';
+  type: 'deposit' | 'withdrawal' | 'transfer' | 'credit_issue' | 'credit_payment';
   amount: number;
   description: string;
   createdAt: string;

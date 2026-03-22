@@ -1,7 +1,8 @@
 ﻿import { AsyncPipe } from '@angular/common';
-import { Component, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { catchError, of, switchMap } from 'rxjs';
+import { Subscription, catchError, of, switchMap } from 'rxjs';
+import { OperationsWsService } from '../../../../shared/api';
 import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from '../../../../shared/frontend-core';
 import { ButtonComponent } from '../../../../shared/ui/button';
 import {
@@ -37,6 +38,7 @@ import type { Account, Transaction } from '../../app/core/models/client.types';
 const TRANSACTION_LABELS: Record<string, string> = {
   deposit: 'Пополнение',
   withdrawal: 'Снятие',
+  transfer: 'Перевод',
   credit_issue: 'Выдача кредита',
   credit_payment: 'Погашение кредита',
 };
@@ -72,13 +74,16 @@ const TRANSACTION_LABELS: Record<string, string> = {
   templateUrl: './client-accounts-page.component.html',
   styleUrl: './client-accounts-page.component.scss',
 })
-export class ClientAccountsPageComponent implements OnInit {
+export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   private readonly data = inject(ClientDataUseCasesService);
   private readonly notifications = inject(NotificationService);
+  private readonly wsService = inject(OperationsWsService);
+  private wsSub: Subscription | null = null;
 
   protected openNewAccount = signal(false);
   protected openDeposit = signal(false);
   protected openWithdraw = signal(false);
+  protected openTransfer = signal(false);
   protected openHistory = signal(false);
   protected openCloseConfirm = signal(false);
 
@@ -87,6 +92,7 @@ export class ClientAccountsPageComponent implements OnInit {
   protected selectedAccountToClose = signal<Account | null>(null);
 
   protected amount = signal('');
+  protected transferToAccountNumber = signal('');
   protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
 
   protected activeAccounts$ = this.data.getActiveAccounts();
@@ -110,6 +116,22 @@ export class ClientAccountsPageComponent implements OnInit {
     this.data.loadAccounts().subscribe({
       error: () => this.notifications.error('Failed to load accounts.'),
     });
+
+    this.wsSub = this.wsService.connect('http://localhost:8084/bff/client/ws').subscribe({
+      next: (event) => {
+        if (event.status === 'SUCCESS') {
+          this.notifications.success(`Операция выполнена. Новый баланс: ${event.newBalance}`);
+          this.data.loadAccounts().subscribe();
+        } else if (event.status === 'FAILED') {
+          this.notifications.error(`Операция не выполнена.`);
+        }
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
+    this.wsService.disconnect();
   }
 
   protected formatMoney(n: number): string {
@@ -136,7 +158,7 @@ export class ClientAccountsPageComponent implements OnInit {
 
   protected handleOpenAccount(): void {
     this.actionState.set({ status: 'loading' });
-    this.data.openCurrentAccount().subscribe({
+    this.data.openAccount().subscribe({
       next: () => {
         this.actionState.set({ status: 'success', message: 'Account opened.' });        this.closeNewAccount();
       },
@@ -214,6 +236,43 @@ export class ClientAccountsPageComponent implements OnInit {
     });
   }
 
+  protected openTransferDialog(account: Account): void {
+    this.selectedAccountId.set(account.accountNumber);
+    this.amount.set('');
+    this.transferToAccountNumber.set('');
+    this.actionState.set(IDLE_ACTION_STATE);
+    this.openTransfer.set(true);
+  }
+
+  protected closeTransfer(): void {
+    this.openTransfer.set(false);
+    this.actionState.set(IDLE_ACTION_STATE);
+  }
+
+  protected handleTransfer(): void {
+    const fromAccount = this.selectedAccountId();
+    const toAccount = this.transferToAccountNumber().trim();
+    const sum = Number(this.amount());
+    if (!fromAccount || !toAccount || !sum || sum <= 0) {
+      return;
+    }
+
+    this.actionState.set({ status: 'loading' });
+    this.data.transfer(fromAccount, toAccount, sum).subscribe({
+      next: () => {
+        this.actionState.set({ status: 'success', message: 'Transfer sent.' });
+        this.amount.set('');
+        this.transferToAccountNumber.set('');
+        this.closeTransfer();
+      },
+      error: (error: unknown) => {
+        const mapped = mapUnknownError(error);
+        this.actionState.set({ status: 'error', message: mapped.message });
+        this.notifications.error(mapped.message);
+      },
+    });
+  }
+
   protected openHistoryDialog(account: Account): void {
     this.selectedAccountId.set(account.id);
     this.selectedAccountNumber.set(account.accountNumber);
@@ -237,7 +296,7 @@ export class ClientAccountsPageComponent implements OnInit {
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.deleteAccount(account.id).subscribe({
+    this.data.closeAccount(account.accountNumber).subscribe({
       next: () => {
         this.actionState.set({ status: 'success', message: 'Account closed.' });        this.openCloseConfirm.set(false);
         this.selectedAccountToClose.set(null);
@@ -251,7 +310,7 @@ export class ClientAccountsPageComponent implements OnInit {
   }
 
   protected isIncoming(type: string): boolean {
-    return type === 'deposit' || type === 'credit_issue';
+    return type === 'deposit' || type === 'credit_issue' || type === 'transfer';
   }
 }
 

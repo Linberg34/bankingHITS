@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../api';
-import { CreateTariffRequest, TariffDto } from './tariffs-api.models';
+import { CreateTariffRequest, CreateTariffResponse, TariffDto } from './tariffs-api.models';
 
 @Injectable({
   providedIn: 'root',
@@ -14,15 +14,14 @@ export class TariffsApiService {
   ) {}
 
   getTariffs(): Observable<TariffDto[]> {
-    return this.httpClient.get<TariffDto[]>(`${this.normalizedBaseUrl}/api/tariffs`);
+    return this.httpClient.get<TariffDto[]>(`${this.base}/tariffs`);
   }
 
-  createTariff(payload: CreateTariffRequest): Observable<TariffDto> {
-    return this.httpClient.post<TariffDto>(`${this.normalizedBaseUrl}/api/tariffs`, payload);
+  createTariff(payload: CreateTariffRequest): Observable<CreateTariffResponse> {
+    return this.httpClient.post<CreateTariffResponse>(`${this.base}/tariffs`, payload);
   }
 
-  private get normalizedBaseUrl(): string {
+  private get base(): string {
     return this.apiBaseUrl.replace(/\/+$/, '');
   }
 }
-

@@ -32,9 +32,9 @@ export class UsersPageComponent {
 
   newUser = {
     name: '',
-    email: '',
+    username: '',
+    password: '',
     role: 'Клиент' as UsersPageRole,
-    status: 'Активен',
   };
 
   constructor(
@@ -46,8 +46,9 @@ export class UsersPageComponent {
 
   addUser(): void {
     const trimmedName = this.newUser.name.trim();
-    const trimmedEmail = this.newUser.email.trim().toLowerCase();
-    if (!trimmedName || !trimmedEmail || this.actionInProgress()) {
+    const trimmedUsername = this.newUser.username.trim().toLowerCase();
+    const trimmedPassword = this.newUser.password.trim();
+    if (!trimmedName || !trimmedUsername || !trimmedPassword || this.actionInProgress()) {
       return;
     }
 
@@ -56,7 +57,7 @@ export class UsersPageComponent {
     this.errorText.set('');
 
     this.usersPageService
-      .createUser(trimmedName, trimmedEmail, targetRole)
+      .createUser(trimmedName, trimmedUsername, trimmedPassword, targetRole)
       .pipe(finalize(() => this.actionInProgress.set(false)))
       .subscribe({
         next: () => {
@@ -135,9 +136,9 @@ export class UsersPageComponent {
   private resetAddUserForm(): void {
     this.newUser = {
       name: '',
-      email: '',
+      username: '',
+      password: '',
       role: 'Клиент',
-      status: 'Активен',
     };
   }
 

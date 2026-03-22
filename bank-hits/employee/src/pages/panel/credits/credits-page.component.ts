@@ -4,7 +4,7 @@ import { NotificationService } from '../../../../../shared/frontend-core';
 import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
 import { CreditRecord, CreditsPageService } from './model';
 
-const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Дата выдачи'];
+const CREDIT_TABLE_COLUMNS = ['Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Следующий платеж'];
 
 @Component({
   selector: 'employee-credits-page',
@@ -70,12 +70,7 @@ export class CreditsPageComponent {
     this.creditsPageService.loadCredits().subscribe({
       next: (records) => {
         this.allCredits.set(records);
-        this.clientOptions.set(['all', ...new Set(records.map((credit) => credit.clientName))]);
-        if (!this.clientOptions().includes(this.selectedClient)) {
-          this.selectedClient = 'all';
-        }
-
-        this.applyFilters();      },
+        this.credits.set(records);      },
       error: () => {
         const message = 'Не удалось загрузить кредиты.';
         this.errorText.set(message);

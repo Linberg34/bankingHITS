@@ -3,11 +3,13 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../api';
 import {
-  CreditDto,
-  CreditId,
-  RepayPartialRequest,
+  CreditListResponse,
+  CreditDetailResponse,
+  CreditRatingResponse,
   TakeCreditRequest,
-  UserId,
+  TakeCreditResponse,
+  RepayCreditRequest,
+  RepayCreditResponse,
 } from './credits-api.models';
 
 @Injectable({
@@ -19,34 +21,35 @@ export class CreditsApiService {
     @Inject(API_BASE_URL) private readonly apiBaseUrl: string
   ) {}
 
-  getAllCredits(): Observable<CreditDto[]> {
-    return this.httpClient.get<CreditDto[]>(`${this.normalizedBaseUrl}/api/credits`);
+  /** Список кредитов текущего клиента */
+  getMyCredits(): Observable<CreditListResponse> {
+    return this.httpClient.get<CreditListResponse>(`${this.base}/credits`);
   }
 
-  getCreditById(id: CreditId): Observable<CreditDto> {
-    return this.httpClient.get<CreditDto>(`${this.normalizedBaseUrl}/api/credits/${id}`);
+  /** Детали кредита */
+  getCreditDetail(creditId: string): Observable<CreditDetailResponse> {
+    return this.httpClient.get<CreditDetailResponse>(`${this.base}/credits/${creditId}`);
   }
 
-  getCreditsByClientId(clientId: UserId): Observable<CreditDto[]> {
-    return this.httpClient.get<CreditDto[]>(`${this.normalizedBaseUrl}/api/credits/client/${clientId}`);
+  /** Кредитный рейтинг */
+  getCreditRating(): Observable<CreditRatingResponse> {
+    return this.httpClient.get<CreditRatingResponse>(`${this.base}/credits/rating`);
   }
 
-  takeCredit(payload: TakeCreditRequest): Observable<CreditDto> {
-    return this.httpClient.post<CreditDto>(`${this.normalizedBaseUrl}/api/credits`, payload);
+  /** Взять кредит */
+  takeCredit(request: TakeCreditRequest): Observable<TakeCreditResponse> {
+    return this.httpClient.post<TakeCreditResponse>(`${this.base}/credits`, request);
   }
 
-  repayFull(creditId: CreditId): Observable<CreditDto> {
-    return this.httpClient.post<CreditDto>(`${this.normalizedBaseUrl}/api/credits/${creditId}/repay`, null);
-  }
-
-  repayPartial(creditId: CreditId, payload: RepayPartialRequest): Observable<CreditDto> {
-    return this.httpClient.post<CreditDto>(
-      `${this.normalizedBaseUrl}/api/credits/${creditId}/repay/partial`,
-      payload
+  /** Погасить кредит (частично или полностью) */
+  repayCredit(creditId: string, request: RepayCreditRequest): Observable<RepayCreditResponse> {
+    return this.httpClient.post<RepayCreditResponse>(
+      `${this.base}/credits/${creditId}/repay`,
+      request
     );
   }
 
-  private get normalizedBaseUrl(): string {
+  private get base(): string {
     return this.apiBaseUrl.replace(/\/+$/, '');
   }
 }

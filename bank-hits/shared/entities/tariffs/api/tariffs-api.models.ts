@@ -1,8 +1,9 @@
+/** Тариф (client-bff TariffDto) */
 export interface TariffDto {
-  id: number | string;
+  tariffId: string;  // UUID
   name: string;
-  annualRate: number;
-  createdAt: string;
+  interestRate: number;  // annualRate
+  termDays: number;
 }
 
 export interface CreateTariffRequest {
@@ -10,3 +11,9 @@ export interface CreateTariffRequest {
   annualRate: number;
 }
 
+export interface CreateTariffResponse {
+  tariffId: string;
+  name: string;
+  interestRate: number;
+  termDays: number;
+}

@@ -278,9 +278,6 @@ public class OperationService {
         if (!ACTIVE_STATUS.equals(fromAccount.getStatus()) || !ACTIVE_STATUS.equals(toAccount.getStatus())) {
             throw new RuntimeException("Both accounts must be active");
         }
-        if (!fromAccount.getClientId().equals(toAccount.getClientId())) {
-            throw new RuntimeException("Transfer is allowed only between accounts of the same client");
-        }
         if (fromAccount.getBalance().compareTo(request.getAmount()) < 0) {
             throw new RuntimeException("Insufficient funds. Available: " + fromAccount.getBalance());
         }

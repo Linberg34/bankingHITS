@@ -1,16 +1,13 @@
-﻿import { Injectable, inject } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, inject } from '@angular/core';
+import { Observable, map } from 'rxjs';
 import {
   AccountsApiService,
-  type AccountListResponse,
-  type AccountOperationDto,
+  type AccountWithOwnerDto,
+  type OperationDto,
 } from 'shared/entities/accounts';
-import { AuthApiService, type AuthTokenResponse } from 'shared/entities/auth';
-import { CreditsApiService, type CreditDto } from 'shared/entities/credits';
-import {
-  TariffsApiService,
-  type TariffDto,
-} from 'shared/entities/tariffs';
+import { AuthApiService } from 'shared/entities/auth';
+import { CreditsApiService, type CreditSummaryDto } from 'shared/entities/credits';
+import { TariffsApiService, type TariffDto, type CreateTariffResponse } from 'shared/entities/tariffs';
 import {
   UsersApiService,
   type UserDto,
@@ -25,14 +22,6 @@ export class EmployeeAdminRequestService {
   private readonly creditsApi = inject(CreditsApiService);
   private readonly tariffsApi = inject(TariffsApiService);
   private readonly usersApi = inject(UsersApiService);
-
-  login(email: string): Observable<AuthTokenResponse> {
-    return this.authApi.login({ email });
-  }
-
-  logout(): Observable<string> {
-    return this.authApi.logout();
-  }
 
   clearAuth(): void {
     this.authApi.clearAuth();
@@ -50,32 +39,29 @@ export class EmployeeAdminRequestService {
     return this.usersApi.unbanUser(userId);
   }
 
-  createUser(name: string, email: string, employee: boolean): Observable<AuthTokenResponse> {
-    if (employee) {
-      return this.authApi.registerEmployeeWithoutAuth({ name, email });
-    }
-
-    return this.authApi.registerWithoutAuth({ name, email });
+  createUser(name: string, username: string, password: string, isEmployee: boolean): Observable<void> {
+    return this.usersApi
+      .createUser({ name, username, password, role: isEmployee ? 'EMPLOYEE' : 'CLIENT' })
+      .pipe(map(() => void 0));
   }
 
-  getAccountsList(): Observable<AccountListResponse> {
-    return this.accountsApi.getAccountsList({ page: 0, size: 200, sort: ['id', 'desc'] });
+  getAllAccounts(): Observable<AccountWithOwnerDto[]> {
+    return this.accountsApi.getAllAccounts().pipe(map((resp) => resp.accounts));
   }
 
-  getAccountOperations(accountNumber: string): Observable<AccountOperationDto[]> {
-    return this.accountsApi.getOperations(accountNumber);
+  getAccountOperations(accountNumber: string): Observable<OperationDto[]> {
+    return this.accountsApi.getOperations(accountNumber).pipe(map((resp) => resp.content));
   }
 
-  getCredits(): Observable<CreditDto[]> {
-    return this.creditsApi.getAllCredits();
+  getCredits(): Observable<CreditSummaryDto[]> {
+    return this.creditsApi.getMyCredits().pipe(map((resp) => resp.credits));
   }
 
   getTariffs(): Observable<TariffDto[]> {
     return this.tariffsApi.getTariffs();
   }
 
-  createTariff(name: string, annualRate: number): Observable<TariffDto> {
+  createTariff(name: string, annualRate: number): Observable<CreateTariffResponse> {
     return this.tariffsApi.createTariff({ name, annualRate });
   }
 }
-

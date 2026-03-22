@@ -1,5 +1,4 @@
 import { Route } from '@angular/router';
-import { LoginPageComponent } from '../pages/login/login-page.component';
 import { roleGuard } from '../../../shared/auth';
 import { EmployeePanelPageComponent } from '../pages/employee-panel/employee-panel-page.component';
 import { AccountsPageComponent } from '../pages/panel/accounts/accounts-page.component';
@@ -7,16 +6,17 @@ import { CreditsPageComponent } from '../pages/panel/credits/credits-page.compon
 import { TariffsPageComponent } from '../pages/panel/tariffs/tariffs-page.component';
 import { UsersPageComponent } from '../pages/panel/users/users-page.component';
 import { ErrorFallbackPageComponent } from '../../../shared/frontend-core';
+import { AuthCallbackComponent } from '../pages/auth-callback/auth-callback.component';
 
 export const appRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'registration',
+    redirectTo: 'panel',
   },
   {
-    path: 'registration',
-    component: LoginPageComponent,
+    path: 'auth/callback',
+    component: AuthCallbackComponent,
   },
   {
     path: 'panel',
@@ -24,7 +24,6 @@ export const appRoutes: Route[] = [
     canActivate: [roleGuard],
     data: {
       requiredRole: 'employee',
-      forbiddenRedirect: '/registration',
     },
     children: [
       {

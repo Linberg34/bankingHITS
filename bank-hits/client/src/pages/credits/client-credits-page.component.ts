@@ -1,4 +1,4 @@
-﻿import { AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { combineLatest, map } from 'rxjs';
@@ -23,7 +23,6 @@ import { InputComponent } from '../../../../shared/ui/input';
 import { LabelComponent } from '../../../../shared/ui/label';
 import { SelectComponent } from '../../../../shared/ui/select';
 import { ClientDataUseCasesService } from '../../app/application/use-cases/client-data-use-cases.service';
-import { ClientSessionUseCasesService } from '../../app/application/use-cases/client-session-use-cases.service';
 import { ClientShellComponent } from '../../app/layout/client-shell/client-shell.component';
 import type { Credit } from '../../app/core/models/client.types';
 
@@ -54,7 +53,6 @@ import type { Credit } from '../../app/core/models/client.types';
 })
 export class ClientCreditsPageComponent implements OnInit {
   private readonly data = inject(ClientDataUseCasesService);
-  private readonly sessionUseCases = inject(ClientSessionUseCasesService);
   private readonly notifications = inject(NotificationService);
 
   protected openNewCredit = signal(false);
@@ -65,8 +63,6 @@ export class ClientCreditsPageComponent implements OnInit {
   protected paymentAmount = signal('');
   protected selectedCreditId = signal('');
   protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
-
-  private readonly currentUserId = signal<number | null>(null);
 
   protected clientCredits$ = this.data.getCredits();
 
@@ -97,20 +93,11 @@ export class ClientCreditsPageComponent implements OnInit {
     this.data.loadAccounts().subscribe({
       error: () => this.notifications.error('Failed to load accounts.'),
     });
-
     this.data.loadTariffs().subscribe({
       error: () => this.notifications.error('Failed to load tariffs.'),
     });
-
-    this.sessionUseCases.getCurrentUser().subscribe({
-      next: (user) => {
-        const id = Number(user.id);
-        this.currentUserId.set(id);
-        this.data.loadCredits(id).subscribe({
-          error: () => this.notifications.error('Failed to load credits.'),
-        });
-      },
-      error: () => this.notifications.error('Failed to load user profile.'),
+    this.data.loadCredits().subscribe({
+      error: () => this.notifications.error('Failed to load credits.'),
     });
   }
 
@@ -136,7 +123,6 @@ export class ClientCreditsPageComponent implements OnInit {
       paid: 'secondary',
       overdue: 'destructive',
     };
-
     return mapValue[status] ?? 'secondary';
   }
 
@@ -146,7 +132,6 @@ export class ClientCreditsPageComponent implements OnInit {
       paid: 'Погашен',
       overdue: 'Просрочен',
     };
-
     return mapValue[status] ?? status;
   }
 
@@ -165,19 +150,20 @@ export class ClientCreditsPageComponent implements OnInit {
 
   protected handleTakeCredit(): void {
     const accountNumber = this.selectedAccount();
-    const tariff = Number(this.selectedTariff());
+    const tariffId = this.selectedTariff();
     const amount = Math.floor(Number(this.creditAmount()));
 
-    if (!accountNumber || !Number.isFinite(tariff) || !Number.isFinite(amount) || amount <= 0) {
+    if (!accountNumber || !tariffId || !Number.isFinite(amount) || amount <= 0) {
       this.actionState.set({ status: 'error', message: 'Fill all credit fields correctly.' });
       return;
     }
 
     this.actionState.set({ status: 'loading' });
-    this.data.takeCredit(accountNumber, tariff, amount).subscribe({
+    this.data.takeCredit(accountNumber, tariffId, amount).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Credit created.' });        this.closeNewCredit();
-        this.reloadCredits();
+        this.actionState.set({ status: 'success', message: 'Credit created.' });
+        this.closeNewCredit();
+        this.data.loadCredits().subscribe();
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);
@@ -200,10 +186,10 @@ export class ClientCreditsPageComponent implements OnInit {
   }
 
   protected handlePayCredit(): void {
-    const creditId = Number(this.selectedCreditId());
+    const creditId = this.selectedCreditId();
     const amount = Number(this.paymentAmount());
 
-    if (!Number.isFinite(creditId) || !Number.isFinite(amount) || amount <= 0) {
+    if (!creditId || !Number.isFinite(amount) || amount <= 0) {
       this.actionState.set({ status: 'error', message: 'Enter valid payment amount.' });
       return;
     }
@@ -211,10 +197,10 @@ export class ClientCreditsPageComponent implements OnInit {
     this.actionState.set({ status: 'loading' });
     this.data.repayCreditPartial(creditId, amount).subscribe({
       next: () => {
-        this.actionState.set({ status: 'success', message: 'Payment completed.' });        this.closePayCredit();
+        this.actionState.set({ status: 'success', message: 'Payment completed.' });
+        this.closePayCredit();
         this.paymentAmount.set('');
         this.selectedCreditId.set('');
-        this.reloadCredits();
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);
@@ -232,17 +218,4 @@ export class ClientCreditsPageComponent implements OnInit {
       Number(this.creditAmount()) > 0
     );
   }
-
-  private reloadCredits(): void {
-    const currentUserId = this.currentUserId();
-    if (currentUserId == null) {
-      return;
-    }
-
-    this.data.loadCredits(currentUserId).subscribe({
-      error: () => this.notifications.error('Failed to refresh credits.'),
-    });
-  }
 }
-
-

@@ -1,22 +1,18 @@
-﻿import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { type CreditDto } from 'shared/entities/credits';
-import { type UserDto } from 'shared/entities/users';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { type CreditSummaryDto } from 'shared/entities/credits';
 import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface CreditRecord {
   id: string;
-  clientName: string;
+  clientId: string;
   account: string;
   tariff: string;
   amount: string;
   remaining: string;
   rate: string;
   status: string;
-  issuedAt: string;
-  termMonths: number;
-  paidMonths: number;
-  closedAt: string;
+  nextPayment: string;
 }
 
 @Injectable({
@@ -26,53 +22,29 @@ export class CreditsPageService {
   constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   loadCredits(): Observable<CreditRecord[]> {
-    return forkJoin({
-      credits: this.requestService.getCredits(),
-      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
-    }).pipe(map(({ credits, users }) => this.mapCredits(credits, users)));
+    return this.requestService.getCredits().pipe(
+      map((credits) => credits.map((credit) => this.mapCredit(credit)))
+    );
   }
 
-  private mapCredits(credits: CreditDto[], users: UserDto[]): CreditRecord[] {
-    const userById = new Map<string, UserDto>();
-    for (const user of users) {
-      userById.set(String(user.id), user);
-    }
-
-    return credits.map((credit) => {
-      const client = userById.get(String(credit.clientId));
-      const issuedDate = this.formatDate(credit.issuedAt);
-      const closedDate = credit.closedAt ? this.formatDate(credit.closedAt) : '-';
-      const accountValue = credit.accountNumber ?? (credit.accountId != null ? String(credit.accountId) : '-');
-
-      return {
-        id: String(credit.id),
-        clientName: client?.name ?? `ID ${credit.clientId}`,
-        account: accountValue,
-        tariff: credit.tariffName,
-        amount: this.formatAmount(credit.principalAmount),
-        remaining: this.formatAmount(credit.remainingDebt),
-        rate: `${credit.annualRate}%`,
-        status: this.mapStatus(credit.status),
-        issuedAt: issuedDate,
-        termMonths: 0,
-        paidMonths: 0,
-        closedAt: closedDate,
-      };
-    });
+  private mapCredit(credit: CreditSummaryDto): CreditRecord {
+    return {
+      id: credit.creditId,
+      clientId: '-',
+      account: credit.accountNumber,
+      tariff: credit.tariffName,
+      amount: this.formatAmount(credit.amount),
+      remaining: this.formatAmount(credit.remainingDebt),
+      rate: `${credit.interestRate}%`,
+      status: this.mapStatus(credit.status),
+      nextPayment: credit.nextPaymentAt ? this.formatDate(credit.nextPaymentAt) : '-',
+    };
   }
 
   private mapStatus(status: string): string {
-    const normalized = String(status).toUpperCase();
-    if (normalized === 'ACTIVE') {
-      return 'Активен';
-    }
-    if (normalized === 'CLOSED' || normalized === 'PAID') {
-      return 'Погашен';
-    }
-    if (normalized === 'OVERDUE') {
-      return 'Просрочен';
-    }
-
+    if (status === 'ACTIVE') return 'Активен';
+    if (status === 'CLOSED') return 'Погашен';
+    if (status === 'OVERDUE') return 'Просрочен';
     return status;
   }
 
@@ -86,14 +58,10 @@ export class CreditsPageService {
 
   private formatDate(value: string): string {
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return value;
-    }
-
+    if (Number.isNaN(date.getTime())) return value;
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   }
 }
-

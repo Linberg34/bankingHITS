@@ -15,3 +15,10 @@ export interface UserDto {
 export interface CurrentUserDto extends UserDto {
   role: UserRole;
 }
+
+export interface CreateUserRequest {
+  name: string;
+  username: string;
+  password: string;
+  role: 'CLIENT' | 'EMPLOYEE';
+}

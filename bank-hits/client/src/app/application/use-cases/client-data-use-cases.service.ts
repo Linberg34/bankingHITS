@@ -1,4 +1,4 @@
-﻿import { Injectable, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, Observable, map, switchMap, tap } from 'rxjs';
 import { ClientBankingRequestService } from '../../infrastructure/request/client-banking-request.service';
 import type { Account, Credit, CreditTariff, Transaction } from '../../core/models/client.types';
@@ -43,53 +43,63 @@ export class ClientDataUseCasesService {
     return this.tariffsCache$.value.find((item) => item.id === id);
   }
 
-  loadCredits(clientId: number): Observable<Credit[]> {
-    return this.request.getCreditsByClient(clientId).pipe(tap((items) => this.creditsCache$.next(items)));
+  loadCredits(): Observable<Credit[]> {
+    return this.request.getMyCredits().pipe(tap((items) => this.creditsCache$.next(items)));
   }
 
   getCredits(): Observable<Credit[]> {
     return this.creditsCache$.asObservable();
   }
 
-  openCurrentAccount(): Observable<Account> {
-    return this.request.openCurrentAccount().pipe(
+  openAccount(currency: 'RUB' | 'USD' | 'EUR' = 'RUB'): Observable<Account> {
+    return this.request.openAccount(currency).pipe(
       tap((account) => this.accountsCache$.next([...this.accountsCache$.value, account]))
     );
   }
 
-  deposit(accountId: string, amount: number, description?: string): Observable<void> {
-    const parsedId = Number(accountId);
-    return this.request.deposit(parsedId, amount, description).pipe(
+  deposit(accountNumber: string, amount: number): Observable<void> {
+    return this.request.deposit(accountNumber, amount).pipe(
       switchMap(() => this.loadAccounts()),
       map(() => void 0)
     );
   }
 
-  withdraw(accountId: string, amount: number, description?: string): Observable<void> {
-    const parsedId = Number(accountId);
-    return this.request.withdraw(parsedId, amount, description).pipe(
+  withdraw(accountNumber: string, amount: number): Observable<void> {
+    return this.request.withdraw(accountNumber, amount).pipe(
       switchMap(() => this.loadAccounts()),
       map(() => void 0)
     );
   }
 
-  deleteAccount(accountNumber: string): Observable<void> {
-    return this.request.deleteAccount(accountNumber).pipe(
+  transfer(fromAccountNumber: string, toAccountNumber: string, amount: number): Observable<void> {
+    return this.request.transfer(fromAccountNumber, toAccountNumber, amount).pipe(
       switchMap(() => this.loadAccounts()),
       map(() => void 0)
     );
   }
 
-  takeCredit(accountNumber: string, tariffId: number, amount: number): Observable<Credit> {
+  closeAccount(accountNumber: string): Observable<void> {
+    return this.request.closeAccount(accountNumber).pipe(
+      switchMap(() => this.loadAccounts()),
+      map(() => void 0)
+    );
+  }
+
+  takeCredit(accountNumber: string, tariffId: string, amount: number): Observable<Credit> {
     return this.request.takeCredit(accountNumber, tariffId, amount);
   }
 
-  repayCreditFull(creditId: number): Observable<Credit> {
-    return this.request.repayCreditFull(creditId);
+  repayCreditFull(creditId: string): Observable<void> {
+    return this.request.repayCreditFull(creditId).pipe(
+      switchMap(() => this.loadCredits()),
+      map(() => void 0)
+    );
   }
 
-  repayCreditPartial(creditId: number, amount: number): Observable<Credit> {
-    return this.request.repayCreditPartial(creditId, amount);
+  repayCreditPartial(creditId: string, amount: number): Observable<void> {
+    return this.request.repayCreditPartial(creditId, amount).pipe(
+      switchMap(() => this.loadCredits()),
+      map(() => void 0)
+    );
   }
 }
-

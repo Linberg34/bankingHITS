@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../api';
-import { CurrentUserDto, UserDto, UserId, UsersQueryType } from './users-api.models';
+import { CreateUserRequest, CurrentUserDto, UserDto, UserId, UsersQueryType } from './users-api.models';
 
 @Injectable({
   providedIn: 'root',
@@ -14,28 +14,28 @@ export class UsersApiService {
   ) {}
 
   getUsers(queryType?: UsersQueryType): Observable<UserDto[]> {
-    return this.httpClient.get<UserDto[]>(`${this.normalizedBaseUrl}/api/users`, {
+    return this.httpClient.get<UserDto[]>(`${this.base}/users`, {
       params: queryType ? { queryType } : {},
     });
   }
 
   getCurrentUser(): Observable<CurrentUserDto> {
-    return this.httpClient.get<CurrentUserDto>(`${this.normalizedBaseUrl}/api/users/me`);
-  }
-
-  getBannedUsers(): Observable<UserDto[]> {
-    return this.httpClient.get<UserDto[]>(`${this.normalizedBaseUrl}/api/users/banned`);
+    return this.httpClient.get<CurrentUserDto>(`${this.base}/users/me`);
   }
 
   banUser(userId: UserId): Observable<UserDto> {
-    return this.httpClient.post<UserDto>(`${this.normalizedBaseUrl}/api/users/${userId}/ban`, null);
+    return this.httpClient.post<UserDto>(`${this.base}/users/${userId}/ban`, null);
   }
 
   unbanUser(userId: UserId): Observable<UserDto> {
-    return this.httpClient.post<UserDto>(`${this.normalizedBaseUrl}/api/users/${userId}/unban`, null);
+    return this.httpClient.post<UserDto>(`${this.base}/users/${userId}/unban`, null);
   }
 
-  private get normalizedBaseUrl(): string {
+  createUser(request: CreateUserRequest): Observable<UserDto> {
+    return this.httpClient.post<UserDto>(`${this.base}/users`, request);
+  }
+
+  private get base(): string {
     return this.apiBaseUrl.replace(/\/+$/, '');
   }
 }

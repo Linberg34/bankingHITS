@@ -42,9 +42,9 @@ export class UsersPageService {
     return this.requestService.unbanUser(userId).pipe(map((user) => this.mapUser(user)));
   }
 
-  createUser(name: string, email: string, role: UsersPageRole): Observable<void> {
+  createUser(name: string, username: string, password: string, role: UsersPageRole): Observable<void> {
     return this.requestService
-      .createUser(name, email, role === 'Сотрудник')
+      .createUser(name, username, password, role === 'Сотрудник')
       .pipe(map(() => void 0));
   }
 
