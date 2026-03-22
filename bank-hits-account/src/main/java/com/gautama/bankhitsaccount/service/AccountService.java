@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Random;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,8 +33,8 @@ public class AccountService {
     @Value("${bank.master-account.number:00000000000000000001}")
     private String masterAccountNumber;
 
-    @Value("${bank.master-account.client-id:0}")
-    private Long masterAccountClientId;
+    @Value("${bank.master-account.client-id:00000000-0000-0000-0000-000000000000}")
+    private UUID masterAccountClientId;
 
     @Value("${bank.master-account.initial-balance:1000000.00}")
     private BigDecimal masterAccountInitialBalance;
@@ -59,7 +60,7 @@ public class AccountService {
         log.info("Master account created with number {}", masterAccountNumber);
     }
 
-    public List<AccountDTO> getAccountsByUserId(Long userId) {
+    public List<AccountDTO> getAccountsByUserId(UUID userId) {
         log.info("Fetching accounts for user: {}", userId);
         return accountRepository.findByClientId(userId)
                 .stream()
@@ -67,7 +68,7 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-    public AccountDTO getAccountById(Long id) {
+    public AccountDTO getAccountById(UUID id) {
         log.info("Fetching account by id: {}", id);
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: " + id));
@@ -110,7 +111,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDTO createAccountCurrent(Long userId, String currency) {
+    public AccountDTO createAccountCurrent(UUID userId, String currency) {
         AccountDTO accountDTO = new AccountDTO(
                 userId,
                 generateAccountNumber(),
@@ -142,7 +143,7 @@ public class AccountService {
     }
 
     @Transactional
-    public AccountDTO updateAccount(Long id, AccountDTO accountDTO) {
+    public AccountDTO updateAccount(UUID id, AccountDTO accountDTO) {
         log.info("Updating account with id: {}", id);
 
         Account existingAccount = accountRepository.findById(id)
@@ -160,7 +161,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void updateBalance(Long accountId, BigDecimal amount) {
+    public void updateBalance(UUID accountId, BigDecimal amount) {
         log.info("Updating balance for account: {}, amount: {}", accountId, amount);
 
         Account account = accountRepository.findById(accountId)
@@ -214,8 +215,6 @@ public class AccountService {
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
 
-        // Держим длину в пределах signed long для совместимости с соседними сервисами,
-        // которые местами все еще пытаются читать номер счета как число.
         sb.append("40817");
 
         for (int i = 0; i < 14; i++) {

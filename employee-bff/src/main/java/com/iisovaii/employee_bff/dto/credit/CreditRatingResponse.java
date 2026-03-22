@@ -11,11 +11,12 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreditRatingResponse {
-    private UUID userId;
+    private UUID clientId;      // было userId
     private int score;
-    private int overdueCount;
+    private int overduePaymentsCount;  // было overdueCount
     private int totalCredits;
     private int activeCredits;
+    private int closedCredits;  // добавить
     private String ratingLabel;
     private LocalDateTime calculatedAt;
 }

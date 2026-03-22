@@ -53,6 +53,15 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
+    @Transactional(readOnly = true)
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NoSuchElementException(
+                        "Пользователь с email: " + email + " не найден"
+                ));
+        return userMapper.toDto(user);
+    }
+
     public UserDTO createUser(CreateUserRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalStateException(
@@ -62,6 +71,7 @@ public class UserService {
         }
 
         User user = new User();
+        user.setId(request.getId());
         user.setName(request.getName());
         user.setEmail(request.getEmail());
         user.setStatus(Status.ACTIVE);

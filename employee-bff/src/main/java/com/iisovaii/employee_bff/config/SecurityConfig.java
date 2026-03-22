@@ -4,7 +4,7 @@ import com.iisovaii.employee_bff.security.JwtAuthFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -27,24 +27,33 @@ public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http)
+            throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(
+                        corsConfigurationSource())
+                )
                 .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS)
+                )
                 .authorizeHttpRequests(auth -> auth
-//                        // публичные эндпоинты
-//                        .requestMatchers(
-//                                "/bff/employee/auth/login-url",
-//                                "/bff/employee/auth/callback",
-//                                "/ws/**"
-//                        ).permitAll()
-//                        // только сотрудники
-//                        .requestMatchers("/bff/employee/**")
-//                        .hasAuthority("EMPLOYEE")
-//                        .anyRequest().authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(
+                                "/bff/employee/auth/**",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/ws/**"
+                        ).permitAll()
+                        .requestMatchers("/bff/employee/**")
+                        .hasAuthority("EMPLOYEE")
+                        .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, ex) ->
+                                response.sendError(HttpStatus.UNAUTHORIZED.value()))
+                        .accessDeniedHandler((request, response, ex) ->
+                                response.sendError(HttpStatus.FORBIDDEN.value()))
                 )
                 .addFilterBefore(
                         jwtAuthFilter,
@@ -57,11 +66,21 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:4201"));
+        config.setAllowedOrigins(List.of(
+                "http://localhost:4201",
+                "http://localhost:4200",
+                "http://localhost:8085"  // добавить порт самого BFF для Swagger
+        ));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
         );
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of(
+                "Authorization",         // явно разрешаем
+                "Content-Type",
+                "Accept",
+                "*"
+        ));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =

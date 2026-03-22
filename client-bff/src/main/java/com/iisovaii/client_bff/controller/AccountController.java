@@ -53,7 +53,7 @@ public class AccountController {
     )
     public ResponseEntity<CloseAccountResponse> closeAccount(
             @CurrentUser UUID userId,
-            @PathVariable UUID accountId) {
+            @PathVariable String accountId) {
         proxyService.checkAccountOwnership(userId, accountId);
         CloseAccountResponse response = proxyService.closeAccount(userId, accountId);
         return ResponseEntity.ok(response);

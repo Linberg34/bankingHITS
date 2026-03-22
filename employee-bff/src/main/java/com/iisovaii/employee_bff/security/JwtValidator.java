@@ -2,8 +2,10 @@ package com.iisovaii.employee_bff.security;
 
 import com.iisovaii.employee_bff.exception.JwtExpiredException;
 import com.iisovaii.employee_bff.exception.JwtInvalidException;
+import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jwt.SignedJWT;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -13,27 +15,31 @@ import org.springframework.stereotype.Component;
 
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 @Slf4j
 public class JwtValidator {
 
-    private final JWKSet jwkSet;
+    private final String jwksUrl;
+    private final Duration jwksTtl;
+    private final AtomicReference<CachedJwks> cache = new AtomicReference<>();
 
-    public JwtValidator(@Value("${sso.jwks-url}") String jwksUrl) {
-        try {
-            this.jwkSet = JWKSet.load(new URL(jwksUrl));
-        } catch (Exception e) {
-            throw new IllegalStateException(
-                    "Не удалось загрузить JWKS с " + jwksUrl, e
-            );
-        }
+    public JwtValidator(
+            @Value("${sso.jwks-url}") String jwksUrl,
+            @Value("${sso.jwks-cache-ttl:PT5M}") Duration jwksTtl
+    ) {
+        this.jwksUrl = Objects.requireNonNull(jwksUrl, "jwksUrl");
+        this.jwksTtl = Objects.requireNonNull(jwksTtl, "jwksTtl");
     }
 
     public Claims validate(String token) {
         try {
-            RSAKey rsaKey = (RSAKey) jwkSet.getKeys().get(0);
-            RSAPublicKey publicKey = rsaKey.toRSAPublicKey();
+            String kid = extractKid(token);
+            RSAPublicKey publicKey = resolvePublicKey(kid);
 
             return Jwts.parserBuilder()
                     .setSigningKey(publicKey)
@@ -49,4 +55,96 @@ public class JwtValidator {
             );
         }
     }
+
+    private String extractKid(String token) {
+        try {
+            return SignedJWT.parse(token).getHeader().getKeyID();
+        } catch (Exception e) {
+            throw new JwtInvalidException(
+                    "Невалидный JWT: не удалось прочитать header"
+            );
+        }
+    }
+
+    private RSAPublicKey resolvePublicKey(String kid) throws Exception {
+        JWKSet jwkSet = getJwkSet(false);
+        RSAPublicKey key = findRsaPublicKey(jwkSet, kid);
+        if (key != null) {
+            return key;
+        }
+
+        jwkSet = getJwkSet(true);
+        key = findRsaPublicKey(jwkSet, kid);
+        if (key != null) {
+            return key;
+        }
+
+        throw new JwtInvalidException(
+                "Не найден подходящий ключ в JWKS (kid=" + kid + ")"
+        );
+    }
+
+    private JWKSet getJwkSet(boolean forceRefresh) throws Exception {
+        CachedJwks cached = cache.get();
+        Instant now = Instant.now();
+
+        if (!forceRefresh
+                && cached != null
+                && now.isBefore(cached.expiresAt())) {
+            return cached.jwkSet();
+        }
+
+        synchronized (this) {
+            cached = cache.get();
+            now = Instant.now();
+            if (!forceRefresh
+                    && cached != null
+                    && now.isBefore(cached.expiresAt())) {
+                return cached.jwkSet();
+            }
+
+            try {
+                JWKSet loaded = JWKSet.load(new URL(jwksUrl));
+                cache.set(new CachedJwks(loaded, now.plus(jwksTtl)));
+                return loaded;
+            } catch (Exception e) {
+                if (cached != null) {
+                    log.warn(
+                            "JWKS refresh failed, using cached keys: {}",
+                            e.getMessage()
+                    );
+                    return cached.jwkSet();
+                }
+                throw e;
+            }
+        }
+    }
+
+    private RSAPublicKey findRsaPublicKey(JWKSet jwkSet, String kid) {
+        if (jwkSet == null
+                || jwkSet.getKeys() == null
+                || jwkSet.getKeys().isEmpty()) {
+            return null;
+        }
+
+        for (JWK jwk : jwkSet.getKeys()) {
+            if (!(jwk instanceof RSAKey rsaKey)) {
+                continue;
+            }
+            if (kid != null
+                    && rsaKey.getKeyID() != null
+                    && !kid.equals(rsaKey.getKeyID())) {
+                continue;
+            }
+            try {
+                return rsaKey.toRSAPublicKey();
+            } catch (Exception ignored) {
+                // пробуем следующий ключ
+            }
+        }
+
+        return null;
+    }
+
+    private record CachedJwks(JWKSet jwkSet, Instant expiresAt) {}
 }

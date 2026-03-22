@@ -3,47 +3,43 @@ package com.iisovaii.employee_bff.mapper;
 import com.iisovaii.employee_bff.dto.account.AccountDto;
 import com.iisovaii.employee_bff.dto.account.AccountWithOwnerDto;
 import com.iisovaii.employee_bff.dto.account.AllAccountsPageResponse;
-import com.iisovaii.employee_bff.dto.account.CloseAccountResponse;
 import com.iisovaii.employee_bff.dto.operation.OperationDto;
-import com.iisovaii.employee_bff.dto.operation.OperationPageResponse;
-import com.iisovaii.employee_bff.dto.response.AccountResponse;
-import com.iisovaii.employee_bff.dto.response.AccountWithOwnerResponse;
-import com.iisovaii.employee_bff.dto.response.OperationResponse;
-import com.iisovaii.employee_bff.dto.response.PageResponse;
+import com.iisovaii.employee_bff.dto.response.AccountServiceResponse;
+import com.iisovaii.employee_bff.dto.response.OperationServiceResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
 
-// mapper/AccountMapper.java
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
 
-    AccountDto toAccountDto(AccountResponse response);
+    @Mapping(target = "accountId", ignore = true)
+    @Mapping(target = "currency", source = "currency")
+    @Mapping(target = "status", source = "status")
+    @Mapping(target = "createdAt", ignore = true)
+    AccountDto toAccountDto(AccountServiceResponse response);
 
-    List<AccountDto> toAccountDtoList(List<AccountResponse> responses);
-
-    // ownerFullName собираем из двух полей — нужен кастомный маппинг
-    @Mapping(
-            target = "ownerFullName",
-            expression = "java(response.getFirstName() + \" \" + response.getLastName())"
-    )
-    AccountWithOwnerDto toAccountWithOwnerDto(AccountWithOwnerResponse response);
-
-    @Mapping(target = "content", source = "content")
-    @Mapping(target = "page", source = "page")
-    @Mapping(target = "size", source = "size")
-    @Mapping(target = "totalElements", source = "totalElements")
-    AllAccountsPageResponse toAllAccountsPageResponse(
-            PageResponse<AccountWithOwnerResponse> response
+    List<AccountDto> toAccountDtoList(
+            List<AccountServiceResponse> responses
     );
 
-    OperationDto toOperationDto(OperationResponse response);
-
-    @Mapping(target = "content", source = "content")
-    OperationPageResponse toOperationPageResponse(
-            PageResponse<OperationResponse> response
+    @Mapping(target = "accountId", ignore = true)
+    @Mapping(target = "ownerId", source = "clientId")
+    @Mapping(target = "ownerFullName", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    AccountWithOwnerDto toAccountWithOwnerDto(
+            AccountServiceResponse response
     );
 
-    CloseAccountResponse toCloseAccountResponse(AccountResponse response);
+    @Mapping(target = "operationId", ignore = true)
+    @Mapping(target = "type", source = "operationType")
+    @Mapping(target = "relatedAccountId", ignore = true)
+    @Mapping(target = "relatedAccountOwner", ignore = true)
+    @Mapping(target = "failReason", ignore = true)
+    OperationDto toOperationDto(OperationServiceResponse response);
+
+    List<OperationDto> toOperationDtoList(
+            List<OperationServiceResponse> responses
+    );
 }

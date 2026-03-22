@@ -1,10 +1,12 @@
 package com.iisovaii.client_bff.dto.credit;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.math.BigDecimal;
 import java.util.UUID;
 
 public record RepayCreditResponse(
-        UUID creditId,
+        @JsonProperty("id") UUID creditId,
         BigDecimal remainingDebt,
         CreditStatus status
 ) {}

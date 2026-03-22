@@ -14,7 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class DepositRequest {
     @NotNull
-    private UUID accountId;
+    private String accountId;
 
     @NotNull
     @Positive

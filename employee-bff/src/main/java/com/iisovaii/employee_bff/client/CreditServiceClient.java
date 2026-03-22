@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
+// client/CreditServiceClient.java
 @FeignClient(
         name = "credit-service",
         url = "${services.credit-service-url}",
@@ -20,21 +21,21 @@ import java.util.UUID;
 )
 public interface CreditServiceClient {
 
-    @GetMapping("/credits")
-    List<CreditSummaryResponse> getCreditsByUserId(@RequestParam UUID userId);
+    @GetMapping("/api/credits/client/{clientId}")
+    List<CreditSummaryResponse> getCreditsByUserId(@PathVariable("clientId") UUID clientId);
 
-    @GetMapping("/credits/{creditId}")
-    CreditDetailResponse getCreditDetailForEmployee(@PathVariable UUID creditId);
+    @GetMapping("/api/credits/{id}")
+    CreditDetailResponse getCreditDetailForEmployee(@PathVariable("id") UUID id);
 
-    @GetMapping("/credits/{creditId}/payments")
-    List<CreditPaymentResponse> getCreditPayments(@PathVariable UUID creditId);
+    @GetMapping("/api/credits/{id}/payments")
+    List<CreditPaymentResponse> getCreditPayments(@PathVariable("id") UUID id);
 
-    @GetMapping("/credits/rating/{userId}")
-    CreditRatingResponse getCreditRating(@PathVariable UUID userId);
+    @GetMapping("/api/credits/rating/{clientId}")
+    CreditRatingResponse getCreditRating(@PathVariable("clientId") UUID clientId);
 
-    @GetMapping("/tariffs")
+    @GetMapping("/api/tariffs")
     List<TariffResponse> getTariffs();
 
-    @PostMapping("/tariffs")
+    @PostMapping("/api/tariffs")
     TariffResponse createTariff(@RequestBody CreateTariffRequest request);
 }

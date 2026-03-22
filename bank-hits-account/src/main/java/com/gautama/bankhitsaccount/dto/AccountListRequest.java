@@ -10,13 +10,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
 public class AccountListRequest {
-    private Long userId;
+    private UUID userId;
     private String status;
     private BigDecimal minBalance;
     private BigDecimal maxBalance;

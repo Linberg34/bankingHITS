@@ -16,7 +16,7 @@ public class CreditDetailEmployeeResponse {
     private UUID creditId;
     private UUID userId;
     private String ownerFullName;
-    private UUID accountId;
+    private String accountNumber;
     private BigDecimal amount;
     private BigDecimal remainingDebt;
     private BigDecimal interestRate;

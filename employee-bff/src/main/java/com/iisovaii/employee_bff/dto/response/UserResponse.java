@@ -12,13 +12,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserResponse {
-    private UUID userId;
-    private String firstName;
-    private String lastName;
+    private UUID id;
+    private String name;
     private String email;
-    private String phone;
-    private EmployeeProfileResponse.UserStatus status;
+    private String status;         // "ACTIVE" | "INACTIVE" | "BANNED"
     private LocalDateTime registeredAt;
-    private int accountCount;        // приходит из UserService
-    private int activeCreditCount;   // приходит из UserService
 }

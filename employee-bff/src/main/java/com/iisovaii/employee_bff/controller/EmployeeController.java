@@ -7,6 +7,7 @@ import com.iisovaii.employee_bff.dto.employee.UpdateUserResponse;
 import com.iisovaii.employee_bff.dto.employee.UserStatusResponse;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class EmployeeController {
 
     @PostMapping
     public ResponseEntity<CreateEmployeeResponse> createEmployee(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @RequestBody @Valid CreateEmployeeRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -38,7 +39,7 @@ public class EmployeeController {
 
     @PutMapping("/{targetEmployeeId}")
     public ResponseEntity<UpdateUserResponse> updateEmployee(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID targetEmployeeId,
             @RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.ok(
@@ -48,7 +49,7 @@ public class EmployeeController {
 
     @PostMapping("/{targetEmployeeId}/block")
     public ResponseEntity<UserStatusResponse> blockEmployee(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID targetEmployeeId) {
         return ResponseEntity.ok(
                 proxyService.blockUser(targetEmployeeId)
@@ -57,7 +58,7 @@ public class EmployeeController {
 
     @PostMapping("/{targetEmployeeId}/unblock")
     public ResponseEntity<UserStatusResponse> unblockEmployee(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID targetEmployeeId) {
         return ResponseEntity.ok(
                 proxyService.unblockUser(targetEmployeeId)

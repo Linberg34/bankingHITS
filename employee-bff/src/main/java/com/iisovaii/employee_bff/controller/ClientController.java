@@ -9,6 +9,7 @@ import com.iisovaii.employee_bff.dto.employee.UpdateUserResponse;
 import com.iisovaii.employee_bff.dto.employee.UserStatusResponse;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -33,7 +34,7 @@ public class ClientController {
 
     @GetMapping
     public ResponseEntity<ClientPageResponse> getClients(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(
@@ -43,7 +44,7 @@ public class ClientController {
 
     @GetMapping("/{clientId}")
     public ResponseEntity<ClientDetailResponse> getClientDetail(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientDetail(clientId)
@@ -52,7 +53,7 @@ public class ClientController {
 
     @PostMapping
     public ResponseEntity<CreateClientResponse> createClient(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @RequestBody @Valid CreateClientRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -61,7 +62,7 @@ public class ClientController {
 
     @PutMapping("/{clientId}")
     public ResponseEntity<UpdateUserResponse> updateClient(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId,
             @RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.ok(
@@ -71,7 +72,7 @@ public class ClientController {
 
     @PostMapping("/{clientId}/block")
     public ResponseEntity<UserStatusResponse> blockClient(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.blockUser(clientId)
@@ -80,7 +81,7 @@ public class ClientController {
 
     @PostMapping("/{clientId}/unblock")
     public ResponseEntity<UserStatusResponse> unblockClient(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.unblockUser(clientId)

@@ -10,6 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SsoRegisterRequest {
+    private String name;
     private String username;   // email
     private String password;
     private List<String> roles;

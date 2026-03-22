@@ -5,6 +5,7 @@ import com.iisovaii.employee_bff.dto.tariff.CreateTariffResponse;
 import com.iisovaii.employee_bff.dto.tariff.TariffDto;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -27,14 +28,14 @@ public class TariffController {
 
     @GetMapping
     public ResponseEntity<List<TariffDto>> getTariffs(
-            @CurrentUser UUID employeeId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId) {
         return ResponseEntity.ok(proxyService.getTariffs());
     }
 
     // только сотрудник может создавать тарифы
     @PostMapping
     public ResponseEntity<CreateTariffResponse> createTariff(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
             @RequestBody @Valid CreateTariffRequest request) {
         return ResponseEntity
                 .status(HttpStatus.CREATED)

@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -232,7 +233,7 @@ public class OperationService {
         return operationMapper.toDTOList(operations);
     }
 
-    public OperationDTO getOperationById(Long id) {
+    public OperationDTO getOperationById(UUID id) {
         Operation operation = operationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Operation not found"));
         return operationMapper.toDTO(operation);

@@ -11,8 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class EmployeeProfileResponse {
     private UUID employeeId;
-    private String firstName;
-    private String lastName;
+    private String name;
     private String email;
     private UserStatus status;
 

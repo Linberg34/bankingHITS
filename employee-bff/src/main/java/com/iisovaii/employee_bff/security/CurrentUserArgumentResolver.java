@@ -1,6 +1,7 @@
 package com.iisovaii.employee_bff.security;
 
 import com.iisovaii.employee_bff.exception.UnauthorizedException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -32,7 +33,10 @@ public class CurrentUserArgumentResolver
         Authentication auth =
                 SecurityContextHolder.getContext().getAuthentication();
 
-        if (auth == null || !auth.isAuthenticated()) {
+        if (auth == null
+                || !auth.isAuthenticated()
+                || auth.getPrincipal() == null
+                || !(auth.getPrincipal() instanceof UUID)) {
             throw new UnauthorizedException(
                     "Пользователь не аутентифицирован"
             );

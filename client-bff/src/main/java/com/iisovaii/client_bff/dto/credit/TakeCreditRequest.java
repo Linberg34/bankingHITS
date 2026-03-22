@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 public record TakeCreditRequest(
-        UUID accountId,
+        String accountNumber,
         UUID tariffId,
         BigDecimal amount
 ) {}

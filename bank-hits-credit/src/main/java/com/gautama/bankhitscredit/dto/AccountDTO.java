@@ -5,12 +5,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDTO {
-    private Long clientId;
+    private UUID clientId;
     private String accountNumber;
     private BigDecimal balance;
     private String currency;

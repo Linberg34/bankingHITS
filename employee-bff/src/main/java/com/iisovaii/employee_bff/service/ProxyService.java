@@ -39,23 +39,58 @@ public class ProxyService {
     }
 
     public AllAccountsPageResponse getAllAccounts(int page, int size) {
-        PageResponse<AccountWithOwnerResponse> raw =
+        PageDTOAccountDTO raw =
                 accountServiceClient.getAllAccounts(page, size);
-        return accountMapper.toAllAccountsPageResponse(raw);
-    }
 
-    public AccountListResponse getClientAccounts(UUID clientId) {
-        List<AccountResponse> raw =
-                accountServiceClient.getAccountsByUserId(clientId);
-        return new AccountListResponse(accountMapper.toAccountDtoList(raw));
+        List<AccountWithOwnerDto> content = raw.getContent().stream()
+                .map(account -> {
+                    AccountWithOwnerDto dto =
+                            accountMapper.toAccountWithOwnerDto(account);
+                    try {
+                        UserResponse user = userServiceClient
+                                .getUser(account.getClientId());
+                        dto.setOwnerFullName(user.getName());
+                        dto.setOwnerId(user.getId());
+                    } catch (Exception e) {
+                        log.warn("Не удалось получить владельца счёта {}",
+                                account.getAccountNumber());
+                        dto.setOwnerFullName("Неизвестно");
+                    }
+                    return dto;
+                })
+                .toList();
+
+        return new AllAccountsPageResponse(
+                content,
+                raw.getPageNumber(),
+                raw.getPageSize(),
+                raw.getTotalElements()
+        );
     }
 
     public OperationPageResponse getOperations(
-            UUID accountId, int page, int size) {
-        PageResponse<OperationResponse> raw =
-                accountServiceClient.getOperations(accountId, page, size);
-        return accountMapper.toOperationPageResponse(raw);
+            String accountNumber, int page, int size) {
+        List<OperationServiceResponse> raw =
+                accountServiceClient.getOperations(accountNumber, page, size);
+
+        List<OperationDto> content = raw.stream()
+                .map(accountMapper::toOperationDto)
+                .toList();
+
+        // AccountService не возвращает total — делаем best effort
+        return new OperationPageResponse(
+                content,
+                page,
+                size,
+                (long) content.size()
+        );
     }
+
+    public AccountListResponse getClientAccounts(UUID clientId) {
+        List<AccountServiceResponse> raw = accountServiceClient.getAccountsByUserId(clientId);
+        return new AccountListResponse(accountMapper.toAccountDtoList(raw));
+    }
+
 
     public ClientPageResponse getClients(int page, int size) {
         // UserService возвращает List, не Page
@@ -85,41 +120,34 @@ public class ProxyService {
     }
 
     public CreateClientResponse createClient(CreateClientRequest request) {
-        // шаг 1 — создаём credentials в SSO
         ssoServiceClient.register(
                 new SsoRegisterRequest(
+                        request.getName(),
                         request.getEmail(),
                         request.getPassword(),
                         List.of("CLIENT")
                 )
         );
 
-        // шаг 2 — создаём профиль в UserService без пароля
-        UserResponse raw = userServiceClient.createClient(
-                new CreateUserInServiceRequest(
-                        request.getName(),
-                        request.getEmail()
-                )
+        UserResponse raw = userServiceClient.getUserByEmail(
+                request.getEmail()
         );
         return userMapper.toCreateClientResponse(raw);
     }
 
     public CreateEmployeeResponse createEmployee(
             CreateEmployeeRequest request) {
-        // аналогично клиенту — сначала SSO, потом UserService
         ssoServiceClient.register(
                 new SsoRegisterRequest(
+                        request.getName(),
                         request.getEmail(),
                         request.getPassword(),
                         List.of("EMPLOYEE")
                 )
         );
 
-        UserResponse raw = userServiceClient.createEmployee(
-                new CreateUserInServiceRequest(
-                        request.getName(),
-                        request.getEmail()
-                )
+        UserResponse raw = userServiceClient.getUserByEmail(
+                request.getEmail()
         );
         return userMapper.toCreateEmployeeResponse(raw);
     }
@@ -149,9 +177,11 @@ public class ProxyService {
     }
 
     public CreditDetailEmployeeResponse getCreditDetail(UUID creditId) {
-        return creditMapper.toCreditDetailEmployeeResponse(
-                creditServiceClient.getCreditDetailForEmployee(creditId)
-        );
+        CreditDetailResponse credit = creditServiceClient.getCreditDetailForEmployee(creditId);
+        CreditDetailEmployeeResponse response =
+                creditMapper.toCreditDetailEmployeeResponse(credit);
+        response.setOwnerFullName(userServiceClient.getUser(credit.getClientId()).getName());
+        return response;
     }
 
     public List<CreditPaymentDto> getCreditPayments(UUID creditId) {

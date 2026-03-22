@@ -40,8 +40,7 @@ public class OperationResultConsumer {
                     message.getType(),
                     message.getAmount(),
                     message.getCurrency(),
-                    message.getRelatedAccountId(),
-                    message.getRelatedAccountOwner(),
+                    accountId.toString(),
                     message.getStatus(),
                     message.getErrorMessage(),
                     message.getCreatedAt()

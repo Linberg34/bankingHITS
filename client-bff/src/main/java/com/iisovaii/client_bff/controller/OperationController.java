@@ -22,19 +22,19 @@ public class OperationController {
     private final ProxyService proxyService;
     private final OperationProducer operationProducer;
 
-    @GetMapping("/accounts/{accountId}/operations")
+    @GetMapping("/accounts/{accountNumber}/operations")
     @Operation(
             summary = "История операций по счету",
             description = "Возвращает страницу операций по указанному счету текущего клиента."
     )
     public ResponseEntity<OperationPageResponse> getOperations(
             @CurrentUser UUID userId,
-            @PathVariable UUID accountId,
+            @PathVariable String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         // проверяем что счёт принадлежит этому пользователю
-        proxyService.checkAccountOwnership(userId, accountId);
-        return ResponseEntity.ok(proxyService.getOperations(accountId, page, size));
+        proxyService.checkAccountOwnership(userId, accountNumber);
+        return ResponseEntity.ok(proxyService.getOperations(accountNumber, page, size));
     }
 
     @PostMapping("/operations/deposit")
@@ -45,7 +45,7 @@ public class OperationController {
     public ResponseEntity<OperationAcceptedResponse> deposit(
             @CurrentUser UUID userId,
             @RequestBody @Valid DepositRequest request) {
-        proxyService.checkAccountOwnership(userId, request.accountId());
+        proxyService.checkAccountOwnership(userId, request.accountNumber());
         UUID operationId = UUID.randomUUID();
         operationProducer.sendDeposit(operationId, request, userId);
         return ResponseEntity.accepted()
@@ -60,7 +60,7 @@ public class OperationController {
     public ResponseEntity<OperationAcceptedResponse> withdraw(
             @CurrentUser UUID userId,
             @RequestBody @Valid WithdrawRequest request) {
-        proxyService.checkAccountOwnership(userId, request.accountId());
+        proxyService.checkAccountOwnership(userId, request.accountNumber());
         UUID operationId = UUID.randomUUID();
         operationProducer.sendWithdraw(operationId, request, userId);
         return ResponseEntity.accepted()
@@ -75,7 +75,7 @@ public class OperationController {
     public ResponseEntity<OperationAcceptedResponse> transfer(
             @CurrentUser UUID userId,
             @RequestBody @Valid TransferRequest request) {
-        proxyService.checkAccountOwnership(userId, request.fromAccountId());
+        proxyService.checkAccountOwnership(userId, request.fromAccountNumber());
         UUID operationId = UUID.randomUUID();
         operationProducer.sendTransfer(operationId, request, userId);
         return ResponseEntity.accepted()

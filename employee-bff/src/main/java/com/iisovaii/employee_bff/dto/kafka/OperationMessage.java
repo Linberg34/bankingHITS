@@ -15,10 +15,10 @@ import java.util.UUID;
 public class OperationMessage {
     private UUID operationId;
     private OperationDto.OperationType type;
-    private UUID accountId;
+    private String accountId;
     private BigDecimal amount;
     private OperationDto.Currency currency;
-    private UUID targetAccountId;     // nullable
+    private String targetAccountId;     // nullable
     private UUID initiatedByUserId;
     private Instant sentAt;
 }
