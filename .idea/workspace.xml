@@ -4,48 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="fix">
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/AccountServiceResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/OperationServiceResponse.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/PageDTOAccountDTO.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/information_schema.FNRwLQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/pg_catalog.0S1ZNQ.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/743f69b9-2a6b-4389-9deb-244d578084b2/storage_v2/_src_/database/client_bff_db.L1hMBA/schema/public.abK9xQ.meta" beforeDir="false" />
+    <list default="true" id="545cc6b9-97ef-4dc8-a990-6e83edfa5e19" name="Changes" comment="add workspace to gitignore">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/EmployeeBffApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/EmployeeBffApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/AccountServiceClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/client/AccountServiceClient.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SwaggerConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SwaggerConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AccountController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/AccountController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/ClientController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/ClientController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/CreditController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeProfileController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/EmployeeProfileController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/OperationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/OperationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/TariffController.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/controller/TariffController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/credit/CreditRatingResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/credit/CreditRatingResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/employee/CreateEmployeeResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/employee/CreateEmployeeResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/employee/UpdateUserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/employee/UpdateUserResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/kafka/OperationMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/kafka/OperationMessage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/DepositRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/DepositRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/TransferRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/TransferRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/WithdrawRequest.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/operation/WithdrawRequest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/profile/EmployeeProfileResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/profile/EmployeeProfileResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/CreditDetailResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/CreditDetailResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/UserResponse.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/kafka/OperationProducer.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/kafka/OperationProducer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/AccountMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/AccountMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/UserMapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/JwtAuthFilter.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/security/JwtAuthFilter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/service/ProxyService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sso-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/service/fix" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,12 +176,12 @@
     &quot;assignee&quot;: &quot;IIsovaII&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Linberg34/bankingHITS.git",
-    "accountId": "84643392-0f06-4b46-b2ef-e4461c104768"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Linberg34/bankingHITS.git&quot;,
+    &quot;accountId&quot;: &quot;84643392-0f06-4b46-b2ef-e4461c104768&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -258,7 +219,7 @@
     "RunOnceActivity.git.unshallow": "true",
     "SONARLINT_PRECOMMIT_ANALYSIS": "true",
     "Spring Boot.BankHitsCreditApplication.executor": "Run",
-    "git-widget-placeholder": "feature/bff",
+    "git-widget-placeholder": "master/back",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "F:/code/bankingHITS/sso-service",
@@ -626,7 +587,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="master/back" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
