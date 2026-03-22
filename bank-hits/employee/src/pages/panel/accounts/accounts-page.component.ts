@@ -1,4 +1,4 @@
-﻿import { Component, OnDestroy, computed, signal } from '@angular/core';
+﻿import { Component, NgZone, OnDestroy, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { NotificationService } from 'shared/frontend-core';
@@ -26,6 +26,7 @@ export class AccountsPageComponent implements OnDestroy {
   selectedAccount = signal<AccountPageRecord | null>(null);
   selectedAccountOperations = signal<AccountOperationRecord[]>([]);
 
+  private readonly ngZone = inject(NgZone);
   private wsSub: Subscription | null = null;
 
   readonly clientOptions = computed(() => [
@@ -126,19 +127,21 @@ export class AccountsPageComponent implements OnDestroy {
     this.wsSub?.unsubscribe();
     this.wsSub = this.wsService.connect('http://localhost:8085/ws', accountIds).subscribe({
       next: (event) => {
-        if (event.type === 'BALANCE_UPDATED') {
-          const balanceEvent = event as WsBalanceEvent;
-          this.notifications.success(
-            `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
-          );
-          this.loadAccountsOnly();
-        } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
-          this.loadAccountsOnly();
-          const openAccount = this.selectedAccount();
-          if (openAccount) {
-            this.refreshOperations(openAccount);
+        this.ngZone.run(() => {
+          if (event.type === 'BALANCE_UPDATED') {
+            const balanceEvent = event as WsBalanceEvent;
+            this.notifications.success(
+              `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
+            );
+            this.loadAccountsOnly();
+          } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
+            this.loadAccountsOnly();
+            const openAccount = this.selectedAccount();
+            if (openAccount) {
+              this.refreshOperations(openAccount);
+            }
           }
-        }
+        });
       },
     });
   }

@@ -1,7 +1,7 @@
 ﻿import { AsyncPipe } from '@angular/common';
-import { Component, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
+import { Component, NgZone, OnDestroy, OnInit, computed, inject, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { Subscription, catchError, combineLatest, map, of, switchMap } from 'rxjs';
+import { BehaviorSubject, Subscription, catchError, combineLatest, map, of, switchMap } from 'rxjs';
 import { OperationsWsService, type WsBalanceEvent } from 'shared/api';
 import { IDLE_ACTION_STATE, NotificationService, type AsyncActionState, mapUnknownError } from 'shared/frontend-core';
 import { ButtonComponent } from 'shared/ui/button';
@@ -38,7 +38,8 @@ import type { Account, Transaction } from '../../app/core/models/client.types';
 const TRANSACTION_LABELS: Record<string, string> = {
   deposit: 'Пополнение',
   withdrawal: 'Снятие',
-  transfer: 'Перевод',
+  transfer_in: 'Входящий перевод',
+  transfer_out: 'Исходящий перевод',
   credit_issue: 'Выдача кредита',
   credit_payment: 'Погашение кредита',
 };
@@ -78,6 +79,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   private readonly data = inject(ClientDataUseCasesService);
   private readonly notifications = inject(NotificationService);
   private readonly wsService = inject(OperationsWsService);
+  private readonly ngZone = inject(NgZone);
   private wsSub: Subscription | null = null;
 
   protected openNewAccount = signal(false);
@@ -95,7 +97,10 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
 
   protected amount = signal('');
   protected transferToAccountNumber = signal('');
+  protected selectedAccountBalance = signal(0);
   protected actionState = signal<AsyncActionState>(IDLE_ACTION_STATE);
+
+  private readonly operationRefresh$ = new BehaviorSubject<null>(null);
 
   protected visibleAccounts$ = combineLatest([
     this.data.getActiveAccounts(),
@@ -112,7 +117,11 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   protected accountTransactions$ = toObservable(this.selectedAccountNumber).pipe(
     switchMap((accountNumber) =>
       accountNumber
-        ? this.data.loadOperations(accountNumber).pipe(catchError(() => of<Transaction[]>([])))
+        ? this.operationRefresh$.pipe(
+            switchMap(() =>
+              this.data.loadOperations(accountNumber).pipe(catchError(() => of<Transaction[]>([])))
+            )
+          )
         : of<Transaction[]>([])
     )
   );
@@ -133,7 +142,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.data.loadHiddenAccounts().subscribe();
     this.data.loadAccounts().subscribe({
       next: (accounts) => {
-        const uuids = accounts.map((a) => a.uuid).filter((id): id is string => !!id);
+        const uuids = accounts.map((a) => a.uuid);
         this.connectWs(uuids);
       },
       error: () => this.notifications.error('Failed to load accounts.'),
@@ -144,19 +153,20 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     this.wsSub?.unsubscribe();
     this.wsSub = this.wsService.connect('http://localhost:8084/ws', accountIds).subscribe({
       next: (event) => {
-        if (event.type === 'BALANCE_UPDATED') {
-          const balanceEvent = event as WsBalanceEvent;
-          this.notifications.success(
-            `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
-          );
-          this.data.loadAccounts().subscribe();
-        } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
-          this.data.loadAccounts().subscribe();
-          const openAccountNumber = this.selectedAccountNumber();
-          if (openAccountNumber) {
-            this.data.loadOperations(openAccountNumber).subscribe();
+        this.ngZone.run(() => {
+          if (event.type === 'BALANCE_UPDATED') {
+            const balanceEvent = event as WsBalanceEvent;
+            this.notifications.success(
+              `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
+            );
+            this.data.loadAccounts().subscribe();
+          } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
+            this.data.loadAccounts().subscribe();
+            if (this.selectedAccountNumber()) {
+              this.operationRefresh$.next(null);
+            }
           }
-        }
+        });
       },
     });
   }
@@ -251,6 +261,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
 
   protected openWithdrawDialog(account: Account): void {
     this.selectedAccountId.set(account.id);
+    this.selectedAccountBalance.set(account.balance);
     this.amount.set('');
     this.actionState.set(IDLE_ACTION_STATE);
     this.openWithdraw.set(true);
@@ -265,6 +276,10 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     const accountId = this.selectedAccountId();
     const sum = Number(this.amount());
     if (!accountId || !sum || sum <= 0) {
+      return;
+    }
+    if (sum > this.selectedAccountBalance()) {
+      this.notifications.error('Недостаточно средств на счёте.');
       return;
     }
 
@@ -285,6 +300,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
 
   protected openTransferDialog(account: Account): void {
     this.selectedAccountId.set(account.accountNumber);
+    this.selectedAccountBalance.set(account.balance);
     this.amount.set('');
     this.transferToAccountNumber.set('');
     this.actionState.set(IDLE_ACTION_STATE);
@@ -301,6 +317,10 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
     const toAccount = this.transferToAccountNumber().trim();
     const sum = Number(this.amount());
     if (!fromAccount || !toAccount || !sum || sum <= 0) {
+      return;
+    }
+    if (sum > this.selectedAccountBalance()) {
+      this.notifications.error('Недостаточно средств на счёте.');
       return;
     }
 
@@ -358,6 +378,6 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   }
 
   protected isIncoming(type: string): boolean {
-    return type === 'deposit' || type === 'credit_issue' || type === 'transfer';
+    return type === 'deposit' || type === 'credit_issue' || type === 'transfer_in';
   }
 }
