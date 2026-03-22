@@ -46,10 +46,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         String token = extractToken(request);
+        log.info("Token extracted: {}", token != null ? "present" : "null");
 
         if (token != null) {
             try {
                 Claims claims = jwtValidator.validate(token);
+                log.info("Token valid, userId: {}, roles: {}",
+                        claims.getSubject(),
+                        claims.get("roles"));
                 UUID userId = UUID.fromString(claims.getSubject());
 
                 List<SimpleGrantedAuthority> authorities = extractRoles(claims)
@@ -69,10 +73,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         .setAuthentication(auth);
 
             } catch (JwtExpiredException e) {
+                log.warn("JWT rejected: {}", e.getMessage());
                 SecurityContextHolder.clearContext();
                 writeUnauthorized(response, "TOKEN_EXPIRED", e.getMessage());
                 return;
             } catch (JwtInvalidException e) {
+                log.warn("JWT rejected: {}", e.getMessage());
                 SecurityContextHolder.clearContext();
                 writeUnauthorized(response, "TOKEN_INVALID", e.getMessage());
                 return;
@@ -127,13 +133,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     }
 
     private String extractToken(HttpServletRequest request) {
-        // токен приходит в заголовке Authorization: Bearer <token>
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.info("Authorization header: {}", header);
+
         if (header != null && header.startsWith("Bearer ")) {
             return header.substring(7);
         }
 
-        // fallback на cookie если вдруг используется
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (cookieName.equals(cookie.getName())) {

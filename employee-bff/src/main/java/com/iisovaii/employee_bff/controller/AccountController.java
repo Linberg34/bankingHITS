@@ -4,6 +4,7 @@ import com.iisovaii.employee_bff.dto.account.AccountListResponse;
 import com.iisovaii.employee_bff.dto.account.AllAccountsPageResponse;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,7 @@ public class AccountController {
     // все счета всех клиентов
     @GetMapping("/accounts")
     public ResponseEntity<AllAccountsPageResponse> getAllAccounts(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(
@@ -35,7 +36,7 @@ public class AccountController {
     // счета конкретного клиента
     @GetMapping("/clients/{clientId}/accounts")
     public ResponseEntity<AccountListResponse> getClientAccounts(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientAccounts(clientId)

@@ -70,10 +70,10 @@ public class OperationProducer {
         OperationMessage message = new OperationMessage(
                 operationId,
                 OperationDto.OperationType.TRANSFER_OUT,
-                request.getFromAccountId(),
+                request.getFromAccountNumber(),
                 request.getAmount(),
                 null,
-                request.getToAccountId(),
+                request.getToAccountNumber(),
                 initiatedByUserId,
                 Instant.now()
         );

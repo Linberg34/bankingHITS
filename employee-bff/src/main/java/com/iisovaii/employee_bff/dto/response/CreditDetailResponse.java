@@ -1,12 +1,12 @@
 package com.iisovaii.employee_bff.dto.response;
 
-import com.iisovaii.employee_bff.dto.credit.CreditSummaryDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -24,5 +24,6 @@ public class CreditDetailResponse {
     private LocalDateTime issuedAt;
     private LocalDateTime closedAt;
     private LocalDateTime nextPaymentAt;
-    private CreditSummaryDto.CreditStatus status;
+    private String status;
+    private List<CreditPaymentResponse> payments;
 }

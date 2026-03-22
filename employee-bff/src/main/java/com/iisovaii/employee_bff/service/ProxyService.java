@@ -39,23 +39,58 @@ public class ProxyService {
     }
 
     public AllAccountsPageResponse getAllAccounts(int page, int size) {
-        PageResponse<AccountWithOwnerResponse> raw =
+        PageDTOAccountDTO raw =
                 accountServiceClient.getAllAccounts(page, size);
-        return accountMapper.toAllAccountsPageResponse(raw);
-    }
 
-    public AccountListResponse getClientAccounts(UUID clientId) {
-        List<AccountResponse> raw =
-                accountServiceClient.getAccountsByUserId(clientId);
-        return new AccountListResponse(accountMapper.toAccountDtoList(raw));
+        List<AccountWithOwnerDto> content = raw.getContent().stream()
+                .map(account -> {
+                    AccountWithOwnerDto dto =
+                            accountMapper.toAccountWithOwnerDto(account);
+                    try {
+                        UserResponse user = userServiceClient
+                                .getUser(account.getClientId());
+                        dto.setOwnerFullName(user.getName());
+                        dto.setOwnerId(user.getId());
+                    } catch (Exception e) {
+                        log.warn("Не удалось получить владельца счёта {}",
+                                account.getAccountNumber());
+                        dto.setOwnerFullName("Неизвестно");
+                    }
+                    return dto;
+                })
+                .toList();
+
+        return new AllAccountsPageResponse(
+                content,
+                raw.getPageNumber(),
+                raw.getPageSize(),
+                raw.getTotalElements()
+        );
     }
 
     public OperationPageResponse getOperations(
             String accountNumber, int page, int size) {
-        PageResponse<OperationResponse> raw =
+        List<OperationServiceResponse> raw =
                 accountServiceClient.getOperations(accountNumber, page, size);
-        return accountMapper.toOperationPageResponse(raw);
+
+        List<OperationDto> content = raw.stream()
+                .map(accountMapper::toOperationDto)
+                .toList();
+
+        // AccountService не возвращает total — делаем best effort
+        return new OperationPageResponse(
+                content,
+                page,
+                size,
+                (long) content.size()
+        );
     }
+
+    public AccountListResponse getClientAccounts(UUID clientId) {
+        List<AccountServiceResponse> raw = accountServiceClient.getAccountsByUserId(clientId);
+        return new AccountListResponse(accountMapper.toAccountDtoList(raw));
+    }
+
 
     public ClientPageResponse getClients(int page, int size) {
         // UserService возвращает List, не Page

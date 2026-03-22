@@ -68,12 +68,19 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
                 "http://localhost:4201",
-                "http://localhost:4200"
+                "http://localhost:4200",
+                "http://localhost:8085"  // добавить порт самого BFF для Swagger
         ));
         config.setAllowedMethods(
                 List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")
         );
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of(
+                "Authorization",         // явно разрешаем
+                "Content-Type",
+                "Accept",
+                "*"
+        ));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source =

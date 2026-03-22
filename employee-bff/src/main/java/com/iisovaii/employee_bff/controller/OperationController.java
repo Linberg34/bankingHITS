@@ -3,6 +3,7 @@ package com.iisovaii.employee_bff.controller;
 import com.iisovaii.employee_bff.dto.operation.OperationPageResponse;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,7 +23,7 @@ public class OperationController {
 
     @GetMapping("/accounts/{accountNumber}/operations")
     public ResponseEntity<OperationPageResponse> getOperations(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
             @PathVariable("accountNumber") String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {

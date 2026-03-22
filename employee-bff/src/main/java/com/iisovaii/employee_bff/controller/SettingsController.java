@@ -3,6 +3,7 @@ package com.iisovaii.employee_bff.controller;
 import com.iisovaii.employee_bff.dto.settings.SettingsDto;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.SettingsService;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class SettingsController {
 
     @GetMapping
     public ResponseEntity<SettingsDto> getSettings(
-            @CurrentUser UUID employeeId) {
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId) {
         return ResponseEntity.ok(
                 settingsService.getSettings(employeeId)
         );
@@ -31,7 +32,7 @@ public class SettingsController {
 
     @PutMapping
     public ResponseEntity<SettingsDto> updateSettings(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @RequestBody @Valid SettingsDto request) {
         return ResponseEntity.ok(
                 settingsService.updateSettings(employeeId, request)

@@ -13,13 +13,8 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TransferRequest {
-    @NotNull
-    private UUID fromAccountId;
-
-    @NotNull
-    private UUID toAccountId;
-
-    @NotNull
-    @Positive
+    private String fromAccountNumber;
+    private String toAccountNumber;
     private BigDecimal amount;
+    private String description;
 }

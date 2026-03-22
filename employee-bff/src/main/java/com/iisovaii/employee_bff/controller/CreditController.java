@@ -6,6 +6,7 @@ import com.iisovaii.employee_bff.dto.credit.CreditPaymentDto;
 import com.iisovaii.employee_bff.dto.credit.CreditRatingResponse;
 import com.iisovaii.employee_bff.security.CurrentUser;
 import com.iisovaii.employee_bff.service.ProxyService;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +27,7 @@ public class CreditController {
     // кредиты конкретного клиента
     @GetMapping("/clients/{clientId}/credits")
     public ResponseEntity<CreditListResponse> getClientCredits(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientCredits(clientId)
@@ -36,7 +37,7 @@ public class CreditController {
     // детали кредита
     @GetMapping("/credits/{creditId}")
     public ResponseEntity<CreditDetailEmployeeResponse> getCreditDetail(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID creditId) {
         return ResponseEntity.ok(
                 proxyService.getCreditDetail(creditId)
@@ -46,7 +47,7 @@ public class CreditController {
     // платежи по кредиту
     @GetMapping("/credits/{creditId}/payments")
     public ResponseEntity<List<CreditPaymentDto>> getPayments(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID creditId) {
         return ResponseEntity.ok(
                 proxyService.getCreditPayments(creditId)
@@ -56,7 +57,7 @@ public class CreditController {
     // кредитный рейтинг клиента
     @GetMapping("/clients/{clientId}/credits/rating")
     public ResponseEntity<CreditRatingResponse> getCreditRating(
-            @CurrentUser UUID employeeId,
+            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
             @PathVariable UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getCreditRating(clientId)
