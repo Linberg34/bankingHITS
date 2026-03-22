@@ -26,8 +26,8 @@ public class AccountController {
     @GetMapping("/accounts")
     public ResponseEntity<AllAccountsPageResponse> getAllAccounts(
             @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(
                 proxyService.getAllAccounts(page, size)
         );

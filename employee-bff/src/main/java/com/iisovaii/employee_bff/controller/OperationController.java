@@ -25,8 +25,8 @@ public class OperationController {
     public ResponseEntity<OperationPageResponse> getOperations(
             @Parameter(hidden = true) @CurrentUser UUID employeeId,
             @PathVariable("accountNumber") String accountNumber,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(
                 proxyService.getOperations(accountNumber, page, size)
         );
