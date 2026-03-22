@@ -23,9 +23,9 @@ export class TariffsPageService {
       .pipe(map((tariffs) => tariffs.map((tariff) => this.mapTariff(tariff))));
   }
 
-  createTariff(name: string, annualRate: number): Observable<TariffRecord> {
+  createTariff(name: string, interestRate: number, termDays: number): Observable<TariffRecord> {
     return this.requestService
-      .createTariff(name, annualRate)
+      .createTariff(name, interestRate, termDays)
       .pipe(map((tariff) => this.mapCreatedTariff(tariff)));
   }
 

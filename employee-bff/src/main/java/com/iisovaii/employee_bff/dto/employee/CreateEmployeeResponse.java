@@ -1,6 +1,5 @@
 package com.iisovaii.employee_bff.dto.employee;
 
-import com.iisovaii.employee_bff.dto.profile.EmployeeProfileResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,5 +13,5 @@ public class CreateEmployeeResponse {
     private UUID employeeId;
     private String name;
     private String email;
-    private EmployeeProfileResponse.UserStatus status;
+    private String status;
 }

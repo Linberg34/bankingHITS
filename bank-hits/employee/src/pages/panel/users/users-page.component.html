@@ -8,7 +8,7 @@
     <p class="state-text state-text--error">{{ errorText() }}</p>
   }
 
-  <h2>Клиенты</h2>
+  <h2>Пользователи</h2>
   <article class="table-card">
     <table>
       <thead>
@@ -16,57 +16,19 @@
           <th>Имя</th>
           <th>Email</th>
           <th>Статус</th>
-          <th>Дата регистрации</th>
           <th>Действия</th>
         </tr>
       </thead>
       <tbody>
-        @for (user of clientUsers(); track user.id) {
-          <tr>
+        @for (user of allUsers(); track user.id) {
+          <tr class="user-row" (click)="openRating(user)">
             <td>{{ user.name }}</td>
             <td>{{ user.email }}</td>
-            <td><span class="badge">{{ user.status }}</span></td>
-            <td>{{ user.registeredAt }}</td>
+            <td><span class="badge" [class.badge--blocked]="isBlocked(user)">{{ user.status }}</span></td>
             <td>
               <button
                 type="button"
-                (click)="openBlockUser(user, 'Клиент')"
-                [disabled]="actionInProgress()"
-                [class.block-action]="!isBlocked(user)"
-                [class.unblock-action]="isBlocked(user)"
-              >
-                {{ isBlocked(user) ? 'Разблокировать' : 'Заблокировать' }}
-              </button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
-  </article>
-
-  <h2>Сотрудники</h2>
-  <article class="table-card">
-    <table>
-      <thead>
-        <tr>
-          <th>Имя</th>
-          <th>Email</th>
-          <th>Статус</th>
-          <th>Дата регистрации</th>
-          <th>Действия</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (user of employeeUsers(); track user.id) {
-          <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.email }}</td>
-            <td><span class="badge">{{ user.status }}</span></td>
-            <td>{{ user.registeredAt }}</td>
-            <td>
-              <button
-                type="button"
-                (click)="openBlockUser(user, 'Сотрудник')"
+                (click)="openBlockUser(user, 'Пользователь'); $event.stopPropagation()"
                 [disabled]="actionInProgress()"
                 [class.block-action]="!isBlocked(user)"
                 [class.unblock-action]="isBlocked(user)"
@@ -107,6 +69,42 @@
 
       <button type="submit" class="submit-btn" [disabled]="actionInProgress()">Сохранить</button>
     </form>
+  </shared-basic-modal>
+
+  <shared-basic-modal [open]="ratingModalOpen()" [title]="'Кредитный рейтинг'" (closed)="closeRating()">
+    @if (ratingTarget(); as target) {
+      <div class="rating-modal-content">
+        <p class="rating-user-name">{{ target.name }}</p>
+        @if (ratingLoading()) {
+          <p class="state-text">Загрузка...</p>
+        } @else if (ratingError()) {
+          <p class="state-text state-text--error">{{ ratingError() }}</p>
+        } @else if (ratingData(); as rating) {
+          <div class="rating-score">
+            <span class="rating-score-value">{{ rating.score }}</span>
+            <span class="rating-score-label">{{ rating.ratingLabel }}</span>
+          </div>
+          <div class="rating-grid">
+            <article>
+              <small>Всего кредитов</small>
+              <strong>{{ rating.totalCredits }}</strong>
+            </article>
+            <article>
+              <small>Активных</small>
+              <strong>{{ rating.activeCredits }}</strong>
+            </article>
+            <article>
+              <small>Закрытых</small>
+              <strong>{{ rating.closedCredits }}</strong>
+            </article>
+            <article>
+              <small>Просроченных платежей</small>
+              <strong>{{ rating.overduePaymentsCount }}</strong>
+            </article>
+          </div>
+        }
+      </div>
+    }
   </shared-basic-modal>
 
   <shared-basic-modal [open]="blockModalOpen()" [title]="'Блокировка пользователя'" (closed)="closeBlockModal()">

@@ -1,6 +1,8 @@
 ﻿import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { EmployeeAdminRequestService, type ClientSummaryDto } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { EmployeeAdminRequestService, type ClientSummaryDto, type CreditRatingDto } from '../../../../app/infrastructure/request/employee-admin-request.service';
+
+export type { CreditRatingDto };
 
 export type UsersPageRole = 'Клиент' | 'Сотрудник' | string;
 
@@ -62,6 +64,10 @@ export class UsersPageService {
     );
   }
 
+  getCreditRating(userId: string): Observable<CreditRatingDto> {
+    return this.requestService.getCreditRating(userId);
+  }
+
   createUser(name: string, email: string, password: string, role: UsersPageRole): Observable<void> {
     if (role === 'Сотрудник') {
       return this.requestService.createEmployee(name, email, password);
@@ -82,6 +88,7 @@ export class UsersPageService {
   }
 
   private mapStatus(status: string): string {
-    return status === 'BLOCKED' ? 'Заблокирован' : 'Активен';
+    if (status === 'BANNED') return 'Заблокирован';
+    return 'Активен';
   }
 }

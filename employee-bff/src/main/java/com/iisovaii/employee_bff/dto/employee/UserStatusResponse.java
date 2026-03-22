@@ -1,6 +1,5 @@
 package com.iisovaii.employee_bff.dto.employee;
 
-import com.iisovaii.employee_bff.dto.profile.EmployeeProfileResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,5 +11,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserStatusResponse {
     private UUID userId;
-    private EmployeeProfileResponse.UserStatus status;
+    private String status;
 }

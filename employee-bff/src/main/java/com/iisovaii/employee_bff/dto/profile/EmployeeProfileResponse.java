@@ -13,9 +13,5 @@ public class EmployeeProfileResponse {
     private UUID employeeId;
     private String name;
     private String email;
-    private UserStatus status;
-
-    public enum UserStatus {
-        ACTIVE, BLOCKED
-    }
+    private String status;
 }

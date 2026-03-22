@@ -1,6 +1,5 @@
 package com.iisovaii.employee_bff.dto.client;
 
-import com.iisovaii.employee_bff.dto.profile.EmployeeProfileResponse;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +14,6 @@ public class ClientDetailResponse {
     private UUID userId;
     private String name;
     private String email;
-    private EmployeeProfileResponse.UserStatus status;
+    private String status;
     private LocalDateTime registeredAt;
 }

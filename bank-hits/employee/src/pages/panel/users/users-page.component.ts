@@ -1,10 +1,10 @@
 ﻿import { HttpErrorResponse } from '@angular/common/http';
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs';
 import { NotificationService } from 'shared/frontend-core';
 import { BasicModalComponent } from 'shared/ui/basic-modal';
-import { UsersPageRecord, UsersPageRole, UsersPageService } from './model';
+import { CreditRatingDto, UsersPageRecord, UsersPageRole, UsersPageService } from './model';
 
 interface BlockTarget {
   id: string;
@@ -24,10 +24,16 @@ interface BlockTarget {
 export class UsersPageComponent {
   addModalOpen = signal(false);
   blockModalOpen = signal(false);
+  ratingModalOpen = signal(false);
+  ratingTarget = signal<{ id: string; name: string } | null>(null);
+  ratingData = signal<CreditRatingDto | null>(null);
+  ratingLoading = signal(false);
+  ratingError = signal('');
   actionInProgress = signal(false);
   errorText = signal('');
   clientUsers = signal<UsersPageRecord[]>([]);
   employeeUsers = signal<UsersPageRecord[]>([]);
+  allUsers = computed(() => [...this.clientUsers(), ...this.employeeUsers()]);
   blockTarget = signal<BlockTarget | null>(null);
 
   newUser = {
@@ -123,6 +129,31 @@ export class UsersPageComponent {
   closeBlockModal(): void {
     this.blockModalOpen.set(false);
     this.blockTarget.set(null);
+  }
+
+  openRating(user: UsersPageRecord): void {
+    this.ratingTarget.set({ id: user.id, name: user.name });
+    this.ratingData.set(null);
+    this.ratingError.set('');
+    this.ratingModalOpen.set(true);
+    this.ratingLoading.set(true);
+
+    this.usersPageService.getCreditRating(user.id).subscribe({
+      next: (data) => {
+        this.ratingData.set(data);
+        this.ratingLoading.set(false);
+      },
+      error: () => {
+        this.ratingError.set('Не удалось загрузить кредитный рейтинг.');
+        this.ratingLoading.set(false);
+      },
+    });
+  }
+
+  closeRating(): void {
+    this.ratingModalOpen.set(false);
+    this.ratingTarget.set(null);
+    this.ratingData.set(null);
   }
 
   isBlocked(user: UsersPageRecord): boolean {

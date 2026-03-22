@@ -8,7 +8,8 @@ export interface TariffDto {
 
 export interface CreateTariffRequest {
   name: string;
-  annualRate: number;
+  interestRate: number;
+  termDays: number;
 }
 
 export interface CreateTariffResponse {

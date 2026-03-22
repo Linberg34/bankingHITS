@@ -21,10 +21,12 @@ export class TariffsPageComponent {
   isSubmitted = false;
   nameError = '';
   rateError = '';
+  termDaysError = '';
 
   newTariff = {
     name: '',
     rate: '',
+    termDays: '',
   };
 
   constructor(
@@ -57,12 +59,22 @@ export class TariffsPageComponent {
     }
   }
 
+  onTermDaysChange(): void {
+    if (this.isSubmitted) {
+      this.validateTermDays();
+    }
+  }
+
   get hasNameError(): boolean {
     return this.isSubmitted && !!this.nameError;
   }
 
   get hasRateError(): boolean {
     return this.isSubmitted && !!this.rateError;
+  }
+
+  get hasTermDaysError(): boolean {
+    return this.isSubmitted && !!this.termDaysError;
   }
 
   addTariff(): void {
@@ -73,11 +85,12 @@ export class TariffsPageComponent {
 
     const trimmedName = this.newTariff.name.trim();
     const parsedRate = Number(this.newTariff.rate);
+    const parsedTermDays = Number(this.newTariff.termDays);
     this.actionInProgress.set(true);
     this.errorText.set('');
 
     this.tariffsPageService
-      .createTariff(trimmedName, parsedRate)
+      .createTariff(trimmedName, parsedRate, parsedTermDays)
       .pipe(finalize(() => this.actionInProgress.set(false)))
       .subscribe({
         next: (tariff) => {
@@ -110,7 +123,8 @@ export class TariffsPageComponent {
   private validateForm(): boolean {
     this.validateName();
     this.validateRate();
-    return !this.nameError && !this.rateError;
+    this.validateTermDays();
+    return !this.nameError && !this.rateError && !this.termDaysError;
   }
 
   private validateName(): void {
@@ -161,14 +175,33 @@ export class TariffsPageComponent {
     this.rateError = '';
   }
 
+  private validateTermDays(): void {
+    const raw = String(this.newTariff.termDays ?? '').trim();
+    if (!raw) {
+      this.termDaysError = 'Укажите срок в днях.';
+      return;
+    }
+    const parsed = Number(raw);
+    if (!Number.isInteger(parsed) || Number.isNaN(parsed)) {
+      this.termDaysError = 'Срок должен быть целым числом.';
+      return;
+    }
+    if (parsed <= 0) {
+      this.termDaysError = 'Срок должен быть больше нуля.';
+      return;
+    }
+    this.termDaysError = '';
+  }
+
   private resetForm(): void {
-    this.newTariff = { name: '', rate: '' };
+    this.newTariff = { name: '', rate: '', termDays: '' };
   }
 
   private resetValidation(): void {
     this.isSubmitted = false;
     this.nameError = '';
     this.rateError = '';
+    this.termDaysError = '';
   }
 
   private resolveErrorText(error: unknown): string {
