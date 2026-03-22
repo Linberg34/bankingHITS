@@ -214,11 +214,12 @@ public class OperationService {
 //                .build();
 //    }
 
-    public List<OperationDTO> getAccountOperations(String accountNumber, int page, int size) {
+    public com.gautama.bankhitsaccount.dto.PageDTO<OperationDTO> getAccountOperations(String accountNumber, int page, int size) {
         log.info("Fetching operations for account: {}", accountNumber);
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
         Page<Operation> operations = operationRepository.findByAccountNumberOrderByCreatedAtDesc(accountNumber, pageable);
-        return operationMapper.toDTOList(operations.getContent());
+        Page<OperationDTO> dtoPage = operations.map(operationMapper::toDTO);
+        return com.gautama.bankhitsaccount.dto.PageDTO.fromPage(dtoPage);
     }
     public List<OperationDTO> getAccountOperations(String accountNumber) {
         log.info("Fetching operations for account: {}", accountNumber);
@@ -362,11 +363,16 @@ public class OperationService {
         BigDecimal masterBalanceBefore = masterAccount.getBalance();
         BigDecimal clientBalanceBefore = clientAccount.getBalance();
 
-        masterAccount.setBalance(masterBalanceBefore.subtract(request.getAmount()));
+        // Convert client credit amount to master account currency for deduction
+        BigDecimal masterDeduction = exchangeRateService.convert(
+                clientAccount.getCurrency(), masterAccount.getCurrency(), request.getAmount());
+
+        masterAccount.setBalance(masterBalanceBefore.subtract(masterDeduction));
         clientAccount.setBalance(clientBalanceBefore.add(request.getAmount()));
 
         Operation masterOperation = operationMapper.toEntity(request, masterAccount.getAccountNumber());
         masterOperation.setOperationType(OPERATION_WITHDRAWAL);
+        masterOperation.setAmount(masterDeduction);
         masterOperation.setCurrency(masterAccount.getCurrency().name());
         masterOperation.setBalanceBefore(masterBalanceBefore);
         masterOperation.setBalanceAfter(masterAccount.getBalance());

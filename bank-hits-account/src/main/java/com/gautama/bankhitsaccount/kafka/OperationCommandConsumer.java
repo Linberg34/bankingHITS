@@ -71,7 +71,7 @@ public class OperationCommandConsumer {
         request.setAmount(amount);
 
         OperationResponse response = operationService.withdraw(request);
-        publishSuccess(command.getOperationId(), command.getUserId(), response, "WITHDRAWAL");
+        publishSuccess(command.getOperationId(), command.getUserId(), response, "WITHDRAW");
     }
 
     private void processTransfer(OperationCommandMessage command) {
@@ -98,6 +98,7 @@ public class OperationCommandConsumer {
                 .status("SUCCESS")
                 .userId(userId)
                 .accountId(account != null ? account.getId() : null)
+                .accountNumber(op.getAccountNumber())
                 .amount(op.getAmount())
                 .currency(op.getCurrency())
                 .type(type)

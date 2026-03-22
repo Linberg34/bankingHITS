@@ -16,10 +16,11 @@ public class OperationResultMessage {
 
     private UUID userId;
     private UUID accountId;
+    private String accountNumber;
 
     private BigDecimal amount;
     private String currency;
-    private String type;         // DEPOSIT, WITHDRAWAL, TRANSFER_IN, TRANSFER_OUT
+    private String type;         // DEPOSIT, WITHDRAW, TRANSFER_IN, TRANSFER_OUT
 
     private BigDecimal newBalance;
     private LocalDateTime createdAt;
