@@ -150,7 +150,7 @@
                 <shared-table-cell>{{ formatDate(tx.createdAt) }}</shared-table-cell>
                 <shared-table-cell>{{ getTransactionLabel(tx.type) }}</shared-table-cell>
                 <shared-table-cell [align]="'right'" [class.accounts-page__cell-incoming]="isIncoming(tx.type)" [class.accounts-page__cell-outgoing]="!isIncoming(tx.type)">
-                  {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount) }}
+                  {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount, tx.currency) }}
                 </shared-table-cell>
               </shared-table-row>
             }

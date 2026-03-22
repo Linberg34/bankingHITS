@@ -11,7 +11,7 @@ export type OperationStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
 
 /** Счёт, возвращаемый client-bff */
 export interface AccountDto {
-  id?: string;
+  id: string;
   clientId: string;
   accountNumber: string;
   currency: AccountCurrency;
@@ -26,12 +26,12 @@ export interface AccountListResponse {
 
 /** Операция, возвращаемая client-bff */
 export interface OperationDto {
-  operationId: string;
-  type: OperationType;
+  id: string;
+  operationType: string;
   amount: number;
-  currency: AccountCurrency;
+  currency: string;
   accountNumber: string;
-  status: OperationStatus;
+  status: string;
   description: string | null;
   createdAt: string;
 }
@@ -99,9 +99,7 @@ export interface AccountWithOwnerDto {
   accountNumber: string;
   ownerId?: string;
   ownerFullName?: string;
-  /** @deprecated use ownerId */
   clientId?: string;
-  /** @deprecated use ownerFullName */
   clientName?: string;
   currency: AccountCurrency;
   balance: number;
@@ -109,7 +107,6 @@ export interface AccountWithOwnerDto {
 }
 
 export interface AllAccountsPageResponse {
-  /** Employee BFF возвращает поле content (не accounts) */
   content: AccountWithOwnerDto[];
   accounts?: AccountWithOwnerDto[];
   totalElements: number;

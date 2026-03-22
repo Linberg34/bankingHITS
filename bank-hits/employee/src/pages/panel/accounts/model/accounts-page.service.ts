@@ -51,10 +51,10 @@ export class AccountsPageService {
 
   private mapOperation(op: OperationDto): AccountOperationRecord {
     return {
-      id: op.operationId,
+      id: op.id,
       date: this.formatDateTime(op.createdAt),
-      type: this.mapOperationType(op.type),
-      amount: this.formatOperationAmount(op.amount, op.type),
+      type: this.mapOperationType(op.operationType),
+      amount: this.formatOperationAmount(op.amount, op.operationType),
       description: op.description ?? '-',
     };
   }
