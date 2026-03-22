@@ -1,35 +1,28 @@
 package com.gautama.bankhitscredit.dto;
 
-import com.gautama.bankhitscredit.entity.Credit;
+import com.gautama.bankhitscredit.enums.CreditStatus;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class CreditResponse {
-    private Long id;
-    private Long clientId;
+    private UUID id;
+    private UUID clientId;
     private String accountNumber;
     private String tariffName;
     private BigDecimal annualRate;
+    private int termDays;
     private BigDecimal principalAmount;
     private BigDecimal remainingDebt;
     private LocalDateTime issuedAt;
     private LocalDateTime closedAt;
-    private Credit.CreditStatus status;
-
-    public static CreditResponse from(Credit c) {
-        CreditResponse r = new CreditResponse();
-        r.setId(c.getId());
-        r.setClientId(c.getClientId());
-        r.setAccountNumber(c.getAccountNumber());
-        r.setTariffName(c.getTariff().getName());
-        r.setAnnualRate(c.getTariff().getAnnualRate());
-        r.setPrincipalAmount(c.getPrincipalAmount());
-        r.setRemainingDebt(c.getRemainingDebt());
-        r.setIssuedAt(c.getIssuedAt());
-        r.setClosedAt(c.getClosedAt());
-        r.setStatus(c.getStatus());
-        return r;
-    }
+    private LocalDateTime nextPaymentAt;
+    private CreditStatus status;
 }

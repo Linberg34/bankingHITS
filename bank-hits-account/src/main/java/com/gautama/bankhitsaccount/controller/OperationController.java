@@ -3,6 +3,7 @@ package com.gautama.bankhitsaccount.controller;
 import com.gautama.bankhitsaccount.dto.CreateOperationRequest;
 import com.gautama.bankhitsaccount.dto.OperationDTO;
 import com.gautama.bankhitsaccount.dto.OperationResponse;
+import com.gautama.bankhitsaccount.dto.TransferRequest;
 import com.gautama.bankhitsaccount.service.OperationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/internal/operations")
@@ -33,11 +35,11 @@ public class OperationController {
         return ResponseEntity.ok(operationService.withdraw(request));
     }
 
-//    @PostMapping("/transfer")
-//    public ResponseEntity<OperationResponse> transfer(@RequestBody TransferRequest request) {
-//        log.info("REST request to transfer: {}", request);
-//        return ResponseEntity.ok(operationService.transfer(request));
-//    }
+    @PostMapping("/transfer")
+    public ResponseEntity<OperationResponse> transfer(@RequestBody TransferRequest request) {
+        log.info("REST request to transfer: {}", request);
+        return ResponseEntity.ok(operationService.transfer(request));
+    }
 
     @GetMapping("/account/{accountNumber}/page")
     public ResponseEntity<List<OperationDTO>> getAccountOperationsPage(
@@ -65,7 +67,7 @@ public class OperationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OperationDTO> getOperationById(@PathVariable Long id) {
+    public ResponseEntity<OperationDTO> getOperationById(@PathVariable UUID id) {
         log.info("REST request to get operation by id: {}", id);
         return ResponseEntity.ok(operationService.getOperationById(id));
     }

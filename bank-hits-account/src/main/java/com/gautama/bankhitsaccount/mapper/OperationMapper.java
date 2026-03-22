@@ -16,6 +16,7 @@ public interface OperationMapper {
 
     // Маппинг Operation -> OperationDTO
     @Mapping(target = "accountNumber", source = "accountNumber")
+    @Mapping(target = "currency", source = "currency")
     @Mapping(target = "balanceBefore", source = "balanceBefore")
     @Mapping(target = "balanceAfter", source = "balanceAfter")
     @Mapping(target = "createdAt", source = "createdAt")
@@ -28,6 +29,7 @@ public interface OperationMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "accountNumber", source = "accountNumber")
     @Mapping(target = "operationType", source = "request.operationType")
+    @Mapping(target = "currency", ignore = true)
     @Mapping(target = "amount", source = "request.amount")
     @Mapping(target = "description", source = "request.description")
     @Mapping(target = "balanceBefore", ignore = true)

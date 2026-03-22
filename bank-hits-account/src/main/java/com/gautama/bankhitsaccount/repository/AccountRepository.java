@@ -1,8 +1,10 @@
 package com.gautama.bankhitsaccount.repository;
 
 import com.gautama.bankhitsaccount.model.Account;
+import jakarta.persistence.LockModeType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -11,13 +13,18 @@ import org.springframework.stereotype.Repository;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface AccountRepository extends JpaRepository<Account, Long> {
+public interface AccountRepository extends JpaRepository<Account, UUID> {
 
-    List<Account> findByClientId(Long clientId);
+    List<Account> findByClientId(UUID clientId);
 
     Optional<Account> findByAccountNumber(String accountNumber);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
+    Optional<Account> findByAccountNumberForUpdate(@Param("accountNumber") String accountNumber);
 
     boolean existsByAccountNumber(String accountNumber);
 
@@ -31,7 +38,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             "(:minBalance IS NULL OR a.balance >= :minBalance) AND " +
             "(:maxBalance IS NULL OR a.balance <= :maxBalance)")
     Page<Account> findWithFilters(
-            @Param("userId") Long userId,
+            @Param("userId") UUID userId,
             @Param("status") String status,
             @Param("minBalance") BigDecimal minBalance,
             @Param("maxBalance") BigDecimal maxBalance,

@@ -1,23 +1,20 @@
 package com.gautama.bankhitscredit.dto;
 
-import com.gautama.bankhitscredit.entity.CreditTariff;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class TariffResponse {
-    private Long id;
+    private UUID id;
     private String name;
     private BigDecimal annualRate;
+    private int termDays;
     private LocalDateTime createdAt;
-
-    public static TariffResponse from(CreditTariff t) {
-        TariffResponse r = new TariffResponse();
-        r.setId(t.getId());
-        r.setName(t.getName());
-        r.setAnnualRate(t.getAnnualRate());
-        r.setCreatedAt(t.getCreatedAt());
-        return r;
-    }
 }

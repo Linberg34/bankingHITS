@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "operations")
@@ -15,13 +16,16 @@ import java.time.LocalDateTime;
 public class Operation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     private String accountNumber;
 
     @Column(name = "operation_type", nullable = false, length = 20)
     private String operationType; // DEPOSIT, WITHDRAWAL, TRANSFER, PAYMENT
+
+    @Column(length = 3)
+    private String currency;
 
     @Column(precision = 19, scale = 2, nullable = false)
     private BigDecimal amount;
