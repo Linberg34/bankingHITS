@@ -24,6 +24,7 @@ export interface ClientPageResponse {
 
 export interface EmployeeCreditSummaryDto {
   creditId: string;
+  currency: string;
   accountNumber: string;
   tariffName: string;
   amount: number;
@@ -41,6 +42,17 @@ export interface EmployeeCreditListResponse {
 export interface UserStatusResponse {
   userId: string;
   status: 'ACTIVE' | 'BLOCKED';
+}
+
+export interface CreditRatingDto {
+  clientId: string;
+  score: number;
+  overduePaymentsCount: number;
+  totalCredits: number;
+  activeCredits: number;
+  closedCredits: number;
+  ratingLabel: string;
+  calculatedAt: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -91,6 +103,10 @@ export class EmployeeAdminRequestService {
       .pipe(map((resp) => resp.credits));
   }
 
+  getCreditRating(clientId: string): Observable<CreditRatingDto> {
+    return this.http.get<CreditRatingDto>(`${this.base}/clients/${clientId}/credits/rating`);
+  }
+
   // ─── Accounts ──────────────────────────────────────────────────────────────
 
   getAllAccounts(): Observable<AccountWithOwnerDto[]> {
@@ -107,7 +123,7 @@ export class EmployeeAdminRequestService {
     return this.tariffsApi.getTariffs();
   }
 
-  createTariff(name: string, annualRate: number): Observable<CreateTariffResponse> {
-    return this.tariffsApi.createTariff({ name, annualRate });
+  createTariff(name: string, interestRate: number, termDays: number): Observable<CreateTariffResponse> {
+    return this.tariffsApi.createTariff({ name, interestRate, termDays });
   }
 }

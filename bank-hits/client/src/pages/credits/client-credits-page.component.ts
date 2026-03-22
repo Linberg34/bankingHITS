@@ -81,7 +81,7 @@ export class ClientCreditsPageComponent implements OnInit {
     map((accounts) =>
       accounts.map((item) => ({
         value: String(item.accountNumber),
-        label: `${item.accountNumber} (${this.formatMoney(item.balance)})`,
+        label: `${item.accountNumber} (${this.formatMoney(item.balance, item.currency)})`,
       }))
     )
   );
@@ -107,8 +107,14 @@ export class ClientCreditsPageComponent implements OnInit {
     });
   }
 
-  protected formatMoney(n: number): string {
-    return `${n.toLocaleString('ru-RU')} ₽`;
+  protected formatMoney(n: number, currency = 'RUB'): string {
+    const symbols: Record<string, string> = { RUB: '₽', USD: '$', EUR: '€' };
+    const symbol = symbols[currency] ?? currency;
+    return `${n.toLocaleString('ru-RU')} ${symbol}`;
+  }
+
+  protected getSelectedAccountCurrency(): string {
+    return this.data.getAccountById(this.selectedAccount())?.currency ?? 'RUB';
   }
 
   protected formatDate(value: string): string {

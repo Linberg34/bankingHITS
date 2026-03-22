@@ -4,7 +4,7 @@ import { NotificationService } from 'shared/frontend-core';
 import { BasicModalComponent } from 'shared/ui/basic-modal';
 import { type ClientOption, type CreditRecord, CreditsPageService } from './model';
 
-const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Дата выдачи'];
+const CREDIT_TABLE_COLUMNS = ['Клиент', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус'];
 
 @Component({
   selector: 'employee-credits-page',

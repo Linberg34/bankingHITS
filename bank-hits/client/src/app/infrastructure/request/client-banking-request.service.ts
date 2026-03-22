@@ -24,7 +24,9 @@ export class ClientBankingRequestService {
   }
 
   openAccount(currency: 'RUB' | 'USD' | 'EUR' = 'RUB'): Observable<Account> {
-    return this.accountsApi.openAccount({ currency }).pipe(map(mapAccountDtoToAccount));
+    return this.accountsApi.openAccount({ currency }).pipe(
+      map((resp) => mapAccountDtoToAccount({ ...resp, id: '' }))
+    );
   }
 
   deposit(accountNumber: string, amount: number): Observable<void> {
@@ -94,10 +96,11 @@ function mapAccountDtoToAccount(dto: AccountDto): Account {
 
 function mapOperationDtoToTransaction(op: OperationDto): Transaction {
   return {
-    id: op.operationId,
+    id: op.id,
     accountId: op.accountNumber,
-    type: mapOperationType(op.type),
+    type: mapOperationType(op.operationType),
     amount: Math.abs(op.amount),
+    currency: op.currency,
     description: op.description ?? '',
     createdAt: op.createdAt,
   };
@@ -105,8 +108,9 @@ function mapOperationDtoToTransaction(op: OperationDto): Transaction {
 
 function mapOperationType(value: string): Transaction['type'] {
   if (value === 'DEPOSIT') return 'deposit';
-  if (value === 'WITHDRAW') return 'withdrawal';
-  if (value === 'TRANSFER_IN' || value === 'TRANSFER_OUT') return 'transfer';
+  if (value === 'WITHDRAW' || value === 'WITHDRAWAL') return 'withdrawal';
+  if (value === 'TRANSFER_IN') return 'transfer_in';
+  if (value === 'TRANSFER_OUT') return 'transfer_out';
   if (value === 'CREDIT_ISSUE') return 'credit_issue';
   if (value === 'CREDIT_PAYMENT') return 'credit_payment';
   return 'deposit';
@@ -127,6 +131,7 @@ function mapCreditDtoToCredit(dto: CreditSummaryDto): Credit {
     id: dto.creditId,
     clientId: '',
     accountId: dto.accountNumber,
+    currency: dto.currency ?? 'RUB',
     tariffId: dto.tariffName,
     amount: dto.amount,
     remainingAmount: dto.remainingDebt,
@@ -143,6 +148,7 @@ function mapTakeCreditResponseToCredit(dto: TakeCreditResponse): Credit {
     id: dto.creditId,
     clientId: '',
     accountId: dto.accountNumber,
+    currency: 'RUB',
     tariffId: dto.tariffName,
     amount: dto.amount,
     remainingAmount: dto.remainingDebt,

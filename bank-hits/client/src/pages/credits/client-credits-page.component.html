@@ -69,7 +69,7 @@
           />
         </div>
         <div class="credits-page__field">
-          <shared-label>Сумма кредита (₽)</shared-label>
+          <shared-label>Сумма кредита ({{ getSelectedAccountCurrency() }})</shared-label>
           <shared-input type="number" placeholder="0" [value]="creditAmount()" (valueChange)="creditAmount.set($event)" />
         </div>
       </div>
@@ -100,7 +100,7 @@
                         <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
                       </div>
                       <div>
-                        <p class="credits-list-item__title">Кредит #{{ credit.id }}</p>
+                        <p class="credits-list-item__title">Кредит</p>
                         <p class="credits-list-item__muted">Счет: {{ getAccountNumber(credit.accountId) }}</p>
                       </div>
                     </div>
@@ -109,11 +109,11 @@
                   <div class="credits-list-item__grid">
                     <div>
                       <p class="credits-list-item__label">Сумма кредита</p>
-                      <p class="credits-list-item__value">{{ formatMoney(credit.amount) }}</p>
+                      <p class="credits-list-item__value">{{ formatMoney(credit.amount, credit.currency) }}</p>
                     </div>
                     <div>
                       <p class="credits-list-item__label">Осталось погасить</p>
-                      <p class="credits-list-item__value">{{ formatMoney(credit.remainingAmount) }}</p>
+                      <p class="credits-list-item__value">{{ formatMoney(credit.remainingAmount, credit.currency) }}</p>
                     </div>
                     <div>
                       <p class="credits-list-item__label">Процентная ставка</p>
@@ -123,10 +123,7 @@
                       <p class="credits-list-item__label">Тариф</p>
                       <p class="credits-list-item__value">{{ getTariffName(credit.tariffId) }}</p>
                     </div>
-                    <div>
-                      <p class="credits-list-item__label">Дата выдачи</p>
-                      <p class="credits-list-item__value">{{ formatDate(credit.issueDate) }}</p>
-                    </div>
+
                   </div>
                   @if (credit.status === 'active' || credit.status === 'overdue') {
                     <shared-button class="credits-list-item__pay" (click)="openPayCreditDialog(credit)">Погасить кредит</shared-button>
@@ -149,10 +146,10 @@
           <p class="credits-page__error">{{ err }}</p>
         }
         <div class="credits-page__field">
-          <shared-label>Сумма платежа (₽)</shared-label>
+          <shared-label>Сумма платежа</shared-label>
           <shared-input type="number" placeholder="0" [value]="paymentAmount()" (valueChange)="paymentAmount.set($event)" />
           @if ((selectedCreditForPayment$ | async); as credit) {
-            <p class="credits-page__hint">Осталось погасить: {{ formatMoney(credit.remainingAmount) }}</p>
+            <p class="credits-page__hint">Осталось погасить: {{ formatMoney(credit.remainingAmount, credit.currency) }}</p>
           }
         </div>
       </div>

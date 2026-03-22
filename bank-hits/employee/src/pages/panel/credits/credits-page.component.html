@@ -35,7 +35,6 @@
         @for (credit of credits(); track credit.id) {
           <tr class="credit-row" (click)="openDetails(credit)">
             <td>{{ credit.clientName }}</td>
-            <td>{{ credit.account }}</td>
             <td>{{ credit.tariff }}</td>
             <td>{{ credit.amount }}</td>
             <td>{{ credit.remaining }}</td>
@@ -50,12 +49,11 @@
                 {{ credit.status }}
               </span>
             </td>
-            <td>{{ credit.issuedAt }}</td>
           </tr>
         }
         @if (!credits().length && !isLoading()) {
           <tr>
-            <td colspan="8">Кредиты не найдены</td>
+            <td colspan="6">Кредиты не найдены</td>
           </tr>
         }
       </tbody>
@@ -67,14 +65,9 @@
       <section class="credit-details">
         <div class="details-top">
           <h3>{{ selectedCredit.clientName }}</h3>
-          <span class="credit-id">{{ selectedCredit.id }}</span>
         </div>
 
         <div class="details-grid">
-          <article>
-            <small>Счет</small>
-            <strong>{{ selectedCredit.account }}</strong>
-          </article>
           <article>
             <small>Тариф</small>
             <strong>{{ selectedCredit.tariff }}</strong>
@@ -90,10 +83,6 @@
           <article>
             <small>Ставка</small>
             <strong>{{ selectedCredit.rate }}</strong>
-          </article>
-          <article>
-            <small>Дата выдачи</small>
-            <strong>{{ selectedCredit.issuedAt }}</strong>
           </article>
           <article>
             <small>Следующий платеж</small>

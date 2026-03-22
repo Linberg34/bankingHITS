@@ -53,8 +53,8 @@ export class CreditsPageService {
       clientName,
       account: credit.accountNumber,
       tariff: credit.tariffName,
-      amount: this.formatAmount(credit.amount),
-      remaining: this.formatAmount(credit.remainingDebt),
+      amount: this.formatAmount(credit.amount, credit.currency ?? 'RUB'),
+      remaining: this.formatAmount(credit.remainingDebt, credit.currency ?? 'RUB'),
       rate: `${credit.interestRate}%`,
       status: this.mapStatus(credit.status),
       issuedAt: credit.issuedAt ? this.formatDate(credit.issuedAt) : '-',
@@ -69,10 +69,10 @@ export class CreditsPageService {
     return status;
   }
 
-  private formatAmount(value: number): string {
+  private formatAmount(value: number, currency = 'RUB'): string {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
-      currency: 'RUB',
+      currency,
       maximumFractionDigits: 2,
     }).format(value);
   }
