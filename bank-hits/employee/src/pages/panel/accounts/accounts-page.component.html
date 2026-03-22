@@ -75,38 +75,40 @@
     @if (selectedAccount(); as account) {
       <div class="history-modal">
         <p class="history-account">Счет: {{ account.accountNumber }}</p>
-        <table class="history-table">
-          <thead>
-            <tr>
-              <th>Дата</th>
-              <th>Тип</th>
-              <th>Описание</th>
-              <th>Сумма</th>
-            </tr>
-          </thead>
-          <tbody>
-            @if (isHistoryLoading()) {
+        <div class="history-table-scroll">
+          <table class="history-table">
+            <thead>
               <tr>
-                <td colspan="4">Загрузка истории...</td>
+                <th>Дата</th>
+                <th>Тип</th>
+                <th class="amount-col">Сумма</th>
               </tr>
-            }
+            </thead>
+            <tbody>
+              @if (isHistoryLoading()) {
+                <tr>
+                  <td colspan="3">Загрузка истории...</td>
+                </tr>
+              }
 
-            @for (operation of selectedAccountOperations(); track operation.id) {
-              <tr>
-                <td>{{ operation.date }}</td>
-                <td>{{ operation.type }}</td>
-                <td>{{ operation.description }}</td>
-                <td>{{ operation.amount }}</td>
-              </tr>
-            }
+              @for (operation of selectedAccountOperations(); track operation.id) {
+                <tr>
+                  <td>{{ operation.date }}</td>
+                  <td>{{ operation.type }}</td>
+                  <td class="amount-col" [class.amount--incoming]="operation.isIncoming" [class.amount--outgoing]="!operation.isIncoming">
+                    {{ operation.amount }}
+                  </td>
+                </tr>
+              }
 
-            @if (!selectedAccountOperations().length && !isHistoryLoading()) {
-              <tr>
-                <td colspan="4">Операции отсутствуют</td>
-              </tr>
-            }
-          </tbody>
-        </table>
+              @if (!selectedAccountOperations().length && !isHistoryLoading()) {
+                <tr>
+                  <td colspan="3">Операции отсутствуют</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       </div>
     }
   </shared-basic-modal>

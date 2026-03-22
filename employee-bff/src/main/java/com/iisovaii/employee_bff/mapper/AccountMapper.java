@@ -8,6 +8,7 @@ import com.iisovaii.employee_bff.dto.response.AccountServiceResponse;
 import com.iisovaii.employee_bff.dto.response.OperationServiceResponse;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 import java.util.List;
 
@@ -33,8 +34,8 @@ public interface AccountMapper {
             AccountServiceResponse response
     );
 
-    @Mapping(target = "operationId", ignore = true)
-    @Mapping(target = "type", source = "operationType")
+    @Mapping(target = "operationId", source = "id")
+    @Mapping(target = "type", source = "operationType", qualifiedByName = "mapOperationType")
     @Mapping(target = "relatedAccountId", ignore = true)
     @Mapping(target = "relatedAccountOwner", ignore = true)
     @Mapping(target = "failReason", ignore = true)
@@ -43,4 +44,13 @@ public interface AccountMapper {
     List<OperationDto> toOperationDtoList(
             List<OperationServiceResponse> responses
     );
+
+    @Named("mapOperationType")
+    default OperationDto.OperationType mapOperationType(String type) {
+        if (type == null) return null;
+        return switch (type.toUpperCase()) {
+            case "WITHDRAWAL" -> OperationDto.OperationType.WITHDRAW;
+            default -> OperationDto.OperationType.valueOf(type.toUpperCase());
+        };
+    }
 }

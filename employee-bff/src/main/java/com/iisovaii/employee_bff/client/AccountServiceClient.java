@@ -33,7 +33,7 @@ public interface AccountServiceClient {
             @RequestParam(value = "size", required = false) Integer size
     );
 
-    @GetMapping("/internal/operations/account/{accountNumber}/page")
+    @GetMapping("/internal/operations/account/{accountNumber}")
     List<OperationServiceResponse> getOperations(
             @PathVariable("accountNumber") String accountNumber,
             @RequestParam(value = "page", required = false) Integer page,

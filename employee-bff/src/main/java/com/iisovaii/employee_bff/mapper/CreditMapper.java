@@ -20,6 +20,7 @@ public interface CreditMapper {
     @Mapping(target = "creditId", source = "id")
     @Mapping(target = "interestRate", source = "annualRate")
     @Mapping(target = "amount", source = "principalAmount")
+    @Mapping(target = "currency", ignore = true)
     CreditSummaryDto toCreditSummaryDto(CreditSummaryResponse response);
 
     List<CreditSummaryDto> toCreditSummaryDtoList(
@@ -27,12 +28,10 @@ public interface CreditMapper {
     );
 
     @Mapping(target = "creditId", source = "id")
+    @Mapping(target = "userId", source = "clientId")
     @Mapping(target = "interestRate", source = "annualRate")
     @Mapping(target = "amount", source = "principalAmount")
-    @Mapping(
-            target = "ownerFullName",
-            ignore = true   // заполняем отдельно в ProxyService
-    )
+    @Mapping(target = "ownerFullName", ignore = true)
     @Mapping(target = "payments", ignore = true)
     CreditDetailEmployeeResponse toCreditDetailEmployeeResponse(
             CreditDetailResponse response

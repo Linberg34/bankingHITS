@@ -17,7 +17,7 @@ export interface AccountOperationRecord {
   date: string;
   type: string;
   amount: string;
-  description: string;
+  isIncoming: boolean;
 }
 
 @Injectable({
@@ -43,20 +43,25 @@ export class AccountsPageService {
       accountId: account.accountId,
       client: account.ownerFullName ?? account.clientName ?? `ID ${account.ownerId ?? account.clientId}`,
       accountNumber: account.accountNumber,
-      balance: this.formatAmount(account.balance),
+      balance: this.formatAmount(account.balance, account.currency ?? 'RUB'),
       balanceValue: account.balance,
       status: account.status === 'ACTIVE' ? 'Активен' : 'Закрыт',
     };
   }
 
   private mapOperation(op: OperationDto): AccountOperationRecord {
+    const incoming = this.isIncoming(op.operationType);
     return {
       id: op.id,
       date: this.formatDateTime(op.createdAt),
       type: this.mapOperationType(op.operationType),
-      amount: this.formatOperationAmount(op.amount, op.operationType),
-      description: op.description ?? '-',
+      amount: this.formatOperationAmount(op.amount, op.operationType, op.currency ?? 'RUB'),
+      isIncoming: incoming,
     };
+  }
+
+  private isIncoming(type: string): boolean {
+    return type === 'DEPOSIT' || type === 'TRANSFER_IN' || type === 'CREDIT_ISSUE';
   }
 
   private mapOperationType(type: string): string {
@@ -71,16 +76,16 @@ export class AccountsPageService {
     return map[type] ?? type;
   }
 
-  private formatAmount(value: number): string {
+  private formatAmount(value: number, currency = 'RUB'): string {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
-      currency: 'RUB',
+      currency,
       maximumFractionDigits: 2,
     }).format(value);
   }
 
-  private formatOperationAmount(amount: number, type: string): string {
-    const base = this.formatAmount(Math.abs(amount));
+  private formatOperationAmount(amount: number, type: string, currency = 'RUB'): string {
+    const base = this.formatAmount(Math.abs(amount), currency);
     if (type === 'WITHDRAW' || type === 'TRANSFER_OUT' || type === 'CREDIT_PAYMENT') {
       return `-${base}`;
     }

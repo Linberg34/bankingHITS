@@ -39,12 +39,10 @@ public class OperationResultConsumer {
             return;
         }
 
-        // находим userId по accountId из реестра сессий
         wsSessionRegistry
                 .getUserIdByAccountId(message.getAccountId())
                 .ifPresent(userId -> {
 
-                    // пушим событие операции
                     WsOperationEvent operationEvent = buildOperationEvent(message);
                     messagingTemplate.convertAndSendToUser(
                             userId.toString(),
@@ -52,7 +50,6 @@ public class OperationResultConsumer {
                             operationEvent
                     );
 
-                    // если операция успешна — пушим обновление баланса
                     if ("SUCCESS".equals(message.getStatus()) && message.getNewBalance() != null) {
                         WsBalanceEvent balanceEvent = buildBalanceEvent(message);
                         messagingTemplate.convertAndSendToUser(

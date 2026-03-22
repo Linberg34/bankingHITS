@@ -1,6 +1,6 @@
 package com.iisovaii.client_bff.config;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
+import org.springframework.kafka.support.serializer.JsonSerializer;
 import com.iisovaii.client_bff.kafka.OperationResultMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -33,9 +33,7 @@ public class KafkaConfig {
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
-        // гарантируем что сообщение дошло до всех реплик брокера
         props.put(ProducerConfig.ACKS_CONFIG, "all");
-        // при сбое пробуем ещё раз
         props.put(ProducerConfig.RETRIES_CONFIG, 3);
         return new DefaultKafkaProducerFactory<>(props);
     }
@@ -52,15 +50,11 @@ public class KafkaConfig {
         props.put(ConsumerConfig.GROUP_ID_CONFIG, "client-backend-group");
         props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 
-        // Оборачиваем JsonDeserializer в ErrorHandlingDeserializer,
-        // чтобы несовместимые/старые сообщения пропускались без краша консьюмера
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, ErrorHandlingDeserializer.class);
         props.put(ErrorHandlingDeserializer.KEY_DESERIALIZER_CLASS, StringDeserializer.class);
         props.put(ErrorHandlingDeserializer.VALUE_DESERIALIZER_CLASS, JsonDeserializer.class);
-        // Доверяем любым пакетам (producer - account-service, другой пакет)
         props.put(JsonDeserializer.TRUSTED_PACKAGES, "*");
-        // Игнорируем __TypeId__ заголовок — всегда десериализуем в OperationResultMessage
         props.put(JsonDeserializer.USE_TYPE_INFO_HEADERS, false);
         props.put(JsonDeserializer.VALUE_DEFAULT_TYPE, OperationResultMessage.class.getName());
 
