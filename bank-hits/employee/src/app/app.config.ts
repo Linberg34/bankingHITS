@@ -5,14 +5,25 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { usersAuthTokenInterceptor } from '../../../shared/api';
-import { appErrorInterceptor, GlobalAppErrorHandler } from '../../../shared/frontend-core';
+import { idempotencyKeyInterceptor, usersAuthTokenInterceptor } from 'shared/api';
+import {
+  appErrorInterceptor,
+  GlobalAppErrorHandler,
+  resilienceInterceptor,
+} from 'shared/frontend-core';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
-    provideHttpClient(withInterceptors([usersAuthTokenInterceptor, appErrorInterceptor])),
+    provideHttpClient(
+      withInterceptors([
+        usersAuthTokenInterceptor,
+        idempotencyKeyInterceptor,
+        resilienceInterceptor,
+        appErrorInterceptor,
+      ])
+    ),
     provideRouter(appRoutes),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
   ],
