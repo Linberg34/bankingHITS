@@ -1,0 +1,136 @@
+<main class="page">
+  <section class="hero">
+    <div>
+      <h1>Интерфейс мониторинга</h1>
+      <p>Мок-дашборд для трассировки запросов, задержек и динамики ошибок.</p>
+    </div>
+    <div class="hero-actions">
+      <button type="button" (click)="toggleStream()">
+        {{ paused() ? 'Возобновить поток' : 'Пауза потока' }}
+      </button>
+      <button type="button" (click)="generateBurst()">Сгенерировать всплеск</button>
+      <button type="button" class="danger" (click)="clearLogs()">Очистить</button>
+    </div>
+  </section>
+
+  <section class="filters" aria-label="Фильтры">
+    <label>
+      Приложение
+      <select [value]="appFilter()" (change)="setAppFilter($any($event.target).value)">
+        @for (option of appOptions; track option) {
+          <option [value]="option">{{ appFilterLabel(option) }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Сервис
+      <select [value]="serviceFilter()" (change)="setServiceFilter($any($event.target).value)">
+        @for (option of serviceOptions; track option) {
+          <option [value]="option">{{ serviceFilterLabel(option) }}</option>
+        }
+      </select>
+    </label>
+
+    <label>
+      Уровень
+      <select [value]="levelFilter()" (change)="setLevelFilter($any($event.target).value)">
+        @for (option of levelOptions; track option) {
+          <option [value]="option">{{ levelFilterLabel(option) }}</option>
+        }
+      </select>
+    </label>
+
+    <label class="search">
+      Поиск
+      <input
+        type="search"
+        [value]="query()"
+        (input)="setQuery($any($event.target).value)"
+        placeholder="путь, trace id, сообщение"
+      />
+    </label>
+  </section>
+
+  <section class="kpis" aria-label="Сводка">
+    <article>
+      <h2>Всего логов</h2>
+      <p>{{ summary().total }}</p>
+    </article>
+    <article>
+      <h2>Доля ошибок</h2>
+      <p>{{ summary().errorRate | percent: '1.0-1' }}</p>
+    </article>
+    <article>
+      <h2>Средняя задержка</h2>
+      <p>{{ summary().avgLatency }} ms</p>
+    </article>
+    <article>
+      <h2>P95 задержки</h2>
+      <p>{{ summary().p95Latency }} ms</p>
+    </article>
+    <article>
+      <h2>Повторы</h2>
+      <p>{{ summary().retries }}</p>
+    </article>
+    <article>
+      <h2>Блокировки</h2>
+      <p>{{ summary().blocked }}</p>
+    </article>
+  </section>
+
+  <section class="charts" aria-label="Графики">
+    <article>
+      <h2>Тренд задержки (ms)</h2>
+      <svg viewBox="0 0 420 120" role="img" aria-label="График задержки">
+        <polyline [attr.points]="latencySeries()" fill="none" stroke-width="3" stroke="currentColor" />
+      </svg>
+    </article>
+    <article>
+      <h2>Тренд доли ошибок (%)</h2>
+      <svg viewBox="0 0 420 120" role="img" aria-label="График доли ошибок">
+        <polyline [attr.points]="errorRateSeries()" fill="none" stroke-width="3" stroke="currentColor" />
+      </svg>
+    </article>
+  </section>
+
+  <section class="table-wrap" aria-label="Логи трассировки">
+    @if (latest().length === 0) {
+      <p class="empty">Нет логов для текущих фильтров.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th scope="col">Время</th>
+            <th scope="col">Приложение</th>
+            <th scope="col">Сервис</th>
+            <th scope="col">Запрос</th>
+            <th scope="col">Статус</th>
+            <th scope="col">Задержка</th>
+            <th scope="col">Повторы</th>
+            <th scope="col">Состояние circuit</th>
+            <th scope="col">Trace ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (entry of latest(); track entry.id) {
+            <tr
+              [class.error-row]="entry.status >= 500"
+              [class.blocked-row]="entry.blockedByCircuit"
+            >
+              <td>{{ entry.timestamp | date: 'HH:mm:ss' }}</td>
+              <td>{{ appLabel(entry.app) }}</td>
+              <td>{{ serviceLabel(entry.service) }}</td>
+              <td><code>{{ entry.method }} {{ entry.path }}</code></td>
+              <td>{{ entry.status }}</td>
+              <td>{{ entry.latencyMs }} ms</td>
+              <td>{{ entry.retries }}</td>
+              <td>{{ circuitStateLabel(entry.circuitState) }}</td>
+              <td><code>{{ entry.traceId.slice(0, 8) }}</code></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </section>
+</main>
