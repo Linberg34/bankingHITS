@@ -7,10 +7,10 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record CreditPaymentDto(
-        @JsonProperty("id") UUID paymentId,
+        UUID paymentId,
         BigDecimal amount,
         LocalDateTime dueAt,
         LocalDateTime paidAt,
-        PaymentStatus status
+        String status
 ) {}
 

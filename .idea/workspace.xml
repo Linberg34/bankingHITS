@@ -4,34 +4,169 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f39c5f9f-6ea0-4bd0-ad05-5c76376f5339" name="Changes" comment="add workspace to gitignore">
+    <list default="true" id="f39c5f9f-6ea0-4bd0-ad05-5c76376f5339" name="Changes" comment="Фикс ошибок и ошибок связи между сервисами">
+      <change afterPath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/kafka/KafkaConfig.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/kafka/OperationCommandConsumer.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/kafka/OperationCommandMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/kafka/OperationResultMessage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/auth-callback/auth-callback.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/auth-callback/auth-callback.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/shared/api/operations-ws.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/shared/entities/settings/api/settings-api.models.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/shared/entities/settings/api/settings-api.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/shared/entities/settings/index.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/project.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/app/app.config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/app/app.routes.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/app/app.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/main.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/pages/sso-login/sso-login-page.component.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/src/styles.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/tsconfig.app.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/bank-hits/sso/tsconfig.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AGENT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-account/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-account/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-account/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-account/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/service/AccountService.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-account/src/main/java/com/gautama/bankhitsaccount/service/AccountService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-credit/src/main/java/com/gautama/bankhitscredit/controller/CreditController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-user/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits-user/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits-user/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/app/application/use-cases/client-data-use-cases.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/app/application/use-cases/client-data-use-cases.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/app/core/models/client.types.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/app/core/models/client.types.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/app/infrastructure/request/client-banking-request.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/app/infrastructure/request/client-banking-request.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/app/layout/client-shell/client-shell.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/app/layout/client-shell/client-shell.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/accounts/client-accounts-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.scss" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/client/src/pages/credits/client-credits-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/app/infrastructure/request/employee-admin-request.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/app/infrastructure/request/employee-admin-request.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/accounts/accounts-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/accounts/accounts-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/accounts/model/accounts-page.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/accounts/model/accounts-page.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/credits-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/credits-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/credits-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/credits-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/model/credits-page.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/credits/model/credits-page.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/model/users-page.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/model/users-page.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/users-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/users-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/users-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/employee/src/pages/panel/users/users-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/shared/entities/accounts/api/accounts-api.models.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/shared/entities/accounts/api/accounts-api.models.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/shared/entities/credits/api/credits-api.models.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/shared/entities/credits/api/credits-api.models.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/shared/frontend-core/ui/error-fallback-page.component.html" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/shared/frontend-core/ui/error-fallback-page.component.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bank-hits/shared/frontend-core/ui/error-fallback-page.component.ts" beforeDir="false" afterPath="$PROJECT_DIR$/bank-hits/shared/frontend-core/ui/error-fallback-page.component.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/KafkaConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/KafkaConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/AccountDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/dto/account/AccountDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/service/SettingsService.java" beforeDir="false" afterPath="$PROJECT_DIR$/client-bff/src/main/java/com/iisovaii/client_bff/service/SettingsService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/account/AccountWithOwnerDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/account/AccountWithOwnerDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/kafka/OperationResultMessage.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/kafka/OperationResultMessage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/AccountServiceResponse.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/dto/response/AccountServiceResponse.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/kafka/OperationResultConsumer.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/kafka/OperationResultConsumer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/AccountMapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/employee-bff/src/main/java/com/iisovaii/employee_bff/mapper/AccountMapper.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/sso-service/src/main/java/com/iisovaii/sso_service/config/SecurityConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/bank-hits-account">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/bank-hits-credit">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/bank-hits-user">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/client-bff">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/employee-bff">
+      <ProjectState />
+    </projectState>
+    <projectState path="$PROJECT_DIR$/sso-service">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <task path="$PROJECT_DIR$/bank-hits-account">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/bank-hits-credit">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/bank-hits-user">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/client-bff">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/employee-bff">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/sso-service">
+          <activation />
+        </task>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="employee-bff" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="employee-bff" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="employee-bff" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="master/front" />
+        <entry key="$PROJECT_DIR$" value="main" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "FuSseNet"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;FuSseNet&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Linberg34/bankingHITS.git",
-    "accountId": "802188fa-085d-4931-a99c-e58cff546dc1"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Linberg34/bankingHITS.git&quot;,
+    &quot;accountId&quot;: &quot;802188fa-085d-4931-a99c-e58cff546dc1&quot;
   }
-}]]></component>
+}</component>
   <component name="McpProjectServerCommands">
     <McpServerCommand>
       <option name="enabled" value="true" />
@@ -50,26 +185,212 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "F:/education/Bank-client/bankingHITS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "prettierjs.PrettierConfiguration.Package": "F:\\education\\Bank-client\\bankingHITS\\bank-hits\\node_modules\\prettier",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "settings.editor.splitter.proportion": "0.2324159",
-    "ts.external.directory.path": "F:\\education\\Bank-client\\bankingHITS\\bank-hits\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Gradle.bank-hits-account [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.bank-hits-credit [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.bank-hits-user [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.client-bff [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.client-bff [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.employee-bff [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.sso-service [clean].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/refactoring&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;F:/education/Bank-client/bankingHITS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;F:\\education\\Bank-client\\bankingHITS\\bank-hits\\node_modules\\prettier&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.2324159&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;F:\\education\\Bank-client\\bankingHITS\\bank-hits\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="com.iisovaii.client_bff.config" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Gradle.employee-bff [clean]">
+    <configuration name="bank-hits-account [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/bank-hits-account" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="client-bff [build]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/client-bff" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="build" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="client-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/client-bff" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="employee-bff [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/employee-bff" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="sso-service [clean]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/sso-service" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="clean" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <ExternalSystemDebugServerProcess>true</ExternalSystemDebugServerProcess>
+      <ExternalSystemReattachDebugProcess>true</ExternalSystemReattachDebugProcess>
+      <DebugAllEnabled>false</DebugAllEnabled>
+      <RunAsTest>false</RunAsTest>
+      <method v="2" />
+    </configuration>
+    <configuration name="BankHitsAccountApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="bank-hits-account.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gautama.bankhitsaccount.BankHitsAccountApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BankHitsCreditApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="bank-hits-credit.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gautama.bankhitscredit.BankHitsCreditApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BankHitsUserApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="bank-hits-user.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gautama.bankhitsuser.BankHitsUserApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ClientBffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="client-bff.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.iisovaii.client_bff.ClientBffApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EmployeeBffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="employee-bff.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.iisovaii.employee_bff.EmployeeBffApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SsoServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="sso-service.main" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.iisovaii.sso_service.SsoServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Gradle.employee-bff [clean]" />
+        <item itemvalue="Gradle.client-bff [clean]" />
+        <item itemvalue="Gradle.bank-hits-account [clean]" />
+        <item itemvalue="Gradle.sso-service [clean]" />
+        <item itemvalue="Gradle.client-bff [build]" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -108,7 +429,15 @@
       <option name="project" value="LOCAL" />
       <updated>1774182322317</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="add swagger to client bff">
+      <option name="closed" value="true" />
+      <created>1774187989815</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1774187989815</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -128,6 +457,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="smth trash files" />
     <MESSAGE value="add workspace to gitignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="add workspace to gitignore" />
+    <MESSAGE value="add swagger to client bff" />
+    <MESSAGE value="Фикс ошибок и ошибок связи между сервисами" />
+    <option name="LAST_COMMIT_MESSAGE" value="Фикс ошибок и ошибок связи между сервисами" />
   </component>
 </project>

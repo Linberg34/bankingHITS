@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre
+FROM eclipse-temurin:23-jre
 
 WORKDIR /app
 
@@ -10,7 +10,7 @@ EXPOSE 8084
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
-#FROM eclipse-temurin:21-jre AS build
+#FROM eclipse-temurin:23-jre AS build
 #WORKDIR /app
 #COPY gradlew .
 #COPY gradle gradle

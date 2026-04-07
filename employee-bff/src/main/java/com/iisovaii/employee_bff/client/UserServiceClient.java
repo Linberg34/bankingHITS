@@ -51,12 +51,8 @@ public interface UserServiceClient {
     );
 
     @PostMapping("/api/users/{userId}/ban")
-    UserResponse blockUser(
-            @PathVariable("userId") UUID userId
-    );
+    UserResponse blockUser(@PathVariable("userId") UUID userId);
 
     @PostMapping("/api/users/{userId}/unban")
-    UserResponse unblockUser(
-            @PathVariable("userId") UUID userId
-    );
+    UserResponse unblockUser(@PathVariable("userId") UUID userId);
 }

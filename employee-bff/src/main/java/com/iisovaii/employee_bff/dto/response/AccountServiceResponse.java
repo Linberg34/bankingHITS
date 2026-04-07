@@ -11,6 +11,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountServiceResponse {
+    private UUID id;
     private UUID clientId;
     private String accountNumber;
     private BigDecimal balance;

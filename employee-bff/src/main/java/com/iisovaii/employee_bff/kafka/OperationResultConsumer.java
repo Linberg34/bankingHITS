@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class OperationResultConsumer {
 
-    private static final String TOPIC = "account.operations.result";
+    private static final String TOPIC = "operations-results";
 
     private final SimpMessagingTemplate messagingTemplate;
     private final WsSessionRegistry wsSessionRegistry;
@@ -34,44 +34,62 @@ public class OperationResultConsumer {
                 message.getStatus()
         );
 
-        // находим userId по accountId из реестра сессий
+        if (message.getAccountId() == null) {
+            log.warn("Пропущено сообщение без accountId: operationId={}", message.getOperationId());
+            return;
+        }
+
         wsSessionRegistry
-                .getUserIdByAccountId(message.getOperationId())
+                .getUserIdByAccountId(message.getAccountId())
                 .ifPresent(userId -> {
 
-                    // пушим событие операции
                     WsOperationEvent operationEvent = buildOperationEvent(message);
                     messagingTemplate.convertAndSendToUser(
                             userId.toString(),
-                            "/queue/operations/" + message.getOperationId(),
+                            "/queue/operations/" + message.getAccountId(),
                             operationEvent
                     );
 
-                    // если операция успешна — пушим обновление баланса
-                    if (message.getStatus() ==
-                            OperationDto.OperationStatus.SUCCESS
-                            && message.getNewBalance() != null) {
-
+                    if ("SUCCESS".equals(message.getStatus()) && message.getNewBalance() != null) {
                         WsBalanceEvent balanceEvent = buildBalanceEvent(message);
                         messagingTemplate.convertAndSendToUser(
                                 userId.toString(),
-                                "/queue/balance/" + message.getOperationId(),
+                                "/queue/balance/" + message.getAccountId(),
                                 balanceEvent
                         );
                     }
                 });
     }
 
-    private WsOperationEvent buildOperationEvent(
-            OperationResultMessage message) {
-
+    private WsOperationEvent buildOperationEvent(OperationResultMessage message) {
         OperationDto operationDto = new OperationDto();
         operationDto.setOperationId(message.getOperationId());
-        operationDto.setStatus(message.getStatus());
-        operationDto.setFailReason(message.getFailReason());
+        operationDto.setAmount(message.getAmount());
+        operationDto.setStatus("SUCCESS".equals(message.getStatus())
+                ? OperationDto.OperationStatus.SUCCESS
+                : OperationDto.OperationStatus.FAILED);
+        operationDto.setFailReason(message.getErrorMessage());
+
+        if (message.getCurrency() != null) {
+            try {
+                operationDto.setCurrency(OperationDto.Currency.valueOf(message.getCurrency()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Неизвестная валюта: {}", message.getCurrency());
+            }
+        }
+
+        if (message.getType() != null) {
+            try {
+                operationDto.setType(OperationDto.OperationType.valueOf(message.getType()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Неизвестный тип операции: {}", message.getType());
+            }
+        }
+
+        operationDto.setCreatedAt(message.getCreatedAt());
 
         WsOperationEvent event = new WsOperationEvent();
-        event.setType(message.getStatus() == OperationDto.OperationStatus.SUCCESS
+        event.setType("SUCCESS".equals(message.getStatus())
                 ? WsOperationEvent.WsEventType.OPERATION_ADDED
                 : WsOperationEvent.WsEventType.OPERATION_UPDATED
         );
@@ -80,13 +98,19 @@ public class OperationResultConsumer {
         return event;
     }
 
-    private WsBalanceEvent buildBalanceEvent(
-            OperationResultMessage message) {
-
+    private WsBalanceEvent buildBalanceEvent(OperationResultMessage message) {
         WsBalanceEvent event = new WsBalanceEvent();
         event.setType(WsOperationEvent.WsEventType.BALANCE_UPDATED);
-        event.setAccountId(message.getOperationId());
+        event.setAccountId(message.getAccountId());
         event.setNewBalance(message.getNewBalance());
+
+        if (message.getCurrency() != null) {
+            try {
+                event.setCurrency(OperationDto.Currency.valueOf(message.getCurrency()));
+            } catch (IllegalArgumentException e) {
+                log.warn("Неизвестная валюта для balance event: {}", message.getCurrency());
+            }
+        }
 
         return event;
     }

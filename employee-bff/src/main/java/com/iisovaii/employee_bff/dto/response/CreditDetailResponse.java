@@ -16,6 +16,7 @@ public class CreditDetailResponse {
     private UUID id;
     private UUID clientId;
     private String accountNumber;
+    private String currency;
     private String tariffName;
     private BigDecimal annualRate;
     private int termDays;
@@ -25,5 +26,4 @@ public class CreditDetailResponse {
     private LocalDateTime closedAt;
     private LocalDateTime nextPaymentAt;
     private String status;
-    private List<CreditPaymentResponse> payments;
 }

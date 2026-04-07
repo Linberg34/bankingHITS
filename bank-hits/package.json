@@ -6,7 +6,9 @@
     "build:client": "nx run client:build",
     "serve:client": "nx run client:serve",
     "build:employee": "nx run employee:build",
-    "serve:employee": "nx run employee:serve"
+    "serve:employee": "nx run employee:serve",
+    "build:sso": "nx run sso:build",
+    "serve:sso": "nx run sso:serve"
   },
   "private": true,
   "dependencies": {
@@ -17,7 +19,9 @@
     "@angular/platform-browser": "~21.1.0",
     "@angular/platform-browser-dynamic": "~21.1.0",
     "@angular/router": "~21.1.0",
-    "rxjs": "~7.8.0"
+    "@stomp/rx-stomp": "^2.0.0",
+    "rxjs": "~7.8.0",
+    "sockjs-client": "^1.6.1"
   },
   "devDependencies": {
     "@angular-devkit/core": "~21.1.0",
@@ -43,6 +47,7 @@
     "@swc/helpers": "~0.5.18",
     "@types/jest": "^30.0.0",
     "@types/node": "20.19.9",
+    "@types/sockjs-client": "^1.5.4",
     "@typescript-eslint/utils": "^8.40.0",
     "angular-eslint": "^21.0.1",
     "eslint": "^9.8.0",

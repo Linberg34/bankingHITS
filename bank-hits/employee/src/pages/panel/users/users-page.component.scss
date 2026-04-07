@@ -170,9 +170,81 @@ tbody tr:last-child td {
   justify-content: flex-end;
 }
 
+.badge--blocked {
+  background: #fde8e8;
+  color: #c0392b;
+}
+
 [data-theme='dark'] .badge {
   background: #1f3a2d;
   color: #a7f3d0;
+}
+
+[data-theme='dark'] .badge--blocked {
+  background: #3d1f1f;
+  color: #f87171;
+}
+
+.user-row {
+  cursor: pointer;
+}
+
+.user-row:hover td {
+  background: color-mix(in srgb, var(--color-surface, #fff) 90%, var(--color-primary-start, #5f3df4));
+}
+
+.rating-modal-content {
+  display: grid;
+  gap: 16px;
+}
+
+.rating-user-name {
+  color: var(--color-text, #312b44);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.rating-score {
+  align-items: center;
+  display: flex;
+  gap: 12px;
+}
+
+.rating-score-value {
+  color: var(--color-text, #312b44);
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.rating-score-label {
+  color: var(--color-muted, #7c768f);
+  font-size: 16px;
+}
+
+.rating-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.rating-grid article {
+  background: var(--color-input, #f4f3f8);
+  border-radius: 10px;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+}
+
+.rating-grid small {
+  color: var(--color-muted, #7c768f);
+  font-size: 12px;
+}
+
+.rating-grid strong {
+  color: var(--color-text, #312b44);
+  font-size: 20px;
 }
 
 @media (max-width: 900px) {

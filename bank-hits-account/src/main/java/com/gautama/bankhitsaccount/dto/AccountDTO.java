@@ -13,6 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AccountDTO {
+    private UUID id;
     private UUID clientId;
     private String accountNumber;
     private BigDecimal balance;

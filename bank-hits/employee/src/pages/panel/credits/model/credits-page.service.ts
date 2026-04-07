@@ -1,11 +1,10 @@
-﻿import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { type CreditDto } from 'shared/entities/credits';
-import { type UserDto } from 'shared/entities/users';
-import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
+import { Injectable } from '@angular/core';
+import { Observable, forkJoin, map, of, switchMap } from 'rxjs';
+import { EmployeeAdminRequestService, type ClientSummaryDto, type EmployeeCreditSummaryDto } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface CreditRecord {
   id: string;
+  clientId: string;
   clientName: string;
   account: string;
   tariff: string;
@@ -14,9 +13,12 @@ export interface CreditRecord {
   rate: string;
   status: string;
   issuedAt: string;
-  termMonths: number;
-  paidMonths: number;
-  closedAt: string;
+  nextPayment: string;
+}
+
+export interface ClientOption {
+  id: string;
+  name: string;
 }
 
 @Injectable({
@@ -25,75 +27,62 @@ export interface CreditRecord {
 export class CreditsPageService {
   constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
-  loadCredits(): Observable<CreditRecord[]> {
-    return forkJoin({
-      credits: this.requestService.getCredits(),
-      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
-    }).pipe(map(({ credits, users }) => this.mapCredits(credits, users)));
+  loadClients(): Observable<ClientOption[]> {
+    return this.requestService.getClients().pipe(
+      map((clients) => clients.map((c) => ({ id: c.userId, name: c.name })))
+    );
   }
 
-  private mapCredits(credits: CreditDto[], users: UserDto[]): CreditRecord[] {
-    const userById = new Map<string, UserDto>();
-    for (const user of users) {
-      userById.set(String(user.id), user);
-    }
+  loadCreditsByClient(clientId: string, clientName: string): Observable<CreditRecord[]> {
+    return this.requestService.getClientCredits(clientId).pipe(
+      map((credits) => credits.map((credit) => this.mapCredit(credit, clientId, clientName)))
+    );
+  }
 
-    return credits.map((credit) => {
-      const client = userById.get(String(credit.clientId));
-      const issuedDate = this.formatDate(credit.issuedAt);
-      const closedDate = credit.closedAt ? this.formatDate(credit.closedAt) : '-';
-      const accountValue = credit.accountNumber ?? (credit.accountId != null ? String(credit.accountId) : '-');
+  loadAllCredits(clients: ClientOption[]): Observable<CreditRecord[]> {
+    if (!clients.length) return of([]);
+    return forkJoin(
+      clients.map((c) => this.loadCreditsByClient(c.id, c.name))
+    ).pipe(map((arrays) => arrays.flat()));
+  }
 
-      return {
-        id: String(credit.id),
-        clientName: client?.name ?? `ID ${credit.clientId}`,
-        account: accountValue,
-        tariff: credit.tariffName,
-        amount: this.formatAmount(credit.principalAmount),
-        remaining: this.formatAmount(credit.remainingDebt),
-        rate: `${credit.annualRate}%`,
-        status: this.mapStatus(credit.status),
-        issuedAt: issuedDate,
-        termMonths: 0,
-        paidMonths: 0,
-        closedAt: closedDate,
-      };
-    });
+  private mapCredit(credit: EmployeeCreditSummaryDto, clientId: string, clientName: string): CreditRecord {
+    return {
+      id: credit.creditId,
+      clientId,
+      clientName,
+      account: credit.accountNumber,
+      tariff: credit.tariffName,
+      amount: this.formatAmount(credit.amount, credit.currency ?? 'RUB'),
+      remaining: this.formatAmount(credit.remainingDebt, credit.currency ?? 'RUB'),
+      rate: `${credit.interestRate}%`,
+      status: this.mapStatus(credit.status),
+      issuedAt: credit.issuedAt ? this.formatDate(credit.issuedAt) : '-',
+      nextPayment: credit.nextPaymentAt ? this.formatDate(credit.nextPaymentAt) : '-',
+    };
   }
 
   private mapStatus(status: string): string {
-    const normalized = String(status).toUpperCase();
-    if (normalized === 'ACTIVE') {
-      return 'Активен';
-    }
-    if (normalized === 'CLOSED' || normalized === 'PAID') {
-      return 'Погашен';
-    }
-    if (normalized === 'OVERDUE') {
-      return 'Просрочен';
-    }
-
+    if (status === 'ACTIVE') return 'Активен';
+    if (status === 'CLOSED') return 'Погашен';
+    if (status === 'OVERDUE') return 'Просрочен';
     return status;
   }
 
-  private formatAmount(value: number): string {
+  private formatAmount(value: number, currency = 'RUB'): string {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
-      currency: 'RUB',
+      currency,
       maximumFractionDigits: 2,
     }).format(value);
   }
 
   private formatDate(value: string): string {
     const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return value;
-    }
-
+    if (Number.isNaN(date.getTime())) return value;
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
     return `${day}.${month}.${year}`;
   }
 }
-

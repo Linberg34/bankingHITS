@@ -1,128 +1,85 @@
-import { HttpClient } from '@angular/common/http';
-import { Inject, Injectable } from '@angular/core';
-import { Observable, map, switchMap, tap } from 'rxjs';
-import { API_BASE_URL } from '../../../api';
-import {
-  AuthStoredRole,
-  AuthLoginRequest,
-  AuthRegisterRequest,
-  AuthTokenResponse,
-  AuthUserFullResponse,
-  AuthUserRole,
-} from './auth-api.models';
+import { Injectable } from '@angular/core';
+import { AuthStoredRole, AuthUserRole } from './auth-api.models';
 
 const AUTH_TOKEN_STORAGE_KEY = 'auth_token';
 const AUTH_ROLE_STORAGE_KEY = 'auth_role';
-const LEGACY_AUTH_ROLE_STORAGE_KEY = 'hitsbank_user_role';
-const AUTH_CONTROLLER_PREFIX = '/api/auth';
 
+/**
+ * Manages JWT token storage received from SSO service.
+ * Authentication itself happens on the SSO page (port 4202).
+ * This service only handles local token state.
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class AuthApiService {
-  constructor(
-    private readonly httpClient: HttpClient,
-    @Inject(API_BASE_URL) private readonly apiBaseUrl: string
-  ) {}
-
-  register(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
-    return this.registerRequest(payload, false, true);
-  }
-
-  registerEmployee(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
-    return this.registerRequest(payload, true, true);
-  }
-
-  registerWithoutAuth(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
-    return this.registerRequest(payload, false, false);
-  }
-
-  registerEmployeeWithoutAuth(payload: AuthRegisterRequest): Observable<AuthTokenResponse> {
-    return this.registerRequest(payload, true, false);
-  }
-
-  login(payload: AuthLoginRequest): Observable<AuthTokenResponse> {
-    return this.httpClient
-      .post<AuthTokenResponse>(`${this.normalizedBaseUrl}${AUTH_CONTROLLER_PREFIX}/login`, payload)
-      .pipe(switchMap((response) => this.storeAuthFromToken(response)));
-  }
-
-  getCurrentUser(): Observable<AuthUserFullResponse> {
-    return this.httpClient.get<AuthUserFullResponse>(`${this.normalizedBaseUrl}/api/users/me`);
-  }
-
-  logout(): Observable<string> {
-    return this.httpClient.post(`${this.normalizedBaseUrl}${AUTH_CONTROLLER_PREFIX}/logout`, null, {
-      responseType: 'text',
-    });
-  }
 
   getToken(): string | null {
-    return localStorage.getItem(AUTH_TOKEN_STORAGE_KEY);
+    try {
+      return globalThis.localStorage?.getItem(AUTH_TOKEN_STORAGE_KEY) ?? null;
+    } catch {
+      return null;
+    }
+  }
+
+  setToken(token: string): void {
+    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
   }
 
   clearToken(): void {
-    localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    try {
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+    } catch {
+      // ignore
+    }
   }
 
   getRole(): AuthStoredRole | null {
-    const storedRole = localStorage.getItem(AUTH_ROLE_STORAGE_KEY);
-    if (storedRole === 'client' || storedRole === 'employee') {
-      return storedRole;
-    }
-    const legacyRole = localStorage.getItem(LEGACY_AUTH_ROLE_STORAGE_KEY);
-    if (legacyRole === 'client' || legacyRole === 'employee') {
-      return legacyRole;
+    try {
+      const role = localStorage.getItem(AUTH_ROLE_STORAGE_KEY);
+      if (role === 'client' || role === 'employee') {
+        return role;
+      }
+    } catch {
+      // ignore
     }
     return null;
   }
 
   setRole(role: AuthUserRole | AuthStoredRole): void {
-    this.saveRole(role);
+    try {
+      localStorage.setItem(AUTH_ROLE_STORAGE_KEY, role.toLowerCase());
+    } catch {
+      // ignore
+    }
   }
 
   clearAuth(): void {
-    this.clearToken();
-    localStorage.removeItem(AUTH_ROLE_STORAGE_KEY);
-    localStorage.removeItem(LEGACY_AUTH_ROLE_STORAGE_KEY);
-  }
-
-  private get normalizedBaseUrl(): string {
-    return this.apiBaseUrl.replace(/\/+$/, '');
-  }
-
-  private saveToken(token: string): void {
-    localStorage.setItem(AUTH_TOKEN_STORAGE_KEY, token);
-  }
-
-  private saveRole(role: AuthUserRole | AuthStoredRole): void {
-    const normalizedRole = role.toLowerCase() as AuthStoredRole;
-    localStorage.setItem(AUTH_ROLE_STORAGE_KEY, normalizedRole);
-  }
-
-  private storeAuthFromToken(response: AuthTokenResponse): Observable<AuthTokenResponse> {
-    this.saveToken(response.token);
-    return this.getCurrentUser().pipe(
-      tap((user) => this.saveRole(user.role)),
-      map(() => response)
-    );
-  }
-
-  private registerRequest(
-    payload: AuthRegisterRequest,
-    employee: boolean,
-    persistAuth: boolean
-  ): Observable<AuthTokenResponse> {
-    const endpoint = employee ? '/register/employee' : '/register';
-    const request$ = this.httpClient.post<AuthTokenResponse>(
-      `${this.normalizedBaseUrl}${AUTH_CONTROLLER_PREFIX}${endpoint}`,
-      payload
-    );
-
-    if (!persistAuth) {
-      return request$;
+    try {
+      localStorage.removeItem(AUTH_TOKEN_STORAGE_KEY);
+      localStorage.removeItem(AUTH_ROLE_STORAGE_KEY);
+    } catch {
+      // ignore
     }
+  }
 
-    return request$.pipe(switchMap((response) => this.storeAuthFromToken(response)));
+  /**
+   * Reads JWT claims to extract role without making an HTTP call.
+   * BFF JWT contains 'roles' claim as array.
+   */
+  extractRoleFromToken(token: string): AuthStoredRole | null {
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const roles: string[] = payload['roles'] ?? [];
+      if (roles.some((r) => r.toUpperCase() === 'EMPLOYEE')) {
+        return 'employee';
+      }
+      if (roles.some((r) => r.toUpperCase() === 'CLIENT')) {
+        return 'client';
+      }
+    } catch {
+      // invalid token
+    }
+    return null;
   }
 }

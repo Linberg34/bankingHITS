@@ -5,12 +5,12 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { idempotencyKeyInterceptor, usersAuthTokenInterceptor } from 'shared/api';
+import { API_BASE_URL, idempotencyKeyInterceptor, usersAuthTokenInterceptor } from 'shared/api';
 import {
   appErrorInterceptor,
   GlobalAppErrorHandler,
   resilienceInterceptor,
-} from 'shared/frontend-core';
+} from 'shared/frontend-core';  // взять путь из main
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -26,5 +26,6 @@ export const appConfig: ApplicationConfig = {
     ),
     provideRouter(appRoutes),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
+    { provide: API_BASE_URL, useValue: 'http://localhost:8085/bff/employee' },
   ],
 };

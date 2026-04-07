@@ -1,21 +1,21 @@
-﻿import { Route } from '@angular/router';
+import { Route } from '@angular/router';
 import { ErrorFallbackPageComponent } from '../../../shared/frontend-core';
 import { roleGuard } from '../../../shared/auth';
 import { ClientDashboardPageComponent } from '../pages/dashboard/client-dashboard-page.component';
 import { ClientAccountsPageComponent } from '../pages/accounts/client-accounts-page.component';
 import { ClientCreditsPageComponent } from '../pages/credits/client-credits-page.component';
-import { ClientLoginPageComponent } from '../pages/login/client-login-page.component';
 import { ClientPanelPageComponent } from '../pages/client-panel/client-panel-page.component';
+import { AuthCallbackComponent } from '../pages/auth-callback/auth-callback.component';
 
 export const appRoutes: Route[] = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'registration',
+    redirectTo: 'panel',
   },
   {
-    path: 'registration',
-    component: ClientLoginPageComponent,
+    path: 'auth/callback',
+    component: AuthCallbackComponent,
   },
   {
     path: 'panel',
@@ -23,7 +23,7 @@ export const appRoutes: Route[] = [
     canActivate: [roleGuard],
     data: {
       requiredRole: 'client',
-      forbiddenRedirect: '/registration',
+      forbiddenRedirect: '/auth/callback',
     },
     children: [
       {

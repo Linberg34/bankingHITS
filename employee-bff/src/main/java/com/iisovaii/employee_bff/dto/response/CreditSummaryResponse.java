@@ -24,5 +24,5 @@ public class CreditSummaryResponse {
     private LocalDateTime issuedAt;
     private LocalDateTime closedAt;
     private LocalDateTime nextPaymentAt;
-    private CreditSummaryDto.CreditStatus status;
+    private String status;
 }

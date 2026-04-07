@@ -10,7 +10,7 @@ description = 'bank-hits-credit'
 
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
+        languageVersion = JavaLanguageVersion.of(23)
     }
 }
 
@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.5'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+    implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
@@ -50,6 +51,7 @@ dependencyManagement {
 
 compileJava {
     options.compilerArgs = [
+            '-parameters',
             '-Amapstruct.suppressGeneratorTimestamp=true',
             '-Amapstruct.defaultComponentModel=spring'
     ]

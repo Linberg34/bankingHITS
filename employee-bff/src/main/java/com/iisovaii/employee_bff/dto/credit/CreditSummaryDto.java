@@ -13,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class CreditSummaryDto {
     private UUID creditId;
+    private String currency;
     private BigDecimal amount;
     private BigDecimal remainingDebt;
     private BigDecimal interestRate;

@@ -1,16 +1,18 @@
 package com.iisovaii.client_bff.kafka;
 
-import com.iisovaii.client_bff.dto.operation.OperationDto;
 import com.iisovaii.client_bff.dto.ws.WsBalanceEvent;
 import com.iisovaii.client_bff.dto.ws.WsEventType;
+import com.iisovaii.client_bff.dto.ws.WsOperationDto;
 import com.iisovaii.client_bff.dto.ws.WsOperationEvent;
 import com.iisovaii.client_bff.ws.OperationsWsController;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
+@Slf4j
 public class OperationResultConsumer {
 
     private static final String OPERATIONS_RESULTS_TOPIC = "operations-results";
@@ -30,46 +32,42 @@ public class OperationResultConsumer {
         UUID accountId = message.getAccountId();
 
         if (userId == null || accountId == null) {
+            log.warn("Пропущено сообщение без userId или accountId: operationId={}", message.getOperationId());
             return;
         }
 
-        // событие по операции (добавление/обновление в истории)
-        if (message.getOperationId() != null && message.getType() != null && message.getStatus() != null) {
-            OperationDto dto = new OperationDto(
+        log.debug("WS push: operationId={} status={} account={}", message.getOperationId(), message.getStatus(), accountId);
+
+        // событие по операции
+        if (message.getOperationId() != null) {
+            WsOperationDto dto = new WsOperationDto(
                     message.getOperationId(),
                     message.getType(),
                     message.getAmount(),
                     message.getCurrency(),
-                    accountId.toString(),
+                    message.getAccountNumber() != null ? message.getAccountNumber() : accountId.toString(),
                     message.getStatus(),
                     message.getErrorMessage(),
                     message.getCreatedAt()
             );
-            WsOperationEvent opEvent = new WsOperationEvent(
-                    WsEventType.OPERATION_UPDATED,
-                    dto
-            );
+            WsEventType eventType = "SUCCESS".equals(message.getStatus())
+                    ? WsEventType.OPERATION_ADDED
+                    : WsEventType.OPERATION_UPDATED;
+
             operationsWsController.sendOperationEvent(
                     userId.toString(),
                     accountId,
-                    opEvent
+                    new WsOperationEvent(eventType, dto)
             );
         }
 
-        // событие по балансу (если ядро прислало новые данные)
-        if (message.getNewBalance() != null && message.getCurrency() != null) {
-            WsBalanceEvent event = new WsBalanceEvent(
-                    WsEventType.BALANCE_UPDATED,
-                    accountId,
-                    message.getNewBalance(),
-                    message.getCurrency()
-            );
+        // событие по балансу при успехе
+        if ("SUCCESS".equals(message.getStatus()) && message.getNewBalance() != null && message.getCurrency() != null) {
             operationsWsController.sendBalanceEvent(
                     userId.toString(),
                     accountId,
-                    event
+                    new WsBalanceEvent(WsEventType.BALANCE_UPDATED, accountId, message.getNewBalance(), message.getCurrency())
             );
         }
     }
 }
-

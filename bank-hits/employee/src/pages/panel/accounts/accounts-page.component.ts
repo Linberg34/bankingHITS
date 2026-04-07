@@ -1,9 +1,11 @@
-﻿import { Component, computed, signal } from '@angular/core';
+﻿import { Component, NgZone, OnDestroy, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { finalize } from 'rxjs';
-import { NotificationService } from '../../../../../shared/frontend-core';
-import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
+import { Subscription } from 'rxjs';
+import { NotificationService } from 'shared/frontend-core';
+import { BasicModalComponent } from 'shared/ui/basic-modal';
+import { OperationsWsService, type WsBalanceEvent } from 'shared/api';
 import { AccountOperationRecord, AccountPageRecord, AccountsPageService } from './model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'employee-accounts-page',
@@ -12,7 +14,7 @@ import { AccountOperationRecord, AccountPageRecord, AccountsPageService } from '
   templateUrl: './accounts-page.component.html',
   styleUrl: './accounts-page.component.scss',
 })
-export class AccountsPageComponent {
+export class AccountsPageComponent implements OnDestroy {
   historyModalOpen = signal(false);
   isHistoryLoading = signal(false);
   errorText = signal('');
@@ -23,6 +25,9 @@ export class AccountsPageComponent {
   accountRecords = signal<AccountPageRecord[]>([]);
   selectedAccount = signal<AccountPageRecord | null>(null);
   selectedAccountOperations = signal<AccountOperationRecord[]>([]);
+
+  private readonly ngZone = inject(NgZone);
+  private wsSub: Subscription | null = null;
 
   readonly clientOptions = computed(() => [
     'all',
@@ -59,7 +64,8 @@ export class AccountsPageComponent {
 
   constructor(
     private readonly accountsPageService: AccountsPageService,
-    private readonly notifications: NotificationService
+    private readonly notifications: NotificationService,
+    private readonly wsService: OperationsWsService
   ) {
     this.loadAccounts();
   }
@@ -91,12 +97,24 @@ export class AccountsPageComponent {
     this.selectedAccountOperations.set([]);
   }
 
+  ngOnDestroy(): void {
+    this.wsSub?.unsubscribe();
+    this.wsService.disconnect();
+  }
+
   private loadAccounts(): void {
     this.errorText.set('');
 
     this.accountsPageService.loadAccounts().subscribe({
       next: (records) => {
-        this.accountRecords.set(records);      },
+        this.accountRecords.set(records);
+        const accountIds = records
+          .map((r) => r.accountId)
+          .filter((id): id is string => !!id);
+        if (accountIds.length) {
+          this.connectWs(accountIds);
+        }
+      },
       error: () => {
         const message = 'Не удалось загрузить список счетов.';
         this.errorText.set(message);
@@ -104,6 +122,39 @@ export class AccountsPageComponent {
       },
     });
   }
+
+  private connectWs(accountIds: string[]): void {
+    this.wsSub?.unsubscribe();
+    this.wsSub = this.wsService.connect('http://localhost:8085/ws', accountIds).subscribe({
+      next: (event) => {
+        this.ngZone.run(() => {
+          if (event.type === 'BALANCE_UPDATED') {
+            const balanceEvent = event as WsBalanceEvent;
+            this.notifications.success(
+              `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
+            );
+            this.loadAccountsOnly();
+          } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
+            this.loadAccountsOnly();
+            const openAccount = this.selectedAccount();
+            if (openAccount) {
+              this.refreshOperations(openAccount);
+            }
+          }
+        });
+      },
+    });
+  }
+
+  private loadAccountsOnly(): void {
+    this.accountsPageService.loadAccounts().subscribe({
+      next: (records) => this.accountRecords.set(records),
+    });
+  }
+
+  private refreshOperations(record: AccountPageRecord): void {
+    this.accountsPageService.loadOperations(record.accountNumber).subscribe({
+      next: (operations) => this.selectedAccountOperations.set(operations),
+    });
+  }
 }
-
-

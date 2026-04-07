@@ -1,10 +1,10 @@
-﻿import { Injectable } from '@angular/core';
-import { catchError, forkJoin, map, Observable, of } from 'rxjs';
-import { type AccountDto, type AccountOperationDto } from 'shared/entities/accounts';
-import { type UserDto } from 'shared/entities/users';
+import { Injectable } from '@angular/core';
+import { map, Observable } from 'rxjs';
+import { type AccountWithOwnerDto, type OperationDto } from 'shared/entities/accounts';
 import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface AccountPageRecord {
+  accountId?: string;
   client: string;
   accountNumber: string;
   balance: string;
@@ -17,7 +17,7 @@ export interface AccountOperationRecord {
   date: string;
   type: string;
   amount: string;
-  description: string;
+  isIncoming: boolean;
 }
 
 @Injectable({
@@ -27,18 +27,8 @@ export class AccountsPageService {
   constructor(private readonly requestService: EmployeeAdminRequestService) {}
 
   loadAccounts(): Observable<AccountPageRecord[]> {
-    return forkJoin({
-      list: this.requestService.getAccountsList(),
-      users: this.requestService.getUsers('ALL').pipe(catchError(() => of([] as UserDto[]))),
-    }).pipe(
-      map(({ list, users }) => {
-        const usersById = new Map<string, UserDto>();
-        for (const user of users) {
-          usersById.set(String(user.id), user);
-        }
-
-        return list.content.map((account) => this.mapAccount(account, usersById.get(String(account.clientId))));
-      })
+    return this.requestService.getAllAccounts().pipe(
+      map((accounts) => accounts.map((account) => this.mapAccount(account)))
     );
   }
 
@@ -48,72 +38,58 @@ export class AccountsPageService {
       .pipe(map((operations) => operations.map((operation) => this.mapOperation(operation))));
   }
 
-  private mapAccount(account: AccountDto, client?: UserDto): AccountPageRecord {
+  private mapAccount(account: AccountWithOwnerDto): AccountPageRecord {
     return {
-      client: client?.name ?? `ID ${account.clientId}`,
+      accountId: account.accountId,
+      client: account.ownerFullName ?? account.clientName ?? `ID ${account.ownerId ?? account.clientId}`,
       accountNumber: account.accountNumber,
-      balance: this.formatAmount(account.balance),
+      balance: this.formatAmount(account.balance, account.currency ?? 'RUB'),
       balanceValue: account.balance,
-      status: this.mapStatus(account.status),
+      status: account.status === 'ACTIVE' ? 'Активен' : 'Закрыт',
     };
   }
 
-  private mapOperation(operation: AccountOperationDto): AccountOperationRecord {
+  private mapOperation(op: OperationDto): AccountOperationRecord {
+    const incoming = this.isIncoming(op.operationType);
     return {
-      id: String(operation.id),
-      date: this.formatDateTime(operation.createdAt),
-      type: this.mapOperationType(operation.operationType),
-      amount: this.formatOperationAmount(operation.amount, operation.operationType),
-      description: operation.description || '-',
+      id: op.id,
+      date: this.formatDateTime(op.createdAt),
+      type: this.mapOperationType(op.operationType),
+      amount: this.formatOperationAmount(op.amount, op.operationType, op.currency ?? 'RUB'),
+      isIncoming: incoming,
     };
   }
 
-  private mapStatus(status: string): string {
-    const normalized = String(status).toUpperCase();
-    if (normalized === 'ACTIVE') {
-      return 'Активен';
-    }
-    if (normalized === 'INACTIVE') {
-      return 'Неактивен';
-    }
-    if (normalized === 'BANNED' || normalized === 'BLOCKED') {
-      return 'Заблокирован';
-    }
-
-    return status;
+  private isIncoming(type: string): boolean {
+    return type === 'DEPOSIT' || type === 'TRANSFER_IN' || type === 'CREDIT_ISSUE';
   }
 
-  private mapOperationType(operationType: string): string {
-    const normalized = String(operationType).toUpperCase();
-    if (normalized.includes('DEPOSIT')) {
-      return 'Пополнение';
-    }
-    if (normalized.includes('WITHDRAW')) {
-      return 'Снятие';
-    }
-
-    return operationType;
+  private mapOperationType(type: string): string {
+    const map: Record<string, string> = {
+      DEPOSIT: 'Пополнение',
+      WITHDRAW: 'Снятие',
+      TRANSFER_IN: 'Перевод (приход)',
+      TRANSFER_OUT: 'Перевод (расход)',
+      CREDIT_ISSUE: 'Выдача кредита',
+      CREDIT_PAYMENT: 'Погашение кредита',
+    };
+    return map[type] ?? type;
   }
 
-  private formatAmount(value: number): string {
+  private formatAmount(value: number, currency = 'RUB'): string {
     return new Intl.NumberFormat('ru-RU', {
       style: 'currency',
-      currency: 'RUB',
+      currency,
       maximumFractionDigits: 2,
     }).format(value);
   }
 
-  private formatOperationAmount(amount: number, operationType: string): string {
-    const base = this.formatAmount(Math.abs(amount));
-    const normalized = String(operationType).toUpperCase();
-    if (normalized.includes('WITHDRAW')) {
+  private formatOperationAmount(amount: number, type: string, currency = 'RUB'): string {
+    const base = this.formatAmount(Math.abs(amount), currency);
+    if (type === 'WITHDRAW' || type === 'TRANSFER_OUT' || type === 'CREDIT_PAYMENT') {
       return `-${base}`;
     }
-    if (normalized.includes('DEPOSIT')) {
-      return `+${base}`;
-    }
-
-    return base;
+    return `+${base}`;
   }
 
   private formatDateTime(value: string): string {
@@ -121,7 +97,6 @@ export class AccountsPageService {
     if (Number.isNaN(date.getTime())) {
       return value;
     }
-
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
@@ -130,4 +105,3 @@ export class AccountsPageService {
     return `${day}.${month}.${year} ${hours}:${minutes}`;
   }
 }
-

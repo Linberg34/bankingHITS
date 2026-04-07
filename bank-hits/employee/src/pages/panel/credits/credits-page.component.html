@@ -4,12 +4,10 @@
     <div class="filters">
       <label class="filter-item">
         <span>Клиент</span>
-        <select [(ngModel)]="selectedClient" (ngModelChange)="applyFilters()">
+        <select [(ngModel)]="selectedClientId" (ngModelChange)="applyFilters()">
           <option value="all">Все клиенты</option>
-          @for (client of clientOptions(); track client) {
-            @if (client !== 'all') {
-              <option [value]="client">{{ client }}</option>
-            }
+          @for (client of clients(); track client.id) {
+            <option [value]="client.id">{{ client.name }}</option>
           }
         </select>
       </label>
@@ -18,6 +16,10 @@
 
   @if (errorText()) {
     <p class="state-text state-text--error">{{ errorText() }}</p>
+  }
+
+  @if (isLoading()) {
+    <p class="state-text">Загрузка...</p>
   }
 
   <article class="table-card">
@@ -33,7 +35,6 @@
         @for (credit of credits(); track credit.id) {
           <tr class="credit-row" (click)="openDetails(credit)">
             <td>{{ credit.clientName }}</td>
-            <td>{{ credit.account }}</td>
             <td>{{ credit.tariff }}</td>
             <td>{{ credit.amount }}</td>
             <td>{{ credit.remaining }}</td>
@@ -48,12 +49,11 @@
                 {{ credit.status }}
               </span>
             </td>
-            <td>{{ credit.issuedAt }}</td>
           </tr>
         }
-        @if (!credits().length) {
+        @if (!credits().length && !isLoading()) {
           <tr>
-            <td colspan="8">Кредиты не найдены</td>
+            <td colspan="6">Кредиты не найдены</td>
           </tr>
         }
       </tbody>
@@ -65,14 +65,9 @@
       <section class="credit-details">
         <div class="details-top">
           <h3>{{ selectedCredit.clientName }}</h3>
-          <span class="credit-id">{{ selectedCredit.id }}</span>
         </div>
 
         <div class="details-grid">
-          <article>
-            <small>Счет</small>
-            <strong>{{ selectedCredit.account }}</strong>
-          </article>
           <article>
             <small>Тариф</small>
             <strong>{{ selectedCredit.tariff }}</strong>
@@ -86,16 +81,12 @@
             <strong>{{ selectedCredit.remaining }}</strong>
           </article>
           <article>
-            <small>Срок</small>
-            <strong>{{ selectedCredit.termMonths }} мес.</strong>
+            <small>Ставка</small>
+            <strong>{{ selectedCredit.rate }}</strong>
           </article>
           <article>
-            <small>Оплачено</small>
-            <strong>{{ selectedCredit.paidMonths }} мес.</strong>
-          </article>
-          <article>
-            <small>Дата закрытия</small>
-            <strong>{{ selectedCredit.closedAt }}</strong>
+            <small>Следующий платеж</small>
+            <strong>{{ selectedCredit.nextPayment }}</strong>
           </article>
         </div>
       </section>

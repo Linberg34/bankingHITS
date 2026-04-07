@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;  // явно указываем этот импорт
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -77,7 +77,6 @@ public class ProxyService {
                 .map(accountMapper::toOperationDto)
                 .toList();
 
-        // AccountService не возвращает total — делаем best effort
         return new OperationPageResponse(
                 content,
                 page,
@@ -93,8 +92,6 @@ public class ProxyService {
 
 
     public ClientPageResponse getClients(int page, int size) {
-        // UserService возвращает List, не Page
-        // делаем ручную пагинацию на стороне BFF
         List<UserResponse> all = userServiceClient.getUsers(null);
 
         int fromIndex = page * size;
@@ -171,9 +168,26 @@ public class ProxyService {
     }
 
     public CreditListResponse getClientCredits(UUID clientId) {
-        List<CreditSummaryResponse> raw =
+        List<CreditDetailResponse> raw =
                 creditServiceClient.getCreditsByUserId(clientId);
-        return new CreditListResponse(creditMapper.toCreditSummaryDtoList(raw));
+
+        List<CreditSummaryDto> credits = raw.stream()
+                .map(credit -> {
+                    CreditSummaryDto dto = new CreditSummaryDto();
+                    dto.setCreditId(credit.getId());
+                    dto.setCurrency(credit.getCurrency());
+                    dto.setAmount(credit.getPrincipalAmount());
+                    dto.setRemainingDebt(credit.getRemainingDebt());
+                    dto.setInterestRate(credit.getAnnualRate());
+                    dto.setTariffName(credit.getTariffName());
+                    dto.setStatus(CreditSummaryDto.CreditStatus
+                            .valueOf(credit.getStatus()));
+                    dto.setNextPaymentAt(credit.getNextPaymentAt());
+                    return dto;
+                })
+                .toList();
+
+        return new CreditListResponse(credits);
     }
 
     public CreditDetailEmployeeResponse getCreditDetail(UUID creditId) {
@@ -201,8 +215,14 @@ public class ProxyService {
     }
 
     public CreateTariffResponse createTariff(CreateTariffRequest request) {
+        CreditServiceTariffRequest creditRequest =
+                new CreditServiceTariffRequest(
+                        request.getName(),
+                        request.getInterestRate(),
+                        request.getTermDays()
+                );
         return creditMapper.toCreateTariffResponse(
-                creditServiceClient.createTariff(request)
+                creditServiceClient.createTariff(creditRequest)
         );
     }
 }

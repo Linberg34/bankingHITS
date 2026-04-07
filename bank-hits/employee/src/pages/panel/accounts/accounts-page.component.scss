@@ -97,6 +97,13 @@ tbody tr:last-child td {
   gap: 12px;
 }
 
+.history-table-scroll {
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 8px;
+  border: 1px solid var(--color-border, #ece8f5);
+}
+
 .history-account {
   color: var(--color-text, #3b3550);
   font-weight: 600;
@@ -107,6 +114,28 @@ tbody tr:last-child td {
 .history-table td {
   font-size: 14px;
   padding: 10px 12px;
+}
+
+.amount-col {
+  text-align: right;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.amount--incoming {
+  color: #2f8551;
+}
+
+.amount--outgoing {
+  color: #c0392b;
+}
+
+[data-theme='dark'] .amount--incoming {
+  color: #a7f3d0;
+}
+
+[data-theme='dark'] .amount--outgoing {
+  color: #f87171;
 }
 
 [data-theme='dark'] .badge {

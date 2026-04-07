@@ -37,9 +37,9 @@ public class UserSettings {
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "account_id", nullable = false)
-    private List<UUID> hiddenAccountIds = new ArrayList<>();
+    private List<String> hiddenAccountIds = new ArrayList<>();
 
-    public UserSettings(UUID userId, Theme theme, List<UUID> hiddenAccountIds) {
+    public UserSettings(UUID userId, Theme theme, List<String> hiddenAccountIds) {
         this.userId = userId;
         this.theme = theme;
         this.hiddenAccountIds = hiddenAccountIds != null ? new ArrayList<>(hiddenAccountIds) : new ArrayList<>();

@@ -10,7 +10,7 @@ description = 'employee-bff'
 
 java {
 	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
+		languageVersion = JavaLanguageVersion.of(23)
 	}
 }
 
@@ -62,6 +62,7 @@ dependencyManagement {
 
 compileJava {
 	options.compilerArgs = [
+			'-parameters',
 			'-Amapstruct.suppressGeneratorTimestamp=true',
 			'-Amapstruct.defaultComponentModel=spring'
 	]

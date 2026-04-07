@@ -1,10 +1,10 @@
-﻿import { Component, signal } from '@angular/core';
+﻿import { Component, OnInit, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { NotificationService } from '../../../../../shared/frontend-core';
-import { BasicModalComponent } from '../../../../../shared/ui/basic-modal';
-import { CreditRecord, CreditsPageService } from './model';
+import { NotificationService } from 'shared/frontend-core';
+import { BasicModalComponent } from 'shared/ui/basic-modal';
+import { type ClientOption, type CreditRecord, CreditsPageService } from './model';
 
-const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус', 'Дата выдачи'];
+const CREDIT_TABLE_COLUMNS = ['Клиент', 'Тариф', 'Сумма', 'Осталось', 'Ставка', 'Статус'];
 
 @Component({
   selector: 'employee-credits-page',
@@ -13,30 +13,61 @@ const CREDIT_TABLE_COLUMNS = ['Клиент', 'Счет', 'Тариф', 'Сум�
   templateUrl: './credits-page.component.html',
   styleUrl: './credits-page.component.scss',
 })
-export class CreditsPageComponent {
+export class CreditsPageComponent implements OnInit {
   columns = CREDIT_TABLE_COLUMNS;
   credits = signal<CreditRecord[]>([]);
-  readonly allCredits = signal<CreditRecord[]>([]);
-  clientOptions = signal<string[]>(['all']);
-  selectedClient = 'all';
+  allCredits = signal<CreditRecord[]>([]);
+  clients = signal<ClientOption[]>([]);
+  selectedClientId = 'all';
   detailsModalOpen = false;
   selectedCredit: CreditRecord | null = null;
   errorText = signal('');
+  isLoading = signal(false);
 
   constructor(
     private readonly creditsPageService: CreditsPageService,
     private readonly notifications: NotificationService
-  ) {
-    this.loadCredits();
+  ) {}
+
+  ngOnInit(): void {
+    this.loadClients();
+  }
+
+  private loadClients(): void {
+    this.creditsPageService.loadClients().subscribe({
+      next: (clients) => {
+        this.clients.set(clients);
+        this.loadAllCredits(clients);
+      },
+      error: () => {
+        const message = 'Не удалось загрузить список клиентов.';
+        this.errorText.set(message);
+        this.notifications.error(message);
+      },
+    });
+  }
+
+  private loadAllCredits(clients: ClientOption[]): void {
+    this.isLoading.set(true);
+    this.creditsPageService.loadAllCredits(clients).subscribe({
+      next: (records) => {
+        this.allCredits.set(records);
+        this.applyFilters();
+        this.isLoading.set(false);
+      },
+      error: () => {
+        const message = 'Не удалось загрузить кредиты.';
+        this.errorText.set(message);
+        this.notifications.error(message);
+        this.isLoading.set(false);
+      },
+    });
   }
 
   applyFilters(): void {
-    let nextCredits = [...this.allCredits()];
-    if (this.selectedClient !== 'all') {
-      nextCredits = nextCredits.filter((credit) => credit.clientName === this.selectedClient);
-    }
-
-    this.credits.set(nextCredits);
+    const id = this.selectedClientId;
+    const all = this.allCredits();
+    this.credits.set(id === 'all' ? all : all.filter((c) => c.clientId === id));
   }
 
   openDetails(credit: CreditRecord): void {
@@ -50,39 +81,15 @@ export class CreditsPageComponent {
   }
 
   isActiveStatus(status: string): boolean {
-    const normalized = status.toLowerCase();
-    return normalized.includes('актив') || normalized === 'active';
+    return status.toLowerCase().includes('актив') || status === 'active';
   }
 
   isPaidStatus(status: string): boolean {
-    const normalized = status.toLowerCase();
-    return normalized.includes('погаш') || normalized === 'paid' || normalized === 'closed';
+    const n = status.toLowerCase();
+    return n.includes('погаш') || n === 'paid' || n === 'closed';
   }
 
   isOverdueStatus(status: string): boolean {
-    const normalized = status.toLowerCase();
-    return normalized.includes('проср') || normalized === 'overdue';
-  }
-
-  private loadCredits(): void {
-    this.errorText.set('');
-
-    this.creditsPageService.loadCredits().subscribe({
-      next: (records) => {
-        this.allCredits.set(records);
-        this.clientOptions.set(['all', ...new Set(records.map((credit) => credit.clientName))]);
-        if (!this.clientOptions().includes(this.selectedClient)) {
-          this.selectedClient = 'all';
-        }
-
-        this.applyFilters();      },
-      error: () => {
-        const message = 'Не удалось загрузить кредиты.';
-        this.errorText.set(message);
-        this.notifications.error(message);
-      },
-    });
+    return status.toLowerCase().includes('проср') || status === 'overdue';
   }
 }
-
-

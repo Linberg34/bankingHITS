@@ -1,8 +1,5 @@
 package com.iisovaii.client_bff.kafka;
 
-import com.iisovaii.client_bff.dto.common.Currency;
-import com.iisovaii.client_bff.dto.operation.OperationStatus;
-import com.iisovaii.client_bff.dto.operation.OperationType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,20 +12,17 @@ import java.util.UUID;
 public class OperationResultMessage {
 
     private UUID operationId;
-    private OperationStatus status;
-    private String errorCode;
+    private String status;       // "SUCCESS" | "FAILED"
     private String errorMessage;
 
     private UUID userId;
     private UUID accountId;
+    private String accountNumber;
 
     private BigDecimal amount;
-    private Currency currency;
-    private OperationType type;
-    private UUID relatedAccountId;
-    private String relatedAccountOwner;
-    private LocalDateTime createdAt;
+    private String currency;     // "RUB" | "USD" | "EUR"
+    private String type;         // "DEPOSIT" | "WITHDRAW" | "TRANSFER_OUT" etc.
 
     private BigDecimal newBalance;
+    private LocalDateTime createdAt;
 }
-

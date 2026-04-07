@@ -1,13 +1,14 @@
-﻿import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { type TariffDto } from 'shared/entities/tariffs';
+import { type CreateTariffResponse, type TariffDto } from 'shared/entities/tariffs';
 import { EmployeeAdminRequestService } from '../../../../app/infrastructure/request/employee-admin-request.service';
 
 export interface TariffRecord {
   id: string;
   name: string;
-  createdAt: string;
   rate: string;
+  termDays: number;
+  createdAt: string;
 }
 
 @Injectable({
@@ -22,31 +23,29 @@ export class TariffsPageService {
       .pipe(map((tariffs) => tariffs.map((tariff) => this.mapTariff(tariff))));
   }
 
-  createTariff(name: string, annualRate: number): Observable<TariffRecord> {
+  createTariff(name: string, interestRate: number, termDays: number): Observable<TariffRecord> {
     return this.requestService
-      .createTariff(name, annualRate)
-      .pipe(map((tariff) => this.mapTariff(tariff)));
+      .createTariff(name, interestRate, termDays)
+      .pipe(map((tariff) => this.mapCreatedTariff(tariff)));
   }
 
   private mapTariff(tariff: TariffDto): TariffRecord {
     return {
-      id: String(tariff.id),
+      id: tariff.tariffId,
       name: tariff.name,
-      createdAt: this.formatDate(tariff.createdAt),
-      rate: `${tariff.annualRate}%`,
+      rate: `${tariff.interestRate}%`,
+      termDays: tariff.termDays,
+      createdAt: '',
     };
   }
 
-  private formatDate(value: string): string {
-    const date = new Date(value);
-    if (Number.isNaN(date.getTime())) {
-      return value;
-    }
-
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const year = date.getFullYear();
-    return `${day}.${month}.${year}`;
+  private mapCreatedTariff(tariff: CreateTariffResponse): TariffRecord {
+    return {
+      id: tariff.tariffId,
+      name: tariff.name,
+      rate: `${tariff.interestRate}%`,
+      termDays: tariff.termDays,
+      createdAt: '',
+    };
   }
 }
-

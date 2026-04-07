@@ -1,13 +1,16 @@
 ﻿<app-client-shell>
   <div class="accounts-page">
     <div class="accounts-page__actions">
+      <shared-button variant="outline" (click)="showHidden.set(!showHidden())">
+        {{ showHidden() ? 'Скрыть скрытые счета' : 'Показать скрытые счета' }}
+      </shared-button>
       <shared-button (click)="openNewAccountDialog()">Открыть новый счет</shared-button>
     </div>
 
     <shared-dialog [open]="openNewAccount()" (openChange)="openNewAccount.set($event)">
       <shared-dialog-header>
         <shared-dialog-title>Открыть новый счет</shared-dialog-title>
-        <shared-dialog-description>Новый счет будет открыт в рублях (RUB)</shared-dialog-description>
+        <shared-dialog-description>Выберите валюту для нового счета</shared-dialog-description>
       </shared-dialog-header>
       <div class="accounts-page__dialog-body">
         @if (actionState().status === 'error' && actionState().message; as err) {
@@ -15,7 +18,11 @@
         }
         <div class="accounts-page__field">
           <shared-label>Валюта</shared-label>
-          <shared-select [options]="currencyOptions" [value]="'RUB'" />
+          <shared-select
+            [options]="currencyOptions"
+            [value]="selectedCurrency()"
+            (valueChange)="selectedCurrency.set($any($event))"
+          />
         </div>
       </div>
       <shared-dialog-footer>
@@ -33,18 +40,22 @@
       </shared-card-header>
       <shared-card-content>
         <div class="accounts-list">
-          @for (account of (activeAccounts$ | async) ?? []; track account.id) {
-            <shared-card class="accounts-list-item">
+          @for (account of (visibleAccounts$ | async) ?? []; track account.id) {
+            <shared-card class="accounts-list-item" [class.accounts-list-item--hidden]="isAccountHidden(account)">
               <shared-card-content class="accounts-list-item__content">
                 <div class="accounts-list-item__main">
                   <div>
                     <p class="accounts-list-item__number">{{ account.accountNumber }}</p>
-                    <p class="accounts-list-item__balance-muted">Баланс: {{ formatMoney(account.balance) }}</p>
+                    <p class="accounts-list-item__balance-muted">{{ account.currency }} · Баланс: {{ formatMoney(account.balance, account.currency) }}</p>
                   </div>
                   <div class="accounts-list-item__actions">
                     <shared-button variant="outline" size="sm" (click)="openDepositDialog(account)">Пополнить</shared-button>
                     <shared-button variant="outline" size="sm" (click)="openWithdrawDialog(account)">Снять</shared-button>
+                    <shared-button variant="outline" size="sm" (click)="openTransferDialog(account)">Перевести</shared-button>
                     <shared-button variant="outline" size="sm" (click)="openHistoryDialog(account)">История</shared-button>
+                    <shared-button variant="outline" size="sm" (click)="toggleHidden(account)">
+                      {{ isAccountHidden(account) ? 'Показать' : 'Скрыть' }}
+                    </shared-button>
                     <shared-button variant="outline" size="sm" (click)="requestCloseAccount(account)">Закрыть счет</shared-button>
                   </div>
                 </div>
@@ -65,7 +76,7 @@
           <p class="accounts-page__error">{{ err }}</p>
         }
         <div class="accounts-page__field">
-          <shared-label>Сумма (?)</shared-label>
+          <shared-label>Сумма</shared-label>
           <shared-input type="number" placeholder="0" [value]="amount()" (valueChange)="amount.set($event)" />
         </div>
       </div>
@@ -85,13 +96,37 @@
           <p class="accounts-page__error">{{ err }}</p>
         }
         <div class="accounts-page__field">
-          <shared-label>Сумма (?)</shared-label>
+          <shared-label>Сумма</shared-label>
           <shared-input type="number" placeholder="0" [value]="amount()" (valueChange)="amount.set($event)" />
         </div>
       </div>
       <shared-dialog-footer>
         <shared-button variant="outline" (click)="closeWithdraw()">Отмена</shared-button>
         <shared-button (click)="handleWithdraw()" [disabled]="!amount() || actionState().status === 'loading'">Снять</shared-button>
+      </shared-dialog-footer>
+    </shared-dialog>
+
+    <shared-dialog [open]="openTransfer()" (openChange)="openTransfer.set($event)">
+      <shared-dialog-header>
+        <shared-dialog-title>Перевод средств</shared-dialog-title>
+        <shared-dialog-description>Перевод со счета {{ selectedAccountId() }}</shared-dialog-description>
+      </shared-dialog-header>
+      <div class="accounts-page__dialog-body">
+        @if (actionState().status === 'error' && actionState().message; as err) {
+          <p class="accounts-page__error">{{ err }}</p>
+        }
+        <div class="accounts-page__field">
+          <shared-label>Номер счета получателя</shared-label>
+          <shared-input placeholder="Номер счета" [value]="transferToAccountNumber()" (valueChange)="transferToAccountNumber.set($event)" />
+        </div>
+        <div class="accounts-page__field">
+          <shared-label>Сумма</shared-label>
+          <shared-input type="number" placeholder="0" [value]="amount()" (valueChange)="amount.set($event)" />
+        </div>
+      </div>
+      <shared-dialog-footer>
+        <shared-button variant="outline" (click)="closeTransfer()">Отмена</shared-button>
+        <shared-button (click)="handleTransfer()" [disabled]="!amount() || !transferToAccountNumber() || actionState().status === 'loading'">Перевести</shared-button>
       </shared-dialog-footer>
     </shared-dialog>
 
@@ -115,7 +150,7 @@
                 <shared-table-cell>{{ formatDate(tx.createdAt) }}</shared-table-cell>
                 <shared-table-cell>{{ getTransactionLabel(tx.type) }}</shared-table-cell>
                 <shared-table-cell [align]="'right'" [class.accounts-page__cell-incoming]="isIncoming(tx.type)" [class.accounts-page__cell-outgoing]="!isIncoming(tx.type)">
-                  {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount) }}
+                  {{ isIncoming(tx.type) ? '+' : '-' }}{{ formatMoney(tx.amount, tx.currency) }}
                 </shared-table-cell>
               </shared-table-row>
             }
@@ -139,4 +174,3 @@
     />
   </div>
 </app-client-shell>
-

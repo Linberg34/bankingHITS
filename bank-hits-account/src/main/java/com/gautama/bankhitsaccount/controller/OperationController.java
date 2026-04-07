@@ -42,7 +42,7 @@ public class OperationController {
     }
 
     @GetMapping("/account/{accountNumber}/page")
-    public ResponseEntity<List<OperationDTO>> getAccountOperationsPage(
+    public ResponseEntity<com.gautama.bankhitsaccount.dto.PageDTO<OperationDTO>> getAccountOperationsPage(
             @PathVariable String accountNumber,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {

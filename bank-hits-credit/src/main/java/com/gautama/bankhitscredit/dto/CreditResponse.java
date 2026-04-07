@@ -16,6 +16,7 @@ public class CreditResponse {
     private UUID id;
     private UUID clientId;
     private String accountNumber;
+    private String currency;
     private String tariffName;
     private BigDecimal annualRate;
     private int termDays;

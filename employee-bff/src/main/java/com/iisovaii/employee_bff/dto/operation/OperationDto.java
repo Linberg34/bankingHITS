@@ -1,5 +1,6 @@
 package com.iisovaii.employee_bff.dto.operation;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +13,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OperationDto {
+    @JsonProperty("id")
     private UUID operationId;
+    @JsonProperty("operationType")
     private OperationType type;
     private BigDecimal amount;
     private Currency currency;

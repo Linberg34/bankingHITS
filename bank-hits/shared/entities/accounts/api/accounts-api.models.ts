@@ -1,59 +1,116 @@
-export type AccountId = number | string;
-export type UserId = number | string;
+export type AccountCurrency = 'RUB' | 'USD' | 'EUR';
+export type AccountStatus = 'ACTIVE' | 'CLOSED';
+export type OperationType =
+  | 'DEPOSIT'
+  | 'WITHDRAW'
+  | 'TRANSFER_IN'
+  | 'TRANSFER_OUT'
+  | 'CREDIT_ISSUE'
+  | 'CREDIT_PAYMENT';
+export type OperationStatus = 'SUCCESS' | 'PENDING' | 'FAILED';
 
-export interface CreateAccountRequest {
-  clientId: UserId;
-  accountNumber: string;
-  balance: number;
-  status: string;
-}
-
+/** Счёт, возвращаемый client-bff */
 export interface AccountDto {
-  id?: AccountId;
-  clientId: UserId;
+  id: string;
+  clientId: string;
   accountNumber: string;
+  currency: AccountCurrency;
   balance: number;
-  status: string;
-  createdAt?: string;
+  status: AccountStatus;
 }
 
-export interface AccountListQuery {
-  filterUserId?: UserId;
-  status?: string;
-  minBalance?: number;
-  maxBalance?: number;
-  page?: number;
-  size?: number;
-  sort?: string[];
-}
-
+/** Обёртка GET /bff/client/accounts */
 export interface AccountListResponse {
-  content: AccountDto[];
-  pageNumber: number;
-  pageSize: number;
-  totalElements: number;
-  totalPages: number;
-  last: boolean;
-  first: boolean;
-  empty: boolean;
+  accounts: AccountDto[];
 }
 
-export interface AccountOperationDto {
-  id: AccountId;
-  accountId: AccountId;
-  accountNumber: string;
+/** Операция, возвращаемая client-bff */
+export interface OperationDto {
+  id: string;
   operationType: string;
   amount: number;
-  balanceBefore: number;
-  balanceAfter: number;
+  currency: string;
+  accountNumber: string;
   status: string;
-  description: string;
+  description: string | null;
   createdAt: string;
 }
 
-export interface AccountOperationResultDto {
-  operation: AccountOperationDto;
-  account: AccountDto;
-  message: string;
+/** Обёртка GET /bff/client/accounts/{num}/operations */
+export interface OperationPageResponse {
+  content: OperationDto[];
+  page: number;
+  size: number;
+  totalElements: number;
 }
 
+/** POST /bff/client/operations/deposit | withdraw */
+export interface DepositRequest {
+  accountNumber: string;
+  amount: number;
+}
+
+export interface WithdrawRequest {
+  accountNumber: string;
+  amount: number;
+}
+
+/** POST /bff/client/operations/transfer */
+export interface TransferRequest {
+  fromAccountNumber: string;
+  toAccountNumber: string;
+  amount: number;
+}
+
+/** Ответ на операцию через Kafka (async) */
+export interface OperationAcceptedResponse {
+  operationId: string;
+  status: OperationStatus;
+}
+
+/** POST /bff/client/accounts */
+export interface OpenAccountRequest {
+  currency: AccountCurrency;
+}
+
+export interface OpenAccountResponse {
+  clientId: string;
+  accountNumber: string;
+  currency: AccountCurrency;
+  balance: number;
+  status: AccountStatus;
+}
+
+/** DELETE /bff/client/accounts/{accountId} */
+export interface CloseAccountResponse {
+  accountNumber: string;
+  status: AccountStatus;
+}
+
+/** Параметры запроса списка счетов (для employee BFF) */
+export interface AccountListQuery {
+  page?: number;
+  size?: number;
+}
+
+/** Employee BFF: все счета с владельцами */
+export interface AccountWithOwnerDto {
+  accountId?: string;
+  accountNumber: string;
+  ownerId?: string;
+  ownerFullName?: string;
+  clientId?: string;
+  clientName?: string;
+  currency: AccountCurrency;
+  balance: number;
+  status: AccountStatus;
+}
+
+export interface AllAccountsPageResponse {
+  content: AccountWithOwnerDto[];
+  accounts?: AccountWithOwnerDto[];
+  totalElements: number;
+  totalPages?: number;
+  page: number;
+  size: number;
+}

@@ -42,6 +42,7 @@ public class KafkaConfig {
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class
         );
+        props.put(JsonSerializer.ADD_TYPE_INFO_HEADERS, false);
         // гарантируем доставку до всех реплик
         props.put(ProducerConfig.ACKS_CONFIG, "all");
         // повторные попытки при сбое
@@ -82,6 +83,10 @@ public class KafkaConfig {
         props.put(
                 JsonDeserializer.VALUE_DEFAULT_TYPE,
                 OperationResultMessage.class.getName()
+        );
+        props.put(
+                JsonDeserializer.USE_TYPE_INFO_HEADERS,
+                false
         );
         // читаем только новые сообщения
         props.put(

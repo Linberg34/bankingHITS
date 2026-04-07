@@ -3,14 +3,18 @@ import { Inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { API_BASE_URL } from '../../../api';
 import {
-  AccountDto,
-  AccountId,
-  AccountListQuery,
   AccountListResponse,
-  AccountOperationDto,
-  AccountOperationResultDto,
-  CreateAccountRequest,
-  UserId,
+  AccountDto,
+  OpenAccountRequest,
+  OpenAccountResponse,
+  CloseAccountResponse,
+  OperationPageResponse,
+  DepositRequest,
+  WithdrawRequest,
+  TransferRequest,
+  OperationAcceptedResponse,
+  AllAccountsPageResponse,
+  AccountListQuery,
 } from './accounts-api.models';
 
 @Injectable({
@@ -22,92 +26,62 @@ export class AccountsApiService {
     @Inject(API_BASE_URL) private readonly apiBaseUrl: string
   ) {}
 
-  createAccount(payload: CreateAccountRequest): Observable<AccountDto> {
-    return this.httpClient.post<AccountDto>(`${this.normalizedBaseUrl}/api/account`, payload);
+  /** Получить список счетов текущего клиента */
+  getMyAccounts(): Observable<AccountListResponse> {
+    return this.httpClient.get<AccountListResponse>(`${this.base}/accounts`);
   }
 
-  withdraw(accountId: AccountId, amount: number, description?: string): Observable<AccountOperationResultDto> {
-    return this.httpClient.post<AccountOperationResultDto>(
-      `${this.normalizedBaseUrl}/api/account/${accountId}/withdraw`,
-      null,
-      { params: this.operationParams(amount, description) }
-    );
+  /** Открыть новый счёт */
+  openAccount(request: OpenAccountRequest): Observable<OpenAccountResponse> {
+    return this.httpClient.post<OpenAccountResponse>(`${this.base}/accounts`, request);
   }
 
-  deposit(accountId: AccountId, amount: number, description?: string): Observable<AccountOperationResultDto> {
-    return this.httpClient.post<AccountOperationResultDto>(
-      `${this.normalizedBaseUrl}/api/account/${accountId}/deposit`,
-      null,
-      { params: this.operationParams(amount, description) }
-    );
+  /** Закрыть счёт */
+  closeAccount(accountNumber: string): Observable<CloseAccountResponse> {
+    return this.httpClient.delete<CloseAccountResponse>(`${this.base}/accounts/${accountNumber}`);
   }
 
-  getCurrentAccount(): Observable<AccountDto> {
-    return this.httpClient.post<AccountDto>(`${this.normalizedBaseUrl}/api/account/current`, null);
-  }
-
-  getOperations(accountNumber: string): Observable<AccountOperationDto[]> {
-    return this.httpClient.get<AccountOperationDto[]>(
-      `${this.normalizedBaseUrl}/api/account/${accountNumber}/operations`
-    );
-  }
-
-  getOperationsPage(accountNumber: string, page = 0, size = 20): Observable<AccountOperationDto[]> {
-    return this.httpClient.get<AccountOperationDto[]>(
-      `${this.normalizedBaseUrl}/api/account/${accountNumber}/operations/page`,
+  /** История операций по счёту (пагинация) */
+  getOperations(accountNumber: string, page = 0, size = 50): Observable<OperationPageResponse> {
+    return this.httpClient.get<OperationPageResponse>(
+      `${this.base}/accounts/${accountNumber}/operations`,
       { params: { page, size } }
     );
   }
 
-  getAccountsByUserId(userId: UserId): Observable<AccountDto[]> {
-    return this.httpClient.get<AccountDto[]>(`${this.normalizedBaseUrl}/api/account/user/${userId}`);
+  /** Пополнение счёта (через Kafka) */
+  deposit(request: DepositRequest): Observable<OperationAcceptedResponse> {
+    return this.httpClient.post<OperationAcceptedResponse>(
+      `${this.base}/operations/deposit`,
+      request
+    );
   }
 
-  getAccountByNumber(accountNumber: string): Observable<AccountDto> {
-    return this.httpClient.get<AccountDto>(`${this.normalizedBaseUrl}/api/account/number/${accountNumber}`);
+  /** Снятие со счёта (через Kafka) */
+  withdraw(request: WithdrawRequest): Observable<OperationAcceptedResponse> {
+    return this.httpClient.post<OperationAcceptedResponse>(
+      `${this.base}/operations/withdraw`,
+      request
+    );
   }
 
-  getMyAccounts(): Observable<AccountDto[]> {
-    return this.httpClient.get<AccountDto[]>(`${this.normalizedBaseUrl}/api/account/my`);
+  /** Перевод между счетами (через Kafka) */
+  transfer(request: TransferRequest): Observable<OperationAcceptedResponse> {
+    return this.httpClient.post<OperationAcceptedResponse>(
+      `${this.base}/operations/transfer`,
+      request
+    );
   }
 
-  getAccountsList(query: AccountListQuery = {}): Observable<AccountListResponse> {
-    const {
-      filterUserId,
-      status,
-      minBalance,
-      maxBalance,
-      page = 0,
-      size = 20,
-      sort = ['id', 'desc'],
-    } = query;
-
-    return this.httpClient.get<AccountListResponse>(`${this.normalizedBaseUrl}/api/account/list`, {
-      params: {
-        ...(filterUserId !== undefined ? { filterUserId } : {}),
-        ...(status ? { status } : {}),
-        ...(minBalance !== undefined ? { minBalance } : {}),
-        ...(maxBalance !== undefined ? { maxBalance } : {}),
-        page,
-        size,
-        sort,
-      },
+  /** [Employee] Все счета всех клиентов */
+  getAllAccounts(query: AccountListQuery = {}): Observable<AllAccountsPageResponse> {
+    const { page = 0, size = 20 } = query;
+    return this.httpClient.get<AllAccountsPageResponse>(`${this.base}/accounts`, {
+      params: { page, size },
     });
   }
 
-  deleteAccount(accountNumber: string): Observable<void> {
-    return this.httpClient.delete<void>(`${this.normalizedBaseUrl}/api/account/${accountNumber}`);
-  }
-
-  private get normalizedBaseUrl(): string {
+  private get base(): string {
     return this.apiBaseUrl.replace(/\/+$/, '');
-  }
-
-  private operationParams(amount: number, description?: string): Record<string, string> {
-    const params: Record<string, string> = { amount: String(amount) };
-    if (description) {
-      params['description'] = description;
-    }
-    return params;
   }
 }

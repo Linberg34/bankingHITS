@@ -13,6 +13,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class AccountWithOwnerDto {
     private UUID accountId;
+    private String accountNumber;
     private UUID ownerId;
     private String ownerFullName;
     private AccountDto.Currency currency;

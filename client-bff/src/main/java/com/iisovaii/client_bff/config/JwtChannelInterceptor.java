@@ -1,6 +1,7 @@
 package com.iisovaii.client_bff.config;
 
 import com.iisovaii.client_bff.security.JwtValidator;
+import io.jsonwebtoken.Claims;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
@@ -11,23 +12,30 @@ import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
 
-import java.util.Objects;
-
-// проверяет JWT в STOMP заголовке при CONNECT
+// Проверяет JWT в заголовке Authorization STOMP CONNECT фрейма
 @RequiredArgsConstructor
 public class JwtChannelInterceptor implements ChannelInterceptor {
+
+    private final JwtValidator jwtValidator;
+
     @Override
     public Message<?> preSend(@NonNull Message<?> message, @NonNull MessageChannel channel) {
         StompHeaderAccessor accessor =
                 MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
 
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
-            String userId = (String) Objects.requireNonNull(accessor.getSessionAttributes()).get("userId");
-            if (userId == null) {
-                throw new MessagingException("WS: userId не найден в сессии");
+            String authHeader = accessor.getFirstNativeHeader("Authorization");
+            if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+                throw new MessagingException("WS: отсутствует Authorization заголовок");
             }
-            // устанавливаем Principal чтобы работал /user/queue/...
-            accessor.setUser(new StompPrincipal(userId));
+            String token = authHeader.substring(7);
+            try {
+                Claims claims = jwtValidator.validate(token);
+                String userId = claims.getSubject();
+                accessor.setUser(new StompPrincipal(userId));
+            } catch (Exception e) {
+                throw new MessagingException("WS: невалидный токен: " + e.getMessage());
+            }
         }
 
         return message;

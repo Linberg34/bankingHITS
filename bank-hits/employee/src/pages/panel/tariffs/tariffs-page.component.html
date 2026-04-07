@@ -20,6 +20,10 @@
           <small>Процентная ставка</small>
           <strong>{{ tariff.rate }}</strong>
         </div>
+        <div class="rate-box">
+          <small>Срок</small>
+          <strong>{{ tariff.termDays }} дн.</strong>
+        </div>
       </article>
     }
 
@@ -61,6 +65,23 @@
       </label>
       @if (hasRateError) {
         <p class="field-error">{{ rateError }}</p>
+      }
+
+      <label>
+        Срок, дней
+        <input
+          [(ngModel)]="newTariff.termDays"
+          (ngModelChange)="onTermDaysChange()"
+          name="tariffTermDays"
+          type="number"
+          min="1"
+          step="1"
+          [class.input-error]="hasTermDaysError"
+          required
+        />
+      </label>
+      @if (hasTermDaysError) {
+        <p class="field-error">{{ termDaysError }}</p>
       }
 
       <button type="submit" class="submit-btn" [disabled]="actionInProgress()">Сохранить тариф</button>

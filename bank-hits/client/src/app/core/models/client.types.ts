@@ -9,6 +9,7 @@ export interface User {
 
 export interface Account {
   id: string;
+  uuid: string;
   clientId: string;
   accountNumber: string;
   balance: number;
@@ -18,11 +19,22 @@ export interface Account {
   closedAt?: string;
 }
 
+export interface CreditRating {
+  score: number;
+  ratingLabel: string;
+  overduePaymentsCount: number;
+  totalCredits: number;
+  activeCredits: number;
+  closedCredits: number;
+  calculatedAt: string;
+}
+
 export interface Transaction {
   id: string;
   accountId: string;
-  type: 'deposit' | 'withdrawal' | 'credit_issue' | 'credit_payment';
+  type: 'deposit' | 'withdrawal' | 'transfer_in' | 'transfer_out' | 'credit_issue' | 'credit_payment';
   amount: number;
+  currency: string;
   description: string;
   createdAt: string;
 }
@@ -39,6 +51,7 @@ export interface Credit {
   id: string;
   clientId: string;
   accountId: string;
+  currency: string;
   tariffId: string;
   amount: number;
   remainingAmount: number;

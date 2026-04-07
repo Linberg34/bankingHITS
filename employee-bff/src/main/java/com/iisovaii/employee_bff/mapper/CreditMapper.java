@@ -1,9 +1,7 @@
-// mapper/CreditMapper.java
 package com.iisovaii.employee_bff.mapper;
 
 import com.iisovaii.employee_bff.dto.credit.CreditDetailEmployeeResponse;
 import com.iisovaii.employee_bff.dto.credit.CreditPaymentDto;
-import com.iisovaii.employee_bff.dto.credit.CreditRatingResponse;
 import com.iisovaii.employee_bff.dto.credit.CreditSummaryDto;
 import com.iisovaii.employee_bff.dto.response.CreditDetailResponse;
 import com.iisovaii.employee_bff.dto.response.CreditPaymentResponse;
@@ -13,15 +11,16 @@ import com.iisovaii.employee_bff.dto.tariff.CreateTariffResponse;
 import com.iisovaii.employee_bff.dto.tariff.TariffDto;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.IGNORE)
+@Mapper(componentModel = "spring")
 public interface CreditMapper {
+
     @Mapping(target = "creditId", source = "id")
     @Mapping(target = "interestRate", source = "annualRate")
     @Mapping(target = "amount", source = "principalAmount")
+    @Mapping(target = "currency", ignore = true)
     CreditSummaryDto toCreditSummaryDto(CreditSummaryResponse response);
 
     List<CreditSummaryDto> toCreditSummaryDtoList(
@@ -30,10 +29,10 @@ public interface CreditMapper {
 
     @Mapping(target = "creditId", source = "id")
     @Mapping(target = "userId", source = "clientId")
-    @Mapping(target = "accountNumber", source = "accountNumber")
     @Mapping(target = "interestRate", source = "annualRate")
     @Mapping(target = "amount", source = "principalAmount")
     @Mapping(target = "ownerFullName", ignore = true)
+    @Mapping(target = "payments", ignore = true)
     CreditDetailEmployeeResponse toCreditDetailEmployeeResponse(
             CreditDetailResponse response
     );
@@ -45,15 +44,13 @@ public interface CreditMapper {
             List<CreditPaymentResponse> responses
     );
 
-    CreditRatingResponse toCreditRatingResponse(
-            CreditRatingResponse response
-    );
-
     @Mapping(target = "tariffId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
     TariffDto toTariffDto(TariffResponse response);
 
     List<TariffDto> toTariffDtoList(List<TariffResponse> responses);
 
     @Mapping(target = "tariffId", source = "id")
+    @Mapping(target = "interestRate", source = "annualRate")
     CreateTariffResponse toCreateTariffResponse(TariffResponse response);
 }

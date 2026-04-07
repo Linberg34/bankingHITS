@@ -2,7 +2,7 @@ package com.iisovaii.client_bff.client;
 
 import com.iisovaii.client_bff.config.FeignConfig;
 import com.iisovaii.client_bff.dto.credit.*;
-import com.iisovaii.client_bff.dto.tariff.TariffDto;
+import com.iisovaii.client_bff.dto.tariff.TariffResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,33 +18,43 @@ import java.util.UUID;
         configuration = FeignConfig.class
 )
 public interface CreditServiceClient {
-    @GetMapping("/api/credits/client/{clientId}")
-    java.util.List<CreditSummaryDto> getCredits(@PathVariable("clientId") UUID userId);
 
-    @GetMapping("/api/credits/{creditId}")
-    CreditDetailResponse getCreditDetail(
-            @PathVariable("creditId") UUID creditId
+    @GetMapping("/api/credits/client/{clientId}")
+    List<CreditResponse> getCredits(
+            @PathVariable("clientId") UUID clientId
     );
 
-    @GetMapping("/api/credits/{creditId}/payments")
-    List<CreditPaymentDto> getCreditPayments(@PathVariable("creditId") UUID creditId);
+    @GetMapping("/api/credits/{id}")
+    CreditResponse getCreditDetail(
+            @PathVariable("id") UUID id
+    );
+
+    @GetMapping("/api/credits/{id}/payments")
+    List<CreditPaymentResponse> getCreditPayments(
+            @PathVariable("id") UUID id
+    );
 
     @PostMapping("/api/credits")
-    TakeCreditResponse takeCredit(@RequestBody CreditTakeCreditPayload request);
+    CreditResponse takeCredit(
+            @RequestBody TakeCreditPayload request
+    );
 
-    @PostMapping("/api/credits/{creditId}/repay")
-    RepayCreditResponse repayCredit(@PathVariable("creditId") UUID creditId);
+    @PostMapping("/api/credits/{id}/repay")
+    CreditResponse repayCredit(
+            @PathVariable("id") UUID id
+    );
 
-    @PostMapping("/api/credits/{creditId}/repay/partial")
-    RepayCreditResponse repayCreditPartial(
-            @PathVariable("creditId") UUID creditId,
-            @RequestBody RepayCreditRequest request
+    @PostMapping("/api/credits/{id}/repay/partial")
+    CreditResponse repayCreditPartial(
+            @PathVariable("id") UUID id,
+            @RequestBody PartialRepayPayload request
     );
 
     @GetMapping("/api/credits/rating/{clientId}")
-    CreditRatingResponse getCreditRating(@PathVariable("clientId") UUID userId);
+    CreditRatingResponse getCreditRating(
+            @PathVariable("clientId") UUID clientId
+    );
 
     @GetMapping("/api/tariffs")
-    List<TariffDto> getTariffs();
+    List<TariffResponse> getTariffs();
 }
-

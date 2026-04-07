@@ -35,8 +35,8 @@ public class ClientController {
     @GetMapping
     public ResponseEntity<ClientPageResponse> getClients(
             @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "20") int size) {
         return ResponseEntity.ok(
                 proxyService.getClients(page, size)
         );
@@ -44,8 +44,8 @@ public class ClientController {
 
     @GetMapping("/{clientId}")
     public ResponseEntity<ClientDetailResponse> getClientDetail(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.getClientDetail(clientId)
         );
@@ -62,8 +62,8 @@ public class ClientController {
 
     @PutMapping("/{clientId}")
     public ResponseEntity<UpdateUserResponse> updateClient(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId,
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId,
             @RequestBody @Valid UpdateUserRequest request) {
         return ResponseEntity.ok(
                 proxyService.updateUser(clientId, request)
@@ -72,8 +72,8 @@ public class ClientController {
 
     @PostMapping("/{clientId}/block")
     public ResponseEntity<UserStatusResponse> blockClient(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.blockUser(clientId)
         );
@@ -81,8 +81,8 @@ public class ClientController {
 
     @PostMapping("/{clientId}/unblock")
     public ResponseEntity<UserStatusResponse> unblockClient(
-            @Parameter(hidden = true)  @CurrentUser UUID employeeId,
-            @PathVariable UUID clientId) {
+            @Parameter(hidden = true) @CurrentUser UUID employeeId,
+            @PathVariable("clientId") UUID clientId) {
         return ResponseEntity.ok(
                 proxyService.unblockUser(clientId)
         );
