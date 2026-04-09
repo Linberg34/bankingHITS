@@ -10,7 +10,7 @@ import {
   appErrorInterceptor,
   GlobalAppErrorHandler,
   resilienceInterceptor,
-} from 'shared/frontend-core';  // взять путь из main
+} from 'shared/frontend-core';  // взять путь из mainF
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
