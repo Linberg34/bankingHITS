@@ -13,6 +13,7 @@ import com.gautama.bankhitscredit.mapper.CreditMapper;
 import com.gautama.bankhitscredit.repository.CreditPaymentRepository;
 import com.gautama.bankhitscredit.repository.CreditRepository;
 import com.gautama.bankhitscredit.repository.CreditTariffRepository;
+import com.gautama.bankhitscredit.infrastructure.resilience.DownstreamCallExecutor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ public class CreditService {
     private final CreditMapper creditMapper;
     private final AccountServiceClient accountServiceClient;
     private final CreditOperationProducer operationProducer;
+    private final DownstreamCallExecutor downstreamCallExecutor;
 
     @Value("${bank.master-account-number}")
     private String masterAccountNumber;
@@ -64,8 +66,12 @@ public class CreditService {
                         "Тариф не найден: " + request.getTariffId()
                 ));
 
-        AccountDTO clientAccount = accountServiceClient
-                .getAccountByNumber(request.getAccountNumber());
+        AccountDTO clientAccount = callCore(
+                "GET",
+                "/internal/accounts/number/" + request.getAccountNumber(),
+                200,
+                () -> accountServiceClient.getAccountByNumber(request.getAccountNumber())
+        );
 
         if (!"ACTIVE".equals(clientAccount.getStatus())) {
             throw new IllegalStateException(
@@ -73,8 +79,12 @@ public class CreditService {
             );
         }
 
-        AccountDTO masterAccount = accountServiceClient
-                .getAccountByNumber(masterAccountNumber);
+        AccountDTO masterAccount = callCore(
+                "GET",
+                "/internal/accounts/number/" + masterAccountNumber,
+                200,
+                () -> accountServiceClient.getAccountByNumber(masterAccountNumber)
+        );
 
         if (masterAccount.getBalance()
                 .compareTo(request.getAmount()) < 0) {
@@ -214,5 +224,15 @@ public class CreditService {
                 .build();
 
         paymentRepository.save(payment);
+    }
+
+    private <T> T callCore(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.CORE,
+                method,
+                path,
+                successStatus,
+                action
+        );
     }
 }

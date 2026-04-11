@@ -1,5 +1,6 @@
 package com.gautama.bankhitscredit.client;
 
+import com.gautama.bankhitscredit.config.FeignResilienceConfig;
 import com.gautama.bankhitscredit.dto.AccountDTO;
 import com.gautama.bankhitscredit.dto.CreateOperationRequest;
 import com.gautama.bankhitscredit.dto.OperationResponse;
@@ -9,8 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
-@FeignClient(name = "core-service", url = "${core.service.url}")
+@FeignClient(name = "core-service", url = "${core.service.url}", configuration = FeignResilienceConfig.class)
 public interface AccountServiceClient {
     // пополнение счёта — используется при выдаче кредита
     @PostMapping("/internal/operations/deposit")

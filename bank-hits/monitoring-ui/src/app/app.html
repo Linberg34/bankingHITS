@@ -2,13 +2,13 @@
   <section class="hero">
     <div>
       <h1>Интерфейс мониторинга</h1>
-      <p>Мок-дашборд для трассировки запросов, задержек и динамики ошибок.</p>
+      <p>Дашборд трассировки запросов, задержек и динамики ошибок по микросервисам.</p>
     </div>
     <div class="hero-actions">
       <button type="button" (click)="toggleStream()">
         {{ paused() ? 'Возобновить поток' : 'Пауза потока' }}
       </button>
-      <button type="button" (click)="generateBurst()">Сгенерировать всплеск</button>
+      <button type="button" (click)="generateBurst()">Обновить</button>
       <button type="button" class="danger" (click)="clearLogs()">Очистить</button>
     </div>
   </section>

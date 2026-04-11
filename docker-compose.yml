@@ -1,5 +1,15 @@
 services:
 
+  service-monitoring:
+    build:
+      context: ./monitoring-service
+      dockerfile: Dockerfile
+    environment:
+      SERVER_PORT: 8087
+    networks: [ appnet ]
+    ports:
+      - "8087:8087"
+
   # ─── KAFKA ────────────────────────────────────────────────
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
@@ -65,6 +75,7 @@ services:
       CREDIT_SERVICE_URL: http://service-credit:8080
       CLIENTS_ACCOUNT_URL: http://service-account:8080
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-user:
         condition: service_healthy
@@ -140,6 +151,7 @@ services:
       CORE_SERVICE_URL: http://service-account:8080
       SPRING_CLOUD_COMPATIBILITY-VERIFIER_ENABLED: "false"
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-credit:
         condition: service_healthy
@@ -184,6 +196,7 @@ services:
       APP_SEED_CLIENT_NAME: Default Client
       APP_SEED_CLIENT_EMAIL: client@bank.local
       SERVER_PORT: 8086
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-sso:
         condition: service_healthy
@@ -225,6 +238,7 @@ services:
       SSO_BASE_URL: http://service-sso:8086
       SSO_JWKS_URL: http://service-sso:8086/.well-known/jwks.json
       SERVER_PORT: 8084
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-client-bff:
         condition: service_healthy
@@ -274,6 +288,7 @@ services:
       SSO_BASE_URL: http://service-sso:8086
       SSO_JWKS_URL: http://service-sso:8086/.well-known/jwks.json
       SERVER_PORT: 8085
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-employee-bff:
         condition: service_healthy

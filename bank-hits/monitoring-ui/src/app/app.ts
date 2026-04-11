@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, PercentPipe } from '@angular/common';
-import { MockMonitoringFeedService } from './data/mock-monitoring-feed.service';
+import { MonitoringFeedService } from './data/mock-monitoring-feed.service';
 import {
   type MonitoringApp,
   type MonitoringLevel,
@@ -23,7 +23,7 @@ type LevelFilter = 'all' | MonitoringLevel;
   },
 })
 export class App {
-  private readonly feed = inject(MockMonitoringFeedService);
+  private readonly feed = inject(MonitoringFeedService);
 
   readonly logs = this.feed.logs;
   readonly paused = this.feed.paused;
@@ -126,8 +126,8 @@ export class App {
     return toLinePoints(values, 420, 120, 100);
   });
 
-  readonly appOptions: AppFilter[] = ['all', 'client', 'employee'];
-  readonly serviceOptions: ServiceFilter[] = ['all', 'users', 'credits', 'core'];
+  readonly appOptions: AppFilter[] = ['all', 'client', 'employee', 'system'];
+  readonly serviceOptions: ServiceFilter[] = ['all', 'users', 'credits', 'core', 'sso'];
   readonly levelOptions: LevelFilter[] = ['all', 'info', 'warn', 'error'];
 
   toggleStream(): void {
@@ -183,7 +183,14 @@ export class App {
   }
 
   appLabel(value: MonitoringApp): string {
-    return value === 'client' ? 'Клиент' : 'Сотрудник';
+    switch (value) {
+      case 'client':
+        return 'Клиент';
+      case 'employee':
+        return 'Сотрудник';
+      default:
+        return 'Система';
+    }
   }
 
   serviceLabel(value: MonitoringService): string {
@@ -192,6 +199,8 @@ export class App {
         return 'Пользователи';
       case 'credits':
         return 'Кредиты';
+      case 'sso':
+        return 'SSO';
       default:
         return 'Ядро';
     }
@@ -227,11 +236,11 @@ function toLinePoints(values: number[], width: number, height: number, maxValue?
 }
 
 function asAppFilter(value: string): AppFilter {
-  return value === 'client' || value === 'employee' ? value : 'all';
+  return value === 'client' || value === 'employee' || value === 'system' ? value : 'all';
 }
 
 function asServiceFilter(value: string): ServiceFilter {
-  return value === 'users' || value === 'credits' || value === 'core' ? value : 'all';
+  return value === 'users' || value === 'credits' || value === 'core' || value === 'sso' ? value : 'all';
 }
 
 function asLevelFilter(value: string): LevelFilter {

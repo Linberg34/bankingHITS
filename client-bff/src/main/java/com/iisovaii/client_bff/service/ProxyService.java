@@ -12,6 +12,7 @@ import com.iisovaii.client_bff.dto.credit.*;
 import com.iisovaii.client_bff.dto.operation.OperationPageResponse;
 import com.iisovaii.client_bff.dto.profile.ClientProfileResponse;
 import com.iisovaii.client_bff.dto.tariff.TariffDto;
+import com.iisovaii.client_bff.infrastructure.resilience.DownstreamCallExecutor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -25,29 +26,41 @@ public class ProxyService {
     private final AccountServiceClient accountServiceClient;
     private final CreditServiceClient creditServiceClient;
     private final UserServiceClient userServiceClient;
+    private final DownstreamCallExecutor downstreamCallExecutor;
 
     public AccountListResponse getAccounts(UUID userId) {
         return new AccountListResponse(
-                accountServiceClient.getAccounts(userId)
+                callCore("GET", "/internal/accounts/by-user/" + userId, 200,
+                        () -> accountServiceClient.getAccounts(userId))
         );
     }
 
     public OpenAccountResponse openAccount(
             UUID userId, OpenAccountRequest request) {
-        return accountServiceClient.openAccount(
-                userId, request.currency().name()
+        return callCore("POST", "/internal/accounts/current", 200,
+                () -> accountServiceClient.openAccount(
+                        userId, request.currency().name()
+                )
         );
     }
 
     public CloseAccountResponse closeAccount(
             UUID userId, String accountNumber) {
         checkAccountOwnership(userId, accountNumber);
-        accountServiceClient.closeAccount(accountNumber);
+        callCore("DELETE", "/internal/accounts/" + accountNumber, 204, () -> {
+            accountServiceClient.closeAccount(accountNumber);
+            return null;
+        });
         return new CloseAccountResponse(accountNumber, AccountStatus.CLOSED);
     }
 
     public void checkAccountOwnership(UUID userId, String accountNumber) {
-        var account = accountServiceClient.getAccountByNumber(accountNumber);
+        var account = callCore(
+                "GET",
+                "/internal/accounts/number/" + accountNumber,
+                200,
+                () -> accountServiceClient.getAccountByNumber(accountNumber)
+        );
         if (!userId.equals(account.clientId())) {
             throw new IllegalArgumentException(
                     "Account does not belong to current user"
@@ -57,7 +70,12 @@ public class ProxyService {
 
     public OperationPageResponse getOperations(
             String accountNumber, int page, int size) {
-        var pageDto = accountServiceClient.getOperations(accountNumber, page, size);
+        var pageDto = callCore(
+                "GET",
+                "/internal/operations/account/" + accountNumber + "/page?page=" + page + "&size=" + size,
+                200,
+                () -> accountServiceClient.getOperations(accountNumber, page, size)
+        );
         return new OperationPageResponse(
                 pageDto.content(),
                 pageDto.pageNumber(),
@@ -67,7 +85,12 @@ public class ProxyService {
     }
 
     public CreditListResponse getCredits(UUID userId) {
-        List<CreditResponse> raw = creditServiceClient.getCredits(userId);
+        List<CreditResponse> raw = callCredits(
+                "GET",
+                "/api/credits/client/" + userId,
+                200,
+                () -> creditServiceClient.getCredits(userId)
+        );
         List<CreditSummaryDto> credits = raw.stream()
                 .map(c -> new CreditSummaryDto(
                         c.id(),
@@ -85,7 +108,12 @@ public class ProxyService {
     }
 
     public CreditDetailResponse getCreditDetail(UUID userId, UUID creditId) {
-        CreditResponse raw = creditServiceClient.getCreditDetail(creditId);
+        CreditResponse raw = callCredits(
+                "GET",
+                "/api/credits/" + creditId,
+                200,
+                () -> creditServiceClient.getCreditDetail(creditId)
+        );
 
         if (!userId.equals(raw.clientId())) {
             throw new IllegalArgumentException(
@@ -93,8 +121,12 @@ public class ProxyService {
             );
         }
 
-        List<CreditPaymentDto> payments = creditServiceClient
-                .getCreditPayments(creditId)
+        List<CreditPaymentDto> payments = callCredits(
+                "GET",
+                "/api/credits/" + creditId + "/payments",
+                200,
+                () -> creditServiceClient.getCreditPayments(creditId)
+        )
                 .stream()
                 .map(p -> new CreditPaymentDto(
                         p.id(),
@@ -121,7 +153,12 @@ public class ProxyService {
     }
 
     public void checkCreditOwnership(UUID userId, UUID creditId) {
-        CreditResponse raw = creditServiceClient.getCreditDetail(creditId);
+        CreditResponse raw = callCredits(
+                "GET",
+                "/api/credits/" + creditId,
+                200,
+                () -> creditServiceClient.getCreditDetail(creditId)
+        );
         if (!userId.equals(raw.clientId())) {
             throw new IllegalArgumentException(
                     "Credit does not belong to current user"
@@ -130,7 +167,12 @@ public class ProxyService {
     }
 
     public List<CreditPaymentDto> getCreditPayments(UUID creditId) {
-        return creditServiceClient.getCreditPayments(creditId)
+        return callCredits(
+                "GET",
+                "/api/credits/" + creditId + "/payments",
+                200,
+                () -> creditServiceClient.getCreditPayments(creditId)
+        )
                 .stream()
                 .map(p -> new CreditPaymentDto(
                         p.id(),
@@ -144,12 +186,17 @@ public class ProxyService {
 
     public TakeCreditResponse takeCredit(
             UUID userId, TakeCreditRequest request) {
-        CreditResponse raw = creditServiceClient.takeCredit(
-                new TakeCreditPayload(
-                        userId,
-                        request.accountNumber(),
-                        request.tariffId(),
-                        request.amount()
+        CreditResponse raw = callCredits(
+                "POST",
+                "/api/credits",
+                201,
+                () -> creditServiceClient.takeCredit(
+                        new TakeCreditPayload(
+                                userId,
+                                request.accountNumber(),
+                                request.tariffId(),
+                                request.amount()
+                        )
                 )
         );
         return new TakeCreditResponse(
@@ -169,12 +216,22 @@ public class ProxyService {
 
         CreditResponse raw;
         if (request != null && request.amount() != null) {
-            raw = creditServiceClient.repayCreditPartial(
-                    creditId,
-                    new PartialRepayPayload(request.amount())
+            raw = callCredits(
+                    "POST",
+                    "/api/credits/" + creditId + "/repay/partial",
+                    200,
+                    () -> creditServiceClient.repayCreditPartial(
+                            creditId,
+                            new PartialRepayPayload(request.amount())
+                    )
             );
         } else {
-            raw = creditServiceClient.repayCredit(creditId);
+            raw = callCredits(
+                    "POST",
+                    "/api/credits/" + creditId + "/repay",
+                    200,
+                    () -> creditServiceClient.repayCredit(creditId)
+            );
         }
 
         return new RepayCreditResponse(
@@ -185,11 +242,21 @@ public class ProxyService {
     }
 
     public CreditRatingResponse getCreditRating(UUID userId) {
-        return creditServiceClient.getCreditRating(userId);
+        return callCredits(
+                "GET",
+                "/api/credits/rating/" + userId,
+                200,
+                () -> creditServiceClient.getCreditRating(userId)
+        );
     }
 
     public List<TariffDto> getTariffs() {
-        return creditServiceClient.getTariffs()
+        return callCredits(
+                "GET",
+                "/api/tariffs",
+                200,
+                creditServiceClient::getTariffs
+        )
                 .stream()
                 .map(t -> new TariffDto(
                         t.id(),
@@ -201,6 +268,41 @@ public class ProxyService {
     }
 
     public ClientProfileResponse getClientProfile(UUID userId) {
-        return userServiceClient.getUser(userId);
+        return callUsers(
+                "GET",
+                "/api/users/" + userId,
+                200,
+                () -> userServiceClient.getUser(userId)
+        );
+    }
+
+    private <T> T callCore(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.CORE,
+                method,
+                path,
+                successStatus,
+                action
+        );
+    }
+
+    private <T> T callCredits(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.CREDITS,
+                method,
+                path,
+                successStatus,
+                action
+        );
+    }
+
+    private <T> T callUsers(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.USERS,
+                method,
+                path,
+                successStatus,
+                action
+        );
     }
 }

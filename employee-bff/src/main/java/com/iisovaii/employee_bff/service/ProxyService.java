@@ -13,6 +13,7 @@ import com.iisovaii.employee_bff.dto.operation.*;
 import com.iisovaii.employee_bff.dto.profile.*;
 import com.iisovaii.employee_bff.dto.response.*;
 import com.iisovaii.employee_bff.dto.tariff.*;
+import com.iisovaii.employee_bff.infrastructure.resilience.DownstreamCallExecutor;
 import com.iisovaii.employee_bff.mapper.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,23 +33,33 @@ public class ProxyService {
     private final CreditMapper creditMapper;
     private final UserMapper userMapper;
     private final SsoServiceClient ssoServiceClient;
+    private final DownstreamCallExecutor downstreamCallExecutor;
 
     public EmployeeProfileResponse getEmployeeProfile(UUID employeeId) {
-        UserResponse raw = userServiceClient.getUser(employeeId);
+        UserResponse raw = callUsers("GET", "/api/users/" + employeeId, 200,
+                () -> userServiceClient.getUser(employeeId));
         return userMapper.toEmployeeProfileResponse(raw);
     }
 
     public AllAccountsPageResponse getAllAccounts(int page, int size) {
-        PageDTOAccountDTO raw =
-                accountServiceClient.getAllAccounts(page, size);
+        PageDTOAccountDTO raw = callCore(
+                "GET",
+                "/internal/accounts/list?page=" + page + "&size=" + size,
+                200,
+                () -> accountServiceClient.getAllAccounts(page, size)
+        );
 
         List<AccountWithOwnerDto> content = raw.getContent().stream()
                 .map(account -> {
                     AccountWithOwnerDto dto =
                             accountMapper.toAccountWithOwnerDto(account);
                     try {
-                        UserResponse user = userServiceClient
-                                .getUser(account.getClientId());
+                        UserResponse user = callUsers(
+                                "GET",
+                                "/api/users/" + account.getClientId(),
+                                200,
+                                () -> userServiceClient.getUser(account.getClientId())
+                        );
                         dto.setOwnerFullName(user.getName());
                         dto.setOwnerId(user.getId());
                     } catch (Exception e) {
@@ -70,8 +81,12 @@ public class ProxyService {
 
     public OperationPageResponse getOperations(
             String accountNumber, int page, int size) {
-        List<OperationServiceResponse> raw =
-                accountServiceClient.getOperations(accountNumber, page, size);
+        List<OperationServiceResponse> raw = callCore(
+                "GET",
+                "/internal/operations/account/" + accountNumber + "?page=" + page + "&size=" + size,
+                200,
+                () -> accountServiceClient.getOperations(accountNumber, page, size)
+        );
 
         List<OperationDto> content = raw.stream()
                 .map(accountMapper::toOperationDto)
@@ -86,13 +101,23 @@ public class ProxyService {
     }
 
     public AccountListResponse getClientAccounts(UUID clientId) {
-        List<AccountServiceResponse> raw = accountServiceClient.getAccountsByUserId(clientId);
+        List<AccountServiceResponse> raw = callCore(
+                "GET",
+                "/internal/accounts/by-user/" + clientId,
+                200,
+                () -> accountServiceClient.getAccountsByUserId(clientId)
+        );
         return new AccountListResponse(accountMapper.toAccountDtoList(raw));
     }
 
 
     public ClientPageResponse getClients(int page, int size) {
-        List<UserResponse> all = userServiceClient.getUsers(null);
+        List<UserResponse> all = callUsers(
+                "GET",
+                "/api/users",
+                200,
+                () -> userServiceClient.getUsers(null)
+        );
 
         int fromIndex = page * size;
         int toIndex = Math.min(fromIndex + size, all.size());
@@ -112,64 +137,104 @@ public class ProxyService {
     }
 
     public ClientDetailResponse getClientDetail(UUID clientId) {
-        UserResponse raw = userServiceClient.getUser(clientId);
+        UserResponse raw = callUsers(
+                "GET",
+                "/api/users/" + clientId,
+                200,
+                () -> userServiceClient.getUser(clientId)
+        );
         return userMapper.toClientDetailResponse(raw);
     }
 
     public CreateClientResponse createClient(CreateClientRequest request) {
-        ssoServiceClient.register(
-                new SsoRegisterRequest(
-                        request.getName(),
-                        request.getEmail(),
-                        request.getPassword(),
-                        List.of("CLIENT")
-                )
-        );
+        callSso("POST", "/auth/register", 204, () -> {
+            ssoServiceClient.register(
+                    new SsoRegisterRequest(
+                            request.getName(),
+                            request.getEmail(),
+                            request.getPassword(),
+                            List.of("CLIENT")
+                    )
+            );
+            return null;
+        });
 
-        UserResponse raw = userServiceClient.getUserByEmail(
-                request.getEmail()
+        UserResponse raw = callUsers(
+                "GET",
+                "/api/users/by-email?email=" + request.getEmail(),
+                200,
+                () -> userServiceClient.getUserByEmail(
+                        request.getEmail()
+                )
         );
         return userMapper.toCreateClientResponse(raw);
     }
 
     public CreateEmployeeResponse createEmployee(
             CreateEmployeeRequest request) {
-        ssoServiceClient.register(
-                new SsoRegisterRequest(
-                        request.getName(),
-                        request.getEmail(),
-                        request.getPassword(),
-                        List.of("EMPLOYEE")
-                )
-        );
+        callSso("POST", "/auth/register", 204, () -> {
+            ssoServiceClient.register(
+                    new SsoRegisterRequest(
+                            request.getName(),
+                            request.getEmail(),
+                            request.getPassword(),
+                            List.of("EMPLOYEE")
+                    )
+            );
+            return null;
+        });
 
-        UserResponse raw = userServiceClient.getUserByEmail(
-                request.getEmail()
+        UserResponse raw = callUsers(
+                "GET",
+                "/api/users/by-email?email=" + request.getEmail(),
+                200,
+                () -> userServiceClient.getUserByEmail(
+                        request.getEmail()
+                )
         );
         return userMapper.toCreateEmployeeResponse(raw);
     }
 
     public UpdateUserResponse updateUser(UUID userId, UpdateUserRequest request) {
         return userMapper.toUpdateUserResponse(
-                userServiceClient.updateUser(userId, request)
+                callUsers(
+                        "PUT",
+                        "/api/users/" + userId,
+                        200,
+                        () -> userServiceClient.updateUser(userId, request)
+                )
         );
     }
 
     public UserStatusResponse blockUser(UUID userId) {
         return userMapper.toUserStatusResponse(
-                userServiceClient.blockUser(userId)
+                callUsers(
+                        "POST",
+                        "/api/users/" + userId + "/ban",
+                        200,
+                        () -> userServiceClient.blockUser(userId)
+                )
         );
     }
 
     public UserStatusResponse unblockUser(UUID userId) {
         return userMapper.toUserStatusResponse(
-                userServiceClient.unblockUser(userId)
+                callUsers(
+                        "POST",
+                        "/api/users/" + userId + "/unban",
+                        200,
+                        () -> userServiceClient.unblockUser(userId)
+                )
         );
     }
 
     public CreditListResponse getClientCredits(UUID clientId) {
-        List<CreditDetailResponse> raw =
-                creditServiceClient.getCreditsByUserId(clientId);
+        List<CreditDetailResponse> raw = callCredits(
+                "GET",
+                "/api/credits/client/" + clientId,
+                200,
+                () -> creditServiceClient.getCreditsByUserId(clientId)
+        );
 
         List<CreditSummaryDto> credits = raw.stream()
                 .map(credit -> {
@@ -191,26 +256,51 @@ public class ProxyService {
     }
 
     public CreditDetailEmployeeResponse getCreditDetail(UUID creditId) {
-        CreditDetailResponse credit = creditServiceClient.getCreditDetailForEmployee(creditId);
+        CreditDetailResponse credit = callCredits(
+                "GET",
+                "/api/credits/" + creditId,
+                200,
+                () -> creditServiceClient.getCreditDetailForEmployee(creditId)
+        );
         CreditDetailEmployeeResponse response =
                 creditMapper.toCreditDetailEmployeeResponse(credit);
-        response.setOwnerFullName(userServiceClient.getUser(credit.getClientId()).getName());
+        response.setOwnerFullName(callUsers(
+                "GET",
+                "/api/users/" + credit.getClientId(),
+                200,
+                () -> userServiceClient.getUser(credit.getClientId())
+        ).getName());
         return response;
     }
 
     public List<CreditPaymentDto> getCreditPayments(UUID creditId) {
         return creditMapper.toCreditPaymentDtoList(
-                creditServiceClient.getCreditPayments(creditId)
+                callCredits(
+                        "GET",
+                        "/api/credits/" + creditId + "/payments",
+                        200,
+                        () -> creditServiceClient.getCreditPayments(creditId)
+                )
         );
     }
 
     public CreditRatingResponse getCreditRating(UUID clientId) {
-        return creditServiceClient.getCreditRating(clientId);
+        return callCredits(
+                "GET",
+                "/api/credits/rating/" + clientId,
+                200,
+                () -> creditServiceClient.getCreditRating(clientId)
+        );
     }
 
     public List<TariffDto> getTariffs() {
         return creditMapper.toTariffDtoList(
-                creditServiceClient.getTariffs()
+                callCredits(
+                        "GET",
+                        "/api/tariffs",
+                        200,
+                        creditServiceClient::getTariffs
+                )
         );
     }
 
@@ -222,7 +312,52 @@ public class ProxyService {
                         request.getTermDays()
                 );
         return creditMapper.toCreateTariffResponse(
-                creditServiceClient.createTariff(creditRequest)
+                callCredits(
+                        "POST",
+                        "/api/tariffs",
+                        201,
+                        () -> creditServiceClient.createTariff(creditRequest)
+                )
+        );
+    }
+
+    private <T> T callUsers(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.USERS,
+                method,
+                path,
+                successStatus,
+                action
+        );
+    }
+
+    private <T> T callCore(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.CORE,
+                method,
+                path,
+                successStatus,
+                action
+        );
+    }
+
+    private <T> T callCredits(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.CREDITS,
+                method,
+                path,
+                successStatus,
+                action
+        );
+    }
+
+    private <T> T callSso(String method, String path, int successStatus, java.util.function.Supplier<T> action) {
+        return downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.SSO,
+                method,
+                path,
+                successStatus,
+                action
         );
     }
 }

@@ -2,6 +2,7 @@ package com.iisovaii.client_bff.service;
 
 import com.iisovaii.client_bff.client.SsoServiceClient;
 import com.iisovaii.client_bff.dto.auth.LoginUrlResponse;
+import com.iisovaii.client_bff.infrastructure.resilience.DownstreamCallExecutor;
 import com.iisovaii.client_bff.mapper.auth.AuthMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,6 +24,7 @@ public class AuthService {
 
     private final SsoServiceClient ssoServiceClient;
     private final AuthMapper authMapper;
+    private final DownstreamCallExecutor downstreamCallExecutor;
 
     @Value("${spring.security.oauth2.client.registration.sso.client-id}")
     private String clientId;
@@ -76,7 +78,13 @@ public class AuthService {
         body.add("client_id", clientId);
         body.add("client_secret", clientSecret);
 
-        Map<String, Object> tokenResponse = ssoServiceClient.exchangeCode(body);
+        Map<String, Object> tokenResponse = downstreamCallExecutor.execute(
+                DownstreamCallExecutor.DownstreamService.SSO,
+                "POST",
+                "/auth/token",
+                200,
+                () -> ssoServiceClient.exchangeCode(body)
+        );
 
         String accessToken = Optional.ofNullable(tokenResponse.get("access_token"))
                 .map(Object::toString)

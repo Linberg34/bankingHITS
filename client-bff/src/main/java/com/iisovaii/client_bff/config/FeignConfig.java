@@ -1,5 +1,6 @@
 package com.iisovaii.client_bff.config;
 
+import com.iisovaii.client_bff.infrastructure.trace.TraceContextHolder;
 import feign.RequestInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -36,10 +37,23 @@ public class FeignConfig {
             if (token != null && !token.isBlank()) {
                 requestTemplate.header(HttpHeaders.AUTHORIZATION, "Bearer " + token);
             }
+
+            relayHeader(requestTemplate, TraceContextHolder.TRACE_HEADER, TraceContextHolder.traceId());
+            relayHeader(requestTemplate, TraceContextHolder.APP_HEADER, TraceContextHolder.appSource());
+
+            String idempotencyKey = extractHeaderFromCurrentRequest(TraceContextHolder.IDEMPOTENCY_HEADER);
+            if (idempotencyKey != null && !idempotencyKey.isBlank()) {
+                relayHeader(requestTemplate, TraceContextHolder.IDEMPOTENCY_HEADER, idempotencyKey);
+            }
         };
     }
 
     private String extractTokenFromCurrentRequest() {
+        String authorization = extractHeaderFromCurrentRequest(HttpHeaders.AUTHORIZATION);
+        if (authorization != null && authorization.startsWith("Bearer ")) {
+            return authorization.substring(7);
+        }
+
         if (!(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attrs)) {
             return null;
         }
@@ -56,11 +70,21 @@ public class FeignConfig {
             }
         }
 
-        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (header != null && header.startsWith("Bearer ")) {
-            return header.substring(7);
+        return null;
+    }
+
+    private String extractHeaderFromCurrentRequest(String headerName) {
+        if (!(RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attrs)) {
+            return null;
         }
 
-        return null;
+        HttpServletRequest request = attrs.getRequest();
+        return request != null ? request.getHeader(headerName) : null;
+    }
+
+    private void relayHeader(feign.RequestTemplate requestTemplate, String headerName, String value) {
+        if (value != null && !value.isBlank()) {
+            requestTemplate.header(headerName, value);
+        }
     }
 }

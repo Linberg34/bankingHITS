@@ -12,6 +12,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.stream.Collectors;
@@ -60,6 +61,12 @@ public class GlobalExceptionHandler {
         if (status == null) status = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(status)
                 .body(error("UPSTREAM_ERROR", e.getMessage()));
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<ErrorResponse> handleResponseStatus(ResponseStatusException exception) {
+        return ResponseEntity.status(exception.getStatusCode())
+                .body(error("DOWNSTREAM_UNAVAILABLE", exception.getReason() == null ? "Сервис недоступен" : exception.getReason()));
     }
 
     @ExceptionHandler(Exception.class)
