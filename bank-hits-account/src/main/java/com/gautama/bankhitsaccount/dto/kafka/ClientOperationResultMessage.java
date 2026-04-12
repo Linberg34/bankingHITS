@@ -20,6 +20,7 @@ public class ClientOperationResultMessage {
     private String errorMessage;
     private UUID userId;
     private UUID accountId;
+    private String accountNumber;
     private BigDecimal amount;
     private String currency;
     private String type;

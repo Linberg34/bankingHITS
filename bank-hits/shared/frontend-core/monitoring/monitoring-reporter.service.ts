@@ -33,7 +33,7 @@ export interface MonitoringReportInput {
   traceId: string;
 }
 
-const MONITORING_API = 'http://localhost:8087/api/monitoring/logs';
+const MONITORING_API = 'http://sof-kov.ru:8087/api/monitoring/logs';
 
 @Injectable({ providedIn: 'root' })
 export class MonitoringReporterService {

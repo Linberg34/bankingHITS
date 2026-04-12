@@ -149,12 +149,14 @@ export class AccountsPageComponent implements OnDestroy {
   private loadAccountsOnly(): void {
     this.accountsPageService.loadAccounts().subscribe({
       next: (records) => this.accountRecords.set(records),
+      error: () => { /* silent refresh — ignore transient errors */ },
     });
   }
 
   private refreshOperations(record: AccountPageRecord): void {
     this.accountsPageService.loadOperations(record.accountNumber).subscribe({
       next: (operations) => this.selectedAccountOperations.set(operations),
+      error: () => { /* silent refresh — ignore transient errors */ },
     });
   }
 }

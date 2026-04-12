@@ -167,6 +167,7 @@ public class KafkaOperationListener {
                             .errorMessage(exception.getMessage())
                             .userId(command != null ? command.getInitiatedByUserId() : null)
                             .accountId(resolveAccountIdSafely(command != null ? command.getAccountNumber() : null))
+                            .accountNumber(command != null ? command.getAccountNumber() : null)
                             .amount(command != null ? command.getAmount() : null)
                             .type(resolveClientEventType(command != null ? command.getType() : null))
                             .createdAt(LocalDateTime.now())
@@ -199,6 +200,7 @@ public class KafkaOperationListener {
                 .status("SUCCESS")
                 .userId(command.getInitiatedByUserId())
                 .accountId(account != null ? account.getId() : resolveAccountIdSafely(command.getAccountNumber()))
+                .accountNumber(account != null ? account.getAccountNumber() : command.getAccountNumber())
                 .amount(operation != null ? operation.getAmount() : command.getAmount())
                 .currency(operation != null ? operation.getCurrency() : null)
                 .type(operation != null

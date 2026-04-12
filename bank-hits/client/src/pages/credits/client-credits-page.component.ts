@@ -181,7 +181,7 @@ export class ClientCreditsPageComponent implements OnInit {
       next: () => {
         this.actionState.set({ status: 'success', message: 'Credit created.' });
         this.closeNewCredit();
-        this.data.loadCredits().subscribe();
+        this.data.loadCredits().subscribe({ error: () => {} });
       },
       error: (error: unknown) => {
         const mapped = mapUnknownError(error);

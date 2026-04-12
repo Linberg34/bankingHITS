@@ -9,7 +9,7 @@ const MAX_RETRIES = 2;
 const TRACE_HEADER = 'X-Trace-Id';
 const RETRYABLE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']);
 // Monitoring requests must bypass this interceptor to prevent circular reporting
-const MONITORING_HOST = 'localhost:8087';
+const MONITORING_HOST = ':8087';
 
 export const resilienceInterceptor: HttpInterceptorFn = (request, next) => {
   // Skip monitoring service requests — do not trace/retry/report them

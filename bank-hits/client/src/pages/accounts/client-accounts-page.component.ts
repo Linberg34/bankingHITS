@@ -139,7 +139,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    this.data.loadHiddenAccounts().subscribe();
+    this.data.loadHiddenAccounts().subscribe({ error: () => {} });
     this.data.loadAccounts().subscribe({
       next: (accounts) => {
         const uuids = accounts.map((a) => a.uuid);
@@ -159,9 +159,9 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
             this.notifications.success(
               `Баланс обновлён: ${balanceEvent.newBalance.toLocaleString('ru-RU')} ${balanceEvent.currency}`
             );
-            this.data.loadAccounts().subscribe();
+            this.data.loadAccounts().subscribe({ error: () => {} });
           } else if (event.type === 'OPERATION_ADDED' || event.type === 'OPERATION_UPDATED') {
-            this.data.loadAccounts().subscribe();
+            this.data.loadAccounts().subscribe({ error: () => {} });
             if (this.selectedAccountNumber()) {
               this.operationRefresh$.next(null);
             }

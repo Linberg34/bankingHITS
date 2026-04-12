@@ -1,6 +1,6 @@
 {
   "/api/monitoring": {
-    "target": "http://localhost:8087",
+    "target": "http://sof-kov.ru:8087",
     "secure": false,
     "changeOrigin": true
   }

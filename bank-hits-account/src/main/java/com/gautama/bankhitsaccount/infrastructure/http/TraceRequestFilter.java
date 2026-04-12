@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import org.slf4j.MDC;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
@@ -47,6 +48,7 @@ public class TraceRequestFilter extends OncePerRequestFilter {
         String appSource = resolveHeader(request, TraceContextHolder.APP_HEADER, defaultAppSource);
 
         TraceContextHolder.set(traceId, appSource);
+        MDC.put("traceId", traceId);
         response.setHeader(TraceContextHolder.TRACE_HEADER, traceId);
         response.setHeader(TraceContextHolder.APP_HEADER, appSource);
 
@@ -58,6 +60,7 @@ public class TraceRequestFilter extends OncePerRequestFilter {
             logCompleted(request, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, startedAt, traceId, appSource, exception);
             throw exception;
         } finally {
+            MDC.remove("traceId");
             TraceContextHolder.clear();
         }
     }
