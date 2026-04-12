@@ -50,7 +50,8 @@
       "continuous": true,
       "executor": "@angular/build:dev-server",
       "options": {
-        "port": 4210
+        "port": 4210,
+        "proxyConfig": "monitoring-ui/proxy.conf.json"
       },
       "configurations": {
         "production": {

@@ -139,7 +139,7 @@ export class App {
   }
 
   generateBurst(): void {
-    this.feed.burst(40);
+    this.feed.burst();
   }
 
   setAppFilter(value: string): void {

@@ -8,4 +8,8 @@
 /.idea/inspectionProfiles/Project_Default.xml
 /.idea/vcs.xml
 /.idea/workspace.xml
+/.idea/dataSources.local.xml
 /.idea
+
+# secrets
+firebase-service-account.json

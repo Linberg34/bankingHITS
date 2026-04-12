@@ -318,5 +318,17 @@ services:
     ports:
       - "8085:8085"
 
+  # ─── MONITORING UI ────────────────────────────────────────
+  monitoring-ui:
+    build:
+      context: ./bank-hits
+      dockerfile: Dockerfile.monitoring-ui
+    networks: [ appnet ]
+    ports:
+      - "4210:4210"
+    depends_on:
+      service-monitoring:
+        condition: service_healthy
+
 networks:
   appnet:

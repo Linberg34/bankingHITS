@@ -1,13 +1,13 @@
 ﻿import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { ThemeModeService } from '../../../../shared/frontend-core';
+import { CircuitBreakerIndicatorComponent, ThemeModeService } from '../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../shared/ui/header';
 import { EmployeePanelPageService } from './model';
 
 @Component({
   selector: 'employee-panel-page',
   standalone: true,
-  imports: [HeaderComponent, RouterLink, RouterLinkActive, RouterOutlet],
+  imports: [HeaderComponent, RouterLink, RouterLinkActive, RouterOutlet, CircuitBreakerIndicatorComponent],
   templateUrl: './employee-panel-page.component.html',
   styleUrl: './employee-panel-page.component.scss',
 })

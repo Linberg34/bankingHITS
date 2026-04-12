@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink, RouterLinkActive } from '@angular/router';
-import { ThemeModeService } from '../../../../../shared/frontend-core';
+import { CircuitBreakerIndicatorComponent, ThemeModeService } from '../../../../../shared/frontend-core';
 import { HeaderComponent } from '../../../../../shared/ui/header';
 import { SettingsApiService } from '../../../../../shared/entities/settings';
 import { ClientSessionUseCasesService } from '../../application/use-cases/client-session-use-cases.service';
@@ -9,7 +9,7 @@ import { ClientDataUseCasesService } from '../../application/use-cases/client-da
 @Component({
   selector: 'app-client-shell',
   standalone: true,
-  imports: [HeaderComponent, RouterLink, RouterLinkActive],
+  imports: [HeaderComponent, RouterLink, RouterLinkActive, CircuitBreakerIndicatorComponent],
   templateUrl: './client-shell.component.html',
   styleUrl: './client-shell.component.scss',
 })

@@ -2,7 +2,7 @@ import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { type MonitoringLogEntry } from '../models/monitoring-log.model';
 
-const API_URL = 'http://localhost:8087/api/monitoring/logs';
+const API_URL = '/api/monitoring/logs';
 const POLL_MS = 2_000;
 
 @Injectable({ providedIn: 'root' })

@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from '../../../../shared/entities/auth';
+import { FcmTokenService } from '../../../../shared/frontend-core';
 
 /**
  * Handles the SSO callback.
@@ -20,6 +21,7 @@ export class AuthCallbackComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthApiService);
+  private readonly fcmTokenService = inject(FcmTokenService);
 
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
@@ -30,6 +32,8 @@ export class AuthCallbackComponent implements OnInit {
       if (role) {
         this.authService.setRole(role);
       }
+      // Register FCM token after login (fire-and-forget)
+      void this.fcmTokenService.registerToken('http://localhost:8084/bff/client');
       // Clean URL and redirect to panel
       void this.router.navigate(['/panel'], { replaceUrl: true });
     } else {

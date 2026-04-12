@@ -9,8 +9,9 @@ import { API_BASE_URL, idempotencyKeyInterceptor, usersAuthTokenInterceptor } fr
 import {
   appErrorInterceptor,
   GlobalAppErrorHandler,
+  MONITORING_APP_NAME,
   resilienceInterceptor,
-} from 'shared/frontend-core';  // взять путь из mainF
+} from 'shared/frontend-core';
 import { appRoutes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -27,5 +28,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(appRoutes),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
     { provide: API_BASE_URL, useValue: 'http://localhost:8085/bff/employee' },
+    { provide: MONITORING_APP_NAME, useValue: 'employee' },
   ],
 };

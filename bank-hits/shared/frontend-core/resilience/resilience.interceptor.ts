@@ -2,15 +2,24 @@ import { HttpErrorResponse, HttpInterceptorFn, HttpResponse } from '@angular/com
 import { inject } from '@angular/core';
 import { catchError, retry, tap, throwError, timer } from 'rxjs';
 import { FrontendRequestMonitoringService } from '../monitoring/frontend-request-monitoring.service';
+import { MonitoringReporterService } from '../monitoring/monitoring-reporter.service';
 import { FrontendCircuitBreakerService } from './frontend-circuit-breaker.service';
 
 const MAX_RETRIES = 2;
 const TRACE_HEADER = 'X-Trace-Id';
 const RETRYABLE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS', 'POST', 'PUT', 'PATCH', 'DELETE']);
+// Monitoring requests must bypass this interceptor to prevent circular reporting
+const MONITORING_HOST = 'localhost:8087';
 
 export const resilienceInterceptor: HttpInterceptorFn = (request, next) => {
+  // Skip monitoring service requests — do not trace/retry/report them
+  if (request.url.includes(MONITORING_HOST)) {
+    return next(request);
+  }
+
   const circuitBreaker = inject(FrontendCircuitBreakerService);
   const monitoring = inject(FrontendRequestMonitoringService);
+  const reporter = inject(MonitoringReporterService);
 
   const traceId = request.headers.get(TRACE_HEADER) ?? createTraceId();
   const tracedRequest = request.headers.has(TRACE_HEADER)
@@ -21,7 +30,18 @@ export const resilienceInterceptor: HttpInterceptorFn = (request, next) => {
   const decision = circuitBreaker.beforeRequest(start);
   if (!decision.allow) {
     monitoring.recordCircuitBlocked();
-    console.warn(`[trace] blocked ${tracedRequest.method} ${tracedRequest.urlWithParams} status=503 traceId=${traceId}`);
+    console.warn(
+      `[trace] blocked ${tracedRequest.method} ${tracedRequest.urlWithParams} status=503 traceId=${traceId}`
+    );
+    reporter.report({
+      method: tracedRequest.method,
+      url: tracedRequest.urlWithParams,
+      status: 503,
+      latencyMs: 0,
+      retries: 0,
+      blockedByCircuit: true,
+      traceId,
+    });
     return throwError(() => createCircuitOpenError());
   }
 
@@ -54,16 +74,34 @@ export const resilienceInterceptor: HttpInterceptorFn = (request, next) => {
             `[retry] ${tracedRequest.method} ${tracedRequest.urlWithParams} succeeded after ${retriesUsed} retries traceId=${traceId}`
           );
         }
+        reporter.report({
+          method: tracedRequest.method,
+          url: tracedRequest.urlWithParams,
+          status: event.status,
+          latencyMs: latency,
+          retries: retriesUsed,
+          blockedByCircuit: false,
+          traceId,
+        });
       }
     }),
     catchError((error) => {
       const latency = Date.now() - start;
       circuitBreaker.onRequestFailure(decision);
       monitoring.recordFailure(latency);
-      const status = error instanceof HttpErrorResponse ? error.status : 'unknown';
+      const status = error instanceof HttpErrorResponse ? error.status : 0;
       console.error(
         `[trace] failed ${tracedRequest.method} ${tracedRequest.urlWithParams} status=${status} latencyMs=${latency} traceId=${traceId}`
       );
+      reporter.report({
+        method: tracedRequest.method,
+        url: tracedRequest.urlWithParams,
+        status,
+        latencyMs: latency,
+        retries: retriesUsed,
+        blockedByCircuit: false,
+        traceId,
+      });
       return throwError(() => error);
     })
   );
