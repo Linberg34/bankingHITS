@@ -41,20 +41,24 @@ public class SeedDataInitializer implements ApplicationRunner {
             return;
         }
 
-        authService.ensureRegistered(
-                employeeName,
-                employeeEmail,
-                defaultPassword,
-                List.of(Role.EMPLOYEE)
-        );
+        try {
+            authService.ensureRegistered(
+                    employeeName,
+                    employeeEmail,
+                    defaultPassword,
+                    List.of(Role.EMPLOYEE)
+            );
 
-        authService.ensureRegistered(
-                clientName,
-                clientEmail,
-                defaultPassword,
-                List.of(Role.CLIENT)
-        );
+            authService.ensureRegistered(
+                    clientName,
+                    clientEmail,
+                    defaultPassword,
+                    List.of(Role.CLIENT)
+            );
 
-        log.info("SSO seed initialization completed");
+            log.info("SSO seed initialization completed");
+        } catch (Exception e) {
+            log.warn("SSO seed initialization failed (user-service may not be ready): {}", e.getMessage());
+        }
     }
 }
