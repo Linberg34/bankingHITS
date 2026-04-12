@@ -4,6 +4,7 @@ import com.iisovaii.client_bff.dto.ws.WsBalanceEvent;
 import com.iisovaii.client_bff.dto.ws.WsEventType;
 import com.iisovaii.client_bff.dto.ws.WsOperationDto;
 import com.iisovaii.client_bff.dto.ws.WsOperationEvent;
+import com.iisovaii.client_bff.service.FcmNotificationService;
 import com.iisovaii.client_bff.ws.OperationsWsController;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -18,9 +19,14 @@ public class OperationResultConsumer {
     private static final String OPERATIONS_RESULTS_TOPIC = "operations-results";
 
     private final OperationsWsController operationsWsController;
+    private final FcmNotificationService fcmNotificationService;
 
-    public OperationResultConsumer(OperationsWsController operationsWsController) {
+    public OperationResultConsumer(
+            OperationsWsController operationsWsController,
+            FcmNotificationService fcmNotificationService
+    ) {
         this.operationsWsController = operationsWsController;
+        this.fcmNotificationService = fcmNotificationService;
     }
 
     @KafkaListener(
@@ -68,6 +74,15 @@ public class OperationResultConsumer {
                     accountId,
                     new WsBalanceEvent(WsEventType.BALANCE_UPDATED, accountId, message.getNewBalance(), message.getCurrency())
             );
+        }
+
+        // FCM push-уведомление владельцу счёта
+        String opType = message.getType() != null ? message.getType() : "Операция";
+        String account = message.getAccountNumber() != null ? message.getAccountNumber() : accountId.toString();
+        if ("SUCCESS".equals(message.getStatus())) {
+            fcmNotificationService.sendToUser(userId, "Новая операция", opType + " по счёту " + account + " выполнена");
+        } else {
+            fcmNotificationService.sendToUser(userId, "Ошибка операции", opType + " по счёту " + account + " не выполнена");
         }
     }
 }

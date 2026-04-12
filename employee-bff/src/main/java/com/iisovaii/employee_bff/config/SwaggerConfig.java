@@ -1,10 +1,12 @@
 package com.iisovaii.employee_bff.config;
 
+import com.iisovaii.employee_bff.security.CurrentUser;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import org.springdoc.core.utils.SpringDocUtils;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -23,4 +25,8 @@ import org.springframework.context.annotation.Configuration;
         bearerFormat = "JWT",
         description = "Введите JWT токен полученный от SSO сервиса"
 )
-public class SwaggerConfig {}
+public class SwaggerConfig {
+    static {
+        SpringDocUtils.getConfig().addAnnotationsToIgnore(CurrentUser.class);
+    }
+}

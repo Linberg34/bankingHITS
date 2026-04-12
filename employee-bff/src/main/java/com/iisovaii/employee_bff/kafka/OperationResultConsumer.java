@@ -5,6 +5,7 @@ import com.iisovaii.employee_bff.dto.kafka.OperationResultMessage;
 import com.iisovaii.employee_bff.dto.operation.OperationDto;
 import com.iisovaii.employee_bff.dto.ws.WsBalanceEvent;
 import com.iisovaii.employee_bff.dto.ws.WsOperationEvent;
+import com.iisovaii.employee_bff.service.FcmNotificationService;
 import com.iisovaii.employee_bff.ws.WsSessionRegistry;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ public class OperationResultConsumer {
 
     private final SimpMessagingTemplate messagingTemplate;
     private final WsSessionRegistry wsSessionRegistry;
+    private final FcmNotificationService fcmNotificationService;
 
     @KafkaListener(
             topics = TOPIC,
@@ -59,6 +61,14 @@ public class OperationResultConsumer {
                         );
                     }
                 });
+
+        // FCM push-уведомление всем сотрудникам
+        String accountDesc = message.getAccountId() != null ? message.getAccountId().toString() : "—";
+        String status = "SUCCESS".equals(message.getStatus()) ? "выполнена" : "не выполнена";
+        fcmNotificationService.sendToAllEmployees(
+                "Новая операция",
+                "Операция по счёту " + accountDesc + " " + status
+        );
     }
 
     private WsOperationEvent buildOperationEvent(OperationResultMessage message) {

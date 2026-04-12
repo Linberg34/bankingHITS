@@ -7,6 +7,7 @@ import com.iisovaii.client_bff.dto.account.OpenAccountResponse;
 import com.iisovaii.client_bff.security.CurrentUser;
 import com.iisovaii.client_bff.service.ProxyService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class AccountController {
             description = "Возвращает все счета текущего клиента с балансами и статусами."
     )
     public ResponseEntity<AccountListResponse> getAccounts(
-            @CurrentUser UUID userId) {
+            @Parameter(hidden = true) @CurrentUser UUID userId) {
         return ResponseEntity.ok(proxyService.getAccounts(userId));
     }
 
@@ -40,7 +41,7 @@ public class AccountController {
             description = "Открывает новый счет через AccountService и возвращает созданный счет."
     )
     public ResponseEntity<OpenAccountResponse> openAccount(
-            @CurrentUser UUID userId,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
             @RequestBody @Valid OpenAccountRequest request) {
         OpenAccountResponse response = proxyService.openAccount(userId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -52,7 +53,7 @@ public class AccountController {
             description = "Закрывает счет через AccountService и возвращает итоговый статус счета."
     )
     public ResponseEntity<CloseAccountResponse> closeAccount(
-            @CurrentUser UUID userId,
+            @Parameter(hidden = true) @CurrentUser UUID userId,
             @PathVariable String accountId) {
         proxyService.checkAccountOwnership(userId, accountId);
         CloseAccountResponse response = proxyService.closeAccount(userId, accountId);

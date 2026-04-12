@@ -37,6 +37,7 @@ public class UserSettings {
             joinColumns = @JoinColumn(name = "user_id")
     )
     @Column(name = "account_id", nullable = false)
+    @Builder.Default
     private List<String> hiddenAccountIds = new ArrayList<>();
 
     public UserSettings(UUID userId, Theme theme, List<String> hiddenAccountIds) {
