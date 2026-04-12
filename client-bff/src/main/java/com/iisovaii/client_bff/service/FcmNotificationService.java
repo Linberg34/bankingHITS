@@ -1,5 +1,6 @@
 package com.iisovaii.client_bff.service;
 
+import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -44,8 +45,12 @@ public class FcmNotificationService {
         try {
             if (FirebaseApp.getApps().isEmpty()) {
                 try (InputStream is = new FileInputStream(path)) {
+                    NetHttpTransport transport = new NetHttpTransport.Builder()
+                            .doNotValidateCertificate()
+                            .build();
                     FirebaseOptions options = FirebaseOptions.builder()
                             .setCredentials(GoogleCredentials.fromStream(is))
+                            .setHttpTransport(transport)
                             .build();
                     FirebaseApp.initializeApp(options);
                 }
@@ -101,8 +106,8 @@ public class FcmNotificationService {
                 .addAllTokens(tokens)
                 .build();
         try {
-            BatchResponse response = FirebaseMessaging.getInstance().sendMulticast(message);
-            log.debug("FCM: отправлено {}, ошибок {}", response.getSuccessCount(), response.getFailureCount());
+            BatchResponse response = FirebaseMessaging.getInstance().sendEachForMulticast(message);
+            log.info("FCM: отправлено {}, ошибок {}", response.getSuccessCount(), response.getFailureCount());
         } catch (FirebaseMessagingException e) {
             log.warn("Ошибка отправки FCM: {}", e.getMessage());
         }

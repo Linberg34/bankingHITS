@@ -125,7 +125,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             String code,
             String message) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setContentType("application/json;charset=UTF-8");
         objectMapper.writeValue(
                 response.getWriter(),
                 new ErrorResponse(code, message, LocalDateTime.now())
