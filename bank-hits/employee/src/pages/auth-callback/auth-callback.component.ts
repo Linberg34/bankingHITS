@@ -28,7 +28,7 @@ export class AuthCallbackComponent implements OnInit {
         this.authService.setRole(role);
       }
       // Register FCM token after login (fire-and-forget)
-      void this.fcmTokenService.registerToken('http://localhost:8085/bff/employee');
+      void this.fcmTokenService.registerToken('http://sof-kov.ru:8085/bff/employee');
       void this.router.navigate(['/panel'], { replaceUrl: true });
     } else {
       this.redirectToSso();

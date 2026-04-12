@@ -10,11 +10,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,6 +26,14 @@ import java.util.UUID;
 public class FcmTokenController {
 
     private final FcmNotificationService fcmNotificationService;
+
+    @GetMapping("/fcm-token")
+    @Operation(summary = "Получить FCM-токены текущего сотрудника")
+    public ResponseEntity<List<String>> getTokens(
+            @Parameter(hidden = true) @CurrentUser UUID employeeId
+    ) {
+        return ResponseEntity.ok(fcmNotificationService.getTokensForEmployee(employeeId));
+    }
 
     @PostMapping("/fcm-token")
     @Operation(summary = "Зарегистрировать FCM-токен устройства")

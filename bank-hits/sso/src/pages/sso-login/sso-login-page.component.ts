@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
-const SSO_API = 'http://localhost:8086';
+const SSO_API = 'http://sof-kov.ru:8086';
 
 interface SsoTokenResponse {
   access_token: string;

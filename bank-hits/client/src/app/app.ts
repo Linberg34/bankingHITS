@@ -26,7 +26,11 @@ export class App implements OnInit {
     onMessage(messaging, (payload) => {
       const title = payload.notification?.title ?? 'Уведомление';
       const body = payload.notification?.body ?? '';
-      this.notifications.info(`${title}: ${body}`);
+      if (document.visibilityState === 'hidden' && Notification.permission === 'granted') {
+        navigator.serviceWorker.ready.then((reg) => reg.showNotification(title, { body }));
+      } else {
+        this.notifications.info(`${title}: ${body}`);
+      }
     });
   }
 }

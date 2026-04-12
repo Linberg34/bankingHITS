@@ -11,7 +11,7 @@ export class ClientSessionUseCasesService {
 
   logout(): void {
     void this.fcmTokenService
-      .unregisterToken('http://localhost:8084/bff/client')
+      .unregisterToken('http://sof-kov.ru:8084/bff/client')
       .finally(() => {
         this.authApi.clearAuth();
         const returnUrl = `${window.location.origin}/auth/callback`;

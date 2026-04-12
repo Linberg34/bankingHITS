@@ -14,7 +14,7 @@ export class EmployeePanelPageService {
 
   logout(): void {
     void this.fcmTokenService
-      .unregisterToken('http://localhost:8085/bff/employee')
+      .unregisterToken('http://sof-kov.ru:8085/bff/employee')
       .finally(() => {
         this.requestService.clearAuth();
         const returnUrl = `${window.location.origin}/auth/callback`;

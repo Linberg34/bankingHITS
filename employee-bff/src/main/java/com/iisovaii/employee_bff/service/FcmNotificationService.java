@@ -75,6 +75,13 @@ public class FcmNotificationService {
         tokenRepository.deleteByToken(token);
     }
 
+    public List<String> getTokensForEmployee(UUID employeeId) {
+        return tokenRepository.findByEmployeeId(employeeId)
+                .stream()
+                .map(FcmToken::getToken)
+                .toList();
+    }
+
     /** Рассылает уведомление всем зарегистрированным сотрудникам */
     public void sendToAllEmployees(String title, String body) {
         if (!enabled) return;

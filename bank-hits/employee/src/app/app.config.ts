@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
     ),
     provideRouter(appRoutes),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
-    { provide: API_BASE_URL, useValue: 'http://localhost:8085/bff/employee' },
+    { provide: API_BASE_URL, useValue: 'http://sof-kov.ru:8085/bff/employee' },
     { provide: MONITORING_APP_NAME, useValue: 'employee' },
   ],
 };

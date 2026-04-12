@@ -151,7 +151,7 @@ export class ClientAccountsPageComponent implements OnInit, OnDestroy {
 
   private connectWs(accountIds: string[]): void {
     this.wsSub?.unsubscribe();
-    this.wsSub = this.wsService.connect('http://localhost:8084/ws', accountIds).subscribe({
+    this.wsSub = this.wsService.connect('http://sof-kov.ru:8084/ws', accountIds).subscribe({
       next: (event) => {
         this.ngZone.run(() => {
           if (event.type === 'BALANCE_UPDATED') {

@@ -27,7 +27,7 @@ export const appConfig: ApplicationConfig = {
       ])
     ),
     { provide: ErrorHandler, useClass: GlobalAppErrorHandler },
-    { provide: API_BASE_URL, useValue: 'http://localhost:8084/bff/client' },
+    { provide: API_BASE_URL, useValue: 'http://sof-kov.ru:8084/bff/client' },
     { provide: MONITORING_APP_NAME, useValue: 'client' },
   ],
 };

@@ -75,6 +75,13 @@ public class FcmNotificationService {
         tokenRepository.deleteByToken(token);
     }
 
+    public List<String> getTokensForUser(UUID userId) {
+        return tokenRepository.findByUserId(userId)
+                .stream()
+                .map(FcmToken::getToken)
+                .toList();
+    }
+
     public void sendToUser(UUID userId, String title, String body) {
         if (!enabled) return;
         List<String> tokens = tokenRepository.findByUserId(userId)
