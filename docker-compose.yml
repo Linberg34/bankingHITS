@@ -121,6 +121,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: account_pass
       EXCHANGE_RATE_API_DAILY_URL: https://www.cbr.ru/scripts/XML_daily_eng.asp
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      MONITORING_SERVICE_URL: http://service-monitoring:8087
     depends_on:
       db-account:
         condition: service_healthy

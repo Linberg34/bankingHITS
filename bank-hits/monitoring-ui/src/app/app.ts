@@ -127,7 +127,7 @@ export class App {
   });
 
   readonly appOptions: AppFilter[] = ['all', 'client', 'employee', 'system'];
-  readonly serviceOptions: ServiceFilter[] = ['all', 'users', 'credits', 'core', 'sso'];
+  readonly serviceOptions: ServiceFilter[] = ['all', 'users', 'credits', 'core', 'sso', 'client-bff', 'employee-bff'];
   readonly levelOptions: LevelFilter[] = ['all', 'info', 'warn', 'error'];
 
   toggleStream(): void {
@@ -201,6 +201,10 @@ export class App {
         return 'Кредиты';
       case 'sso':
         return 'SSO';
+      case 'client-bff':
+        return 'Client BFF';
+      case 'employee-bff':
+        return 'Employee BFF';
       default:
         return 'Ядро';
     }
@@ -240,7 +244,7 @@ function asAppFilter(value: string): AppFilter {
 }
 
 function asServiceFilter(value: string): ServiceFilter {
-  return value === 'users' || value === 'credits' || value === 'core' || value === 'sso' ? value : 'all';
+  return value === 'users' || value === 'credits' || value === 'core' || value === 'sso' || value === 'client-bff' || value === 'employee-bff' ? value : 'all';
 }
 
 function asLevelFilter(value: string): LevelFilter {

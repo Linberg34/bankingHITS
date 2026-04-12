@@ -1,6 +1,6 @@
 export type MonitoringApp = 'client' | 'employee' | 'system';
 
-export type MonitoringService = 'users' | 'credits' | 'core' | 'sso';
+export type MonitoringService = 'users' | 'credits' | 'core' | 'sso' | 'client-bff' | 'employee-bff';
 
 export type MonitoringLevel = 'info' | 'warn' | 'error';
 

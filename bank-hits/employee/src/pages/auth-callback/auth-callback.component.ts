@@ -1,6 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthApiService } from '../../../../shared/entities/auth';
+import { API_BASE_URL } from 'shared/api';
 import { FcmTokenService } from '../../../../shared/frontend-core';
 
 @Component({
@@ -17,6 +18,7 @@ export class AuthCallbackComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly authService = inject(AuthApiService);
   private readonly fcmTokenService = inject(FcmTokenService);
+  private readonly apiBaseUrl = inject(API_BASE_URL);
 
   ngOnInit(): void {
     const token = this.route.snapshot.queryParamMap.get('token');
@@ -28,7 +30,7 @@ export class AuthCallbackComponent implements OnInit {
         this.authService.setRole(role);
       }
       // Register FCM token after login (fire-and-forget)
-      void this.fcmTokenService.registerToken('http://sof-kov.ru:8085/bff/employee');
+      void this.fcmTokenService.registerToken(this.apiBaseUrl);
       void this.router.navigate(['/panel'], { replaceUrl: true });
     } else {
       this.redirectToSso();

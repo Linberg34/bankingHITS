@@ -25,10 +25,11 @@ public class DownstreamCallExecutor {
 
     private static final int MAX_ATTEMPTS = 3;
     private static final long BASE_BACKOFF_MS = 250L;
-    private static final int WINDOW_SIZE = 20;
-    private static final int MIN_CALLS = 10;
+    private static final int WINDOW_SIZE = 30;
+    private static final int MIN_CALLS = 20;
     private static final double FAILURE_THRESHOLD = 70.0;
-    private static final Duration OPEN_DURATION = Duration.ofSeconds(20);
+    private static final Duration OPEN_DURATION = Duration.ofSeconds(10);
+    private static final int HALF_OPEN_MAX_CONCURRENT = 3;
 
     private final RestClient monitoringClient;
     private final Map<DownstreamService, ServiceCircuitBreaker> circuitBreakers = new ConcurrentHashMap<>();
@@ -269,7 +270,7 @@ public class DownstreamCallExecutor {
             }
 
             if (state == CircuitState.HALF_OPEN) {
-                if (halfOpenInFlight > 0) {
+                if (halfOpenInFlight >= HALF_OPEN_MAX_CONCURRENT) {
                     return new AttemptPermission(false, state);
                 }
                 halfOpenInFlight++;

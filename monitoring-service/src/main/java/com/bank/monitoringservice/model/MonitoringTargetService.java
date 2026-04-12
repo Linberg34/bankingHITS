@@ -7,7 +7,9 @@ public enum MonitoringTargetService {
     USERS("users"),
     CREDITS("credits"),
     CORE("core"),
-    SSO("sso");
+    SSO("sso"),
+    CLIENT_BFF("client-bff"),
+    EMPLOYEE_BFF("employee-bff");
 
     private final String value;
 

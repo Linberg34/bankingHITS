@@ -11,21 +11,30 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @Slf4j
 public class TraceRequestFilter extends OncePerRequestFilter {
 
+    private static final String SERVICE_NAME = "credits";
+
     private final String defaultAppSource;
+    private final RestClient monitoringClient;
 
     public TraceRequestFilter(
-            @Value("${monitoring.app:system}") String defaultAppSource
+            @Value("${monitoring.app:system}") String defaultAppSource,
+            RestClient.Builder restClientBuilder,
+            @Value("${monitoring.service-url:http://localhost:8087}") String monitoringServiceUrl
     ) {
         this.defaultAppSource = defaultAppSource;
+        this.monitoringClient = restClientBuilder.baseUrl(monitoringServiceUrl).build();
     }
 
     @Override
@@ -44,9 +53,9 @@ public class TraceRequestFilter extends OncePerRequestFilter {
         long startedAt = System.currentTimeMillis();
         try {
             filterChain.doFilter(request, response);
-            logCompleted(request, response.getStatus(), startedAt, traceId, null);
+            logCompleted(request, response.getStatus(), startedAt, traceId, appSource, null);
         } catch (Exception exception) {
-            logCompleted(request, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, startedAt, traceId, exception);
+            logCompleted(request, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, startedAt, traceId, appSource, exception);
             throw exception;
         } finally {
             TraceContextHolder.clear();
@@ -58,6 +67,7 @@ public class TraceRequestFilter extends OncePerRequestFilter {
             int status,
             long startedAt,
             String traceId,
+            String appSource,
             Exception exception
     ) {
         long latencyMs = System.currentTimeMillis() - startedAt;
@@ -77,10 +87,61 @@ public class TraceRequestFilter extends OncePerRequestFilter {
         } else {
             log.info(message);
         }
+
+        publishToMonitoring(request.getMethod(), request.getRequestURI(), status, latencyMs, traceId, appSource);
+    }
+
+    private void publishToMonitoring(String method, String path, int status, long latencyMs, String traceId, String appSource) {
+        String level = status >= 500 ? "error" : status >= 400 ? "warn" : "info";
+        String msg = status >= 500 ? "Ошибка сервера" : "Запрос выполнен";
+        MonitoringPayload payload = new MonitoringPayload(
+                UUID.randomUUID().toString(),
+                System.currentTimeMillis(),
+                appSource,
+                SERVICE_NAME,
+                level,
+                method,
+                path,
+                status,
+                latencyMs,
+                0,
+                false,
+                "CLOSED",
+                traceId,
+                msg
+        );
+
+        try {
+            monitoringClient.post()
+                    .uri("/api/monitoring/logs")
+                    .body(payload)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (RestClientException ex) {
+            log.warn("Failed to publish monitoring event: {}", ex.getMessage());
+        }
     }
 
     private String resolveHeader(HttpServletRequest request, String headerName, String fallback) {
         String headerValue = request.getHeader(headerName);
         return StringUtils.hasText(headerValue) ? headerValue : fallback;
+    }
+
+    private record MonitoringPayload(
+            String id,
+            long timestamp,
+            String app,
+            String service,
+            String level,
+            String method,
+            String path,
+            int status,
+            long latencyMs,
+            int retries,
+            boolean blockedByCircuit,
+            String circuitState,
+            String traceId,
+            String message
+    ) {
     }
 }
